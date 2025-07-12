@@ -1,0 +1,1080 @@
+{
+  "CBC": {
+    "Upper Primary": {
+      "Grade 4": {
+        "English": [
+          {
+            "id": "cbc-4-eng-1",
+            "title": "English Basics",
+            "questions": [
+              {
+                "question": "What is the plural of 'child'?",
+                "options": ["childs", "children", "childes", "childrens"],
+                "answer": "children",
+                "explanation": "The plural of 'child' is 'children'."
+              },
+              {
+                "question": "Choose the correct sentence.",
+                "options": ["She go to school.", "She goes to school.", "She going to school.", "She goed to school."],
+                "answer": "She goes to school.",
+                "explanation": "'She goes to school' is grammatically correct."
+              },
+              {
+                "question": "Which word is a noun?",
+                "options": ["run", "happy", "book", "quickly"],
+                "answer": "book",
+                "explanation": "'Book' is a noun; the others are not."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-4-math-1",
+            "title": "Basic Addition",
+            "questions": [
+              {
+                "question": "What is 5 + 3?",
+                "options": ["6", "7", "8", "9"],
+                "answer": "8",
+                "explanation": "5 + 3 = 8."
+              },
+              {
+                "question": "What is 10 - 4?",
+                "options": ["5", "6", "7", "8"],
+                "answer": "6",
+                "explanation": "10 - 4 = 6."
+              },
+              {
+                "question": "What is 2 x 3?",
+                "options": ["5", "6", "7", "8"],
+                "answer": "6",
+                "explanation": "2 multiplied by 3 is 6."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-4-sci-1",
+            "title": "Living Things",
+            "questions": [
+              {
+                "question": "Which of these is a living thing?",
+                "options": ["Rock", "Tree", "Car", "Chair"],
+                "answer": "Tree",
+                "explanation": "A tree is a living thing."
+              },
+              {
+                "question": "What do plants need to make food?",
+                "options": ["Sunlight", "Plastic", "Sand", "Metal"],
+                "answer": "Sunlight",
+                "explanation": "Plants need sunlight to make food."
+              },
+              {
+                "question": "Which part of the plant absorbs water?",
+                "options": ["Leaf", "Root", "Stem", "Flower"],
+                "answer": "Root",
+                "explanation": "Roots absorb water from the soil."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ]
+      },
+      "Grade 5": {
+        "English": [
+          {
+            "id": "cbc-5-eng-1",
+            "title": "Comprehension Skills",
+            "questions": [
+              {
+                "question": "What is the opposite of 'happy'?",
+                "options": ["sad", "glad", "joyful", "excited"],
+                "answer": "sad",
+                "explanation": "'Sad' is the opposite of 'happy'."
+              },
+              {
+                "question": "Choose the correct word: She ___ a book.",
+                "options": ["read", "reads", "reading", "reed"],
+                "answer": "reads",
+                "explanation": "'She reads a book' is correct."
+              },
+              {
+                "question": "Which is a verb?",
+                "options": ["run", "blue", "table", "quick"],
+                "answer": "run",
+                "explanation": "'Run' is a verb."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-5-math-1",
+            "title": "Multiplication & Division",
+            "questions": [
+              {
+                "question": "What is 6 x 7?",
+                "options": ["42", "36", "48", "56"],
+                "answer": "42",
+                "explanation": "6 x 7 = 42."
+              },
+              {
+                "question": "What is 20 ÷ 4?",
+                "options": ["4", "5", "6", "7"],
+                "answer": "5",
+                "explanation": "20 divided by 4 is 5."
+              },
+              {
+                "question": "What is 9 + 8?",
+                "options": ["15", "16", "17", "18"],
+                "answer": "17",
+                "explanation": "9 + 8 = 17."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-5-sci-1",
+            "title": "The Human Body",
+            "questions": [
+              {
+                "question": "Which organ pumps blood?",
+                "options": ["Liver", "Heart", "Lung", "Kidney"],
+                "answer": "Heart",
+                "explanation": "The heart pumps blood."
+              },
+              {
+                "question": "What do we use to see?",
+                "options": ["Ears", "Eyes", "Nose", "Mouth"],
+                "answer": "Eyes",
+                "explanation": "We use our eyes to see."
+              },
+              {
+                "question": "Which is a sense organ?",
+                "options": ["Hand", "Eye", "Leg", "Stomach"],
+                "answer": "Eye",
+                "explanation": "The eye is a sense organ."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ]
+      },
+      "Grade 6": {
+        "English": [
+          {
+            "id": "cbc-6-eng-1",
+            "title": "Story Writing",
+            "questions": [
+              {
+                "question": "What do you call the person who writes a story?",
+                "options": ["Reader", "Writer", "Listener", "Speaker"],
+                "answer": "Writer",
+                "explanation": "A writer writes a story."
+              },
+              {
+                "question": "Choose the correct word: The cat ___ on the mat.",
+                "options": ["sit", "sat", "sits", "setting"],
+                "answer": "sat",
+                "explanation": "'The cat sat on the mat' is correct."
+              },
+              {
+                "question": "Which is a punctuation mark?",
+                "options": ["comma", "comma,", "comma.", "comma!"],
+                "answer": "comma",
+                "explanation": "A comma is a punctuation mark."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-6-math-1",
+            "title": "Fractions",
+            "questions": [
+              {
+                "question": "What is 1/2 + 1/4?",
+                "options": ["1/4", "1/2", "3/4", "1"],
+                "answer": "3/4",
+                "explanation": "1/2 + 1/4 = 3/4."
+              },
+              {
+                "question": "What is 3/5 of 20?",
+                "options": ["10", "12", "8", "15"],
+                "answer": "12",
+                "explanation": "3/5 of 20 is 12."
+              },
+              {
+                "question": "What is 0.5 as a fraction?",
+                "options": ["1/2", "1/3", "1/4", "2/3"],
+                "answer": "1/2",
+                "explanation": "0.5 is equal to 1/2."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-6-sci-1",
+            "title": "Weather and Climate",
+            "questions": [
+              {
+                "question": "What do we use to measure temperature?",
+                "options": ["Barometer", "Thermometer", "Ruler", "Scale"],
+                "answer": "Thermometer",
+                "explanation": "A thermometer measures temperature."
+              },
+              {
+                "question": "Which season is the hottest?",
+                "options": ["Winter", "Spring", "Summer", "Autumn"],
+                "answer": "Summer",
+                "explanation": "Summer is the hottest season."
+              },
+              {
+                "question": "What forms clouds?",
+                "options": ["Water vapor", "Dust", "Smoke", "Sand"],
+                "answer": "Water vapor",
+                "explanation": "Clouds form from water vapor."
+              }
+            ],
+            "duration": 15,
+            "type": "Free",
+            "difficulty": "Easy"
+          }
+        ]
+      }
+    },
+    "Junior Secondary": {
+      "Grade 7": {
+        "English": [
+          {
+            "id": "cbc-7-eng-1",
+            "title": "Reading Comprehension",
+            "questions": [
+              {
+                "question": "What is the main idea of a passage?",
+                "options": ["The title", "The central point", "The first sentence", "The last word"],
+                "answer": "The central point",
+                "explanation": "The main idea is the central point of a passage."
+              },
+              {
+                "question": "Which is a synonym for 'happy'?",
+                "options": ["sad", "joyful", "angry", "tired"],
+                "answer": "joyful",
+                "explanation": "'Joyful' means the same as 'happy'."
+              },
+              {
+                "question": "What do you call a story that is not true?",
+                "options": ["Fiction", "Non-fiction", "Biography", "Autobiography"],
+                "answer": "Fiction",
+                "explanation": "A story that is not true is called fiction."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-7-math-1",
+            "title": "Algebra Basics",
+            "questions": [
+              {
+                "question": "What is x if x + 5 = 12?",
+                "options": ["5", "6", "7", "8"],
+                "answer": "7",
+                "explanation": "x = 12 - 5 = 7."
+              },
+              {
+                "question": "What is 3x when x = 4?",
+                "options": ["7", "8", "10", "12"],
+                "answer": "12",
+                "explanation": "3 x 4 = 12."
+              },
+              {
+                "question": "What is the value of y in 2y = 10?",
+                "options": ["2", "4", "5", "6"],
+                "answer": "5",
+                "explanation": "2y = 10, so y = 5."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-7-sci-1",
+            "title": "Cells and Living Things",
+            "questions": [
+              {
+                "question": "What is the basic unit of life?",
+                "options": ["Tissue", "Organ", "Cell", "Organism"],
+                "answer": "Cell",
+                "explanation": "The cell is the basic unit of life."
+              },
+              {
+                "question": "Which organelle is known as the powerhouse of the cell?",
+                "options": ["Nucleus", "Mitochondria", "Ribosome", "Chloroplast"],
+                "answer": "Mitochondria",
+                "explanation": "Mitochondria produce energy for the cell."
+              },
+              {
+                "question": "What do plants use for photosynthesis?",
+                "options": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+                "answer": "Carbon dioxide",
+                "explanation": "Plants use carbon dioxide for photosynthesis."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ]
+      },
+      "Grade 8": {
+        "English": [
+          {
+            "id": "cbc-8-eng-1",
+            "title": "Advanced Grammar",
+            "questions": [
+              {
+                "question": "Which is a conjunction?",
+                "options": ["and", "run", "blue", "quickly"],
+                "answer": "and",
+                "explanation": "'And' is a conjunction."
+              },
+              {
+                "question": "Choose the correct sentence.",
+                "options": ["He don't like apples.", "He doesn't like apples.", "He don't likes apples.", "He doesn't likes apples."],
+                "answer": "He doesn't like apples.",
+                "explanation": "'He doesn't like apples' is correct."
+              },
+              {
+                "question": "What is the past tense of 'go'?",
+                "options": ["goed", "goes", "went", "gone"],
+                "answer": "went",
+                "explanation": "The past tense of 'go' is 'went'."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-8-math-1",
+            "title": "Linear Equations",
+            "questions": [
+              {
+                "question": "Solve: 2x = 8",
+                "options": ["2", "3", "4", "5"],
+                "answer": "4",
+                "explanation": "2x = 8, so x = 4."
+              },
+              {
+                "question": "What is the slope of y = 2x + 3?",
+                "options": ["2", "3", "1", "0"],
+                "answer": "2",
+                "explanation": "The slope is the coefficient of x, which is 2."
+              },
+              {
+                "question": "What is 5x if x = 2?",
+                "options": ["7", "8", "10", "12"],
+                "answer": "10",
+                "explanation": "5 x 2 = 10."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-8-sci-1",
+            "title": "The Human Body",
+            "questions": [
+              {
+                "question": "Which organ is responsible for pumping blood?",
+                "options": ["Liver", "Heart", "Lung", "Kidney"],
+                "answer": "Heart",
+                "explanation": "The heart pumps blood."
+              },
+              {
+                "question": "What do we use to breathe?",
+                "options": ["Eyes", "Nose", "Ears", "Mouth"],
+                "answer": "Nose",
+                "explanation": "We use our nose to breathe."
+              },
+              {
+                "question": "Which is a sense organ?",
+                "options": ["Hand", "Eye", "Leg", "Stomach"],
+                "answer": "Eye",
+                "explanation": "The eye is a sense organ."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ]
+      },
+      "Grade 9": {
+        "English": [
+          {
+            "id": "cbc-9-eng-1",
+            "title": "Essay Writing",
+            "questions": [
+              {
+                "question": "What is an essay?",
+                "options": ["A poem", "A short story", "A piece of writing on a topic", "A letter"],
+                "answer": "A piece of writing on a topic",
+                "explanation": "An essay is a piece of writing on a topic."
+              },
+              {
+                "question": "Which is a type of essay?",
+                "options": ["Narrative", "Descriptive", "Expository", "All of the above"],
+                "answer": "All of the above",
+                "explanation": "All listed are types of essays."
+              },
+              {
+                "question": "What is a thesis statement?",
+                "options": ["A question", "A main idea", "A conclusion", "A summary"],
+                "answer": "A main idea",
+                "explanation": "A thesis statement is the main idea of an essay."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-9-math-1",
+            "title": "Quadratic Equations",
+            "questions": [
+              {
+                "question": "Solve: x^2 = 16",
+                "options": ["2", "4", "8", "16"],
+                "answer": "4",
+                "explanation": "x^2 = 16, so x = 4."
+              },
+              {
+                "question": "What is the quadratic formula?",
+                "options": ["x = (-b ± √(b^2-4ac))/(2a)", "x = b^2 - 4ac", "x = a + b + c", "x = ab + bc + ca"],
+                "answer": "x = (-b ± √(b^2-4ac))/(2a)",
+                "explanation": "This is the quadratic formula."
+              },
+              {
+                "question": "What is the value of x in x^2 - 9 = 0?",
+                "options": ["1", "3", "-3", "Both 3 and -3"],
+                "answer": "Both 3 and -3",
+                "explanation": "x^2 - 9 = 0, so x = 3 or x = -3."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-9-sci-1",
+            "title": "Electricity and Magnetism",
+            "questions": [
+              {
+                "question": "What is the unit of electric current?",
+                "options": ["Volt", "Ampere", "Ohm", "Watt"],
+                "answer": "Ampere",
+                "explanation": "The unit of electric current is ampere."
+              },
+              {
+                "question": "What is a conductor?",
+                "options": ["Material that allows electricity to flow", "Material that blocks electricity", "A type of magnet", "A battery"],
+                "answer": "Material that allows electricity to flow",
+                "explanation": "A conductor allows electricity to flow."
+              },
+              {
+                "question": "What is the symbol for resistance?",
+                "options": ["R", "V", "I", "P"],
+                "answer": "R",
+                "explanation": "'R' is the symbol for resistance."
+              }
+            ],
+            "duration": 20,
+            "type": "Free",
+            "difficulty": "Medium"
+          }
+        ]
+      }
+    },
+    "Senior Secondary": {
+      "Grade 10": {
+        "English": [
+          {
+            "id": "cbc-10-eng-1",
+            "title": "Advanced Literature",
+            "questions": [
+              {
+                "question": "Who wrote 'Romeo and Juliet'?",
+                "options": ["Charles Dickens", "William Shakespeare", "Jane Austen", "Mark Twain"],
+                "answer": "William Shakespeare",
+                "explanation": "'Romeo and Juliet' was written by William Shakespeare."
+              },
+              {
+                "question": "What is a metaphor?",
+                "options": ["A comparison using 'like' or 'as'", "A direct comparison", "An exaggeration", "A type of poem"],
+                "answer": "A direct comparison",
+                "explanation": "A metaphor is a direct comparison between two things."
+              },
+              {
+                "question": "Which is a theme in literature?",
+                "options": ["Love", "Table", "Running", "Blue"],
+                "answer": "Love",
+                "explanation": "'Love' is a common theme in literature."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-10-math-1",
+            "title": "Functions and Graphs",
+            "questions": [
+              {
+                "question": "What is the value of f(2) if f(x) = 3x + 1?",
+                "options": ["5", "6", "7", "8"],
+                "answer": "7",
+                "explanation": "f(2) = 3*2 + 1 = 7."
+              },
+              {
+                "question": "What is the y-intercept of y = 2x + 3?",
+                "options": ["2", "3", "0", "1"],
+                "answer": "3",
+                "explanation": "The y-intercept is the constant term, 3."
+              },
+              {
+                "question": "What is the domain of f(x) = 1/x?",
+                "options": ["x ≠ 0", "x > 0", "x < 0", "x = 0"],
+                "answer": "x ≠ 0",
+                "explanation": "The function is undefined at x = 0."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-10-sci-1",
+            "title": "Genetics",
+            "questions": [
+              {
+                "question": "What is the basic unit of heredity?",
+                "options": ["Gene", "Cell", "Chromosome", "Nucleus"],
+                "answer": "Gene",
+                "explanation": "A gene is the basic unit of heredity."
+              },
+              {
+                "question": "What is DNA?",
+                "options": ["A protein", "A nucleic acid", "A carbohydrate", "A lipid"],
+                "answer": "A nucleic acid",
+                "explanation": "DNA is a nucleic acid."
+              },
+              {
+                "question": "Who is known as the father of genetics?",
+                "options": ["Charles Darwin", "Gregor Mendel", "Isaac Newton", "Albert Einstein"],
+                "answer": "Gregor Mendel",
+                "explanation": "Gregor Mendel is known as the father of genetics."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ]
+      },
+      "Grade 11": {
+        "English": [
+          {
+            "id": "cbc-11-eng-1",
+            "title": "Critical Analysis",
+            "questions": [
+              {
+                "question": "What is literary criticism?",
+                "options": ["Judging books by their covers", "Analyzing and interpreting literature", "Writing novels", "Reading poetry"],
+                "answer": "Analyzing and interpreting literature",
+                "explanation": "Literary criticism is the analysis and interpretation of literature."
+              },
+              {
+                "question": "What is an allegory?",
+                "options": ["A story with a hidden meaning", "A poem", "A type of essay", "A character"],
+                "answer": "A story with a hidden meaning",
+                "explanation": "An allegory is a story with a hidden meaning."
+              },
+              {
+                "question": "Who wrote 'Animal Farm'?",
+                "options": ["George Orwell", "J.K. Rowling", "Ernest Hemingway", "F. Scott Fitzgerald"],
+                "answer": "George Orwell",
+                "explanation": "'Animal Farm' was written by George Orwell."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-11-math-1",
+            "title": "Calculus Introduction",
+            "questions": [
+              {
+                "question": "What is the derivative of x^2?",
+                "options": ["x", "2x", "x^2", "2"],
+                "answer": "2x",
+                "explanation": "The derivative of x^2 is 2x."
+              },
+              {
+                "question": "What is the integral of 2x dx?",
+                "options": ["x^2 + C", "2x + C", "x^2", "2x^2"],
+                "answer": "x^2 + C",
+                "explanation": "The integral of 2x dx is x^2 + C."
+              },
+              {
+                "question": "What is the slope of the tangent to y = x^2 at x = 3?",
+                "options": ["3", "6", "9", "12"],
+                "answer": "6",
+                "explanation": "The slope is 2x, so at x = 3, slope = 6."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-11-sci-1",
+            "title": "Ecology",
+            "questions": [
+              {
+                "question": "What is an ecosystem?",
+                "options": ["A group of organisms", "A community of living and nonliving things", "A type of animal", "A plant"],
+                "answer": "A community of living and nonliving things",
+                "explanation": "An ecosystem includes living and nonliving things."
+              },
+              {
+                "question": "What is photosynthesis?",
+                "options": ["Process by which plants make food", "Process by which animals eat", "A type of cell division", "A type of reproduction"],
+                "answer": "Process by which plants make food",
+                "explanation": "Photosynthesis is how plants make food."
+              },
+              {
+                "question": "What is a food chain?",
+                "options": ["A type of necklace", "A sequence of organisms each dependent on the next for food", "A plant", "A cell"],
+                "answer": "A sequence of organisms each dependent on the next for food",
+                "explanation": "A food chain shows how energy is passed from one organism to another."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ]
+      },
+      "Grade 12": {
+        "English": [
+          {
+            "id": "cbc-12-eng-1",
+            "title": "Advanced Writing",
+            "questions": [
+              {
+                "question": "What is a thesis statement?",
+                "options": ["A question", "A main idea", "A conclusion", "A summary"],
+                "answer": "A main idea",
+                "explanation": "A thesis statement is the main idea of an essay."
+              },
+              {
+                "question": "What is a bibliography?",
+                "options": ["A list of books and sources used", "A type of essay", "A poem", "A summary"],
+                "answer": "A list of books and sources used",
+                "explanation": "A bibliography lists sources used in research."
+              },
+              {
+                "question": "What is paraphrasing?",
+                "options": ["Copying text", "Rewriting in your own words", "Quoting directly", "Summarizing"],
+                "answer": "Rewriting in your own words",
+                "explanation": "Paraphrasing is rewriting text in your own words."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ],
+        "Mathematics": [
+          {
+            "id": "cbc-12-math-1",
+            "title": "Advanced Calculus",
+            "questions": [
+              {
+                "question": "What is the derivative of sin(x)?",
+                "options": ["cos(x)", "-sin(x)", "-cos(x)", "sin(x)"],
+                "answer": "cos(x)",
+                "explanation": "The derivative of sin(x) is cos(x)."
+              },
+              {
+                "question": "What is the integral of 1/x dx?",
+                "options": ["x", "ln|x| + C", "1/x", "e^x"],
+                "answer": "ln|x| + C",
+                "explanation": "The integral of 1/x dx is ln|x| + C."
+              },
+              {
+                "question": "What is the limit of (1/x) as x approaches infinity?",
+                "options": ["0", "1", "Infinity", "-1"],
+                "answer": "0",
+                "explanation": "As x approaches infinity, 1/x approaches 0."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ],
+        "Science": [
+          {
+            "id": "cbc-12-sci-1",
+            "title": "Modern Physics",
+            "questions": [
+              {
+                "question": "Who developed the theory of relativity?",
+                "options": ["Isaac Newton", "Albert Einstein", "Niels Bohr", "Marie Curie"],
+                "answer": "Albert Einstein",
+                "explanation": "Albert Einstein developed the theory of relativity."
+              },
+              {
+                "question": "What is the speed of light?",
+                "options": ["3 x 10^8 m/s", "3 x 10^6 m/s", "3 x 10^5 m/s", "3 x 10^7 m/s"],
+                "answer": "3 x 10^8 m/s",
+                "explanation": "The speed of light is 3 x 10^8 meters per second."
+              },
+              {
+                "question": "What is an atom?",
+                "options": ["Smallest unit of matter", "A molecule", "A cell", "A proton"],
+                "answer": "Smallest unit of matter",
+                "explanation": "An atom is the smallest unit of matter."
+              }
+            ],
+            "duration": 25,
+            "type": "Free",
+            "difficulty": "Hard"
+          }
+        ]
+      }
+    }
+  },
+  "844": {
+    "Form 2": {
+      "English": [
+        {
+          "id": "844-f2-eng-1",
+          "title": "Grammar and Composition",
+          "questions": [
+            {
+              "question": "Which is a pronoun?",
+              "options": ["he", "run", "blue", "quickly"],
+              "answer": "he",
+              "explanation": "'He' is a pronoun."
+            },
+            {
+              "question": "Choose the correct sentence.",
+              "options": ["She go to school.", "She goes to school.", "She going to school.", "She goed to school."],
+              "answer": "She goes to school.",
+              "explanation": "'She goes to school' is grammatically correct."
+            },
+            {
+              "question": "What is the plural of 'mouse'?",
+              "options": ["mouses", "mices", "mice", "mousees"],
+              "answer": "mice",
+              "explanation": "The plural of 'mouse' is 'mice'."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Medium"
+        }
+      ],
+      "Mathematics": [
+        {
+          "id": "844-f2-math-1",
+          "title": "Algebra and Geometry",
+          "questions": [
+            {
+              "question": "What is the value of x if x + 7 = 15?",
+              "options": ["6", "7", "8", "9"],
+              "answer": "8",
+              "explanation": "x = 15 - 7 = 8."
+            },
+            {
+              "question": "What is the area of a rectangle with length 5 and width 3?",
+              "options": ["8", "15", "10", "12"],
+              "answer": "15",
+              "explanation": "Area = length × width = 5 × 3 = 15."
+            },
+            {
+              "question": "What is the perimeter of a square with side 4?",
+              "options": ["8", "12", "16", "20"],
+              "answer": "16",
+              "explanation": "Perimeter = 4 × side = 4 × 4 = 16."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Medium"
+        }
+      ],
+      "Science": [
+        {
+          "id": "844-f2-sci-1",
+          "title": "Cell Biology",
+          "questions": [
+            {
+              "question": "What is the basic unit of life?",
+              "options": ["Tissue", "Organ", "Cell", "Organism"],
+              "answer": "Cell",
+              "explanation": "The cell is the basic unit of life."
+            },
+            {
+              "question": "Which organelle is known as the powerhouse of the cell?",
+              "options": ["Nucleus", "Mitochondria", "Ribosome", "Chloroplast"],
+              "answer": "Mitochondria",
+              "explanation": "Mitochondria produce energy for the cell."
+            },
+            {
+              "question": "What do plants use for photosynthesis?",
+              "options": ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+              "answer": "Carbon dioxide",
+              "explanation": "Plants use carbon dioxide for photosynthesis."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Medium"
+        }
+      ]
+    },
+    "Form 3": {
+      "English": [
+        {
+          "id": "844-f3-eng-1",
+          "title": "Literature and Poetry",
+          "questions": [
+            {
+              "question": "Who wrote 'Things Fall Apart'?",
+              "options": ["Ngugi wa Thiong'o", "Chinua Achebe", "Wole Soyinka", "Binyavanga Wainaina"],
+              "answer": "Chinua Achebe",
+              "explanation": "'Things Fall Apart' was written by Chinua Achebe."
+            },
+            {
+              "question": "What is a stanza in poetry?",
+              "options": ["A paragraph", "A group of lines", "A rhyme", "A word"],
+              "answer": "A group of lines",
+              "explanation": "A stanza is a group of lines in a poem."
+            },
+            {
+              "question": "What is a simile?",
+              "options": ["A direct comparison", "A comparison using 'like' or 'as'", "An exaggeration", "A rhyme"],
+              "answer": "A comparison using 'like' or 'as'",
+              "explanation": "A simile compares two things using 'like' or 'as'."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Hard"
+        }
+      ],
+      "Mathematics": [
+        {
+          "id": "844-f3-math-1",
+          "title": "Trigonometry",
+          "questions": [
+            {
+              "question": "What is sin(90°)?",
+              "options": ["0", "1", "0.5", "-1"],
+              "answer": "1",
+              "explanation": "sin(90°) = 1."
+            },
+            {
+              "question": "What is the value of tan(45°)?",
+              "options": ["0", "1", "0.5", "2"],
+              "answer": "1",
+              "explanation": "tan(45°) = 1."
+            },
+            {
+              "question": "What is the hypotenuse of a right triangle with sides 3 and 4?",
+              "options": ["5", "6", "7", "8"],
+              "answer": "5",
+              "explanation": "By Pythagoras' theorem, hypotenuse = 5."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Hard"
+        }
+      ],
+      "Science": [
+        {
+          "id": "844-f3-sci-1",
+          "title": "Genetics",
+          "questions": [
+            {
+              "question": "What is the basic unit of heredity?",
+              "options": ["Gene", "Cell", "Chromosome", "Nucleus"],
+              "answer": "Gene",
+              "explanation": "A gene is the basic unit of heredity."
+            },
+            {
+              "question": "What is DNA?",
+              "options": ["A protein", "A nucleic acid", "A carbohydrate", "A lipid"],
+              "answer": "A nucleic acid",
+              "explanation": "DNA is a nucleic acid."
+            },
+            {
+              "question": "Who is known as the father of genetics?",
+              "options": ["Charles Darwin", "Gregor Mendel", "Isaac Newton", "Albert Einstein"],
+              "answer": "Gregor Mendel",
+              "explanation": "Gregor Mendel is known as the father of genetics."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Hard"
+        }
+      ]
+    },
+    "Form 4": {
+      "English": [
+        {
+          "id": "844-f4-eng-1",
+          "title": "Advanced Composition",
+          "questions": [
+            {
+              "question": "What is a thesis statement?",
+              "options": ["A question", "A main idea", "A conclusion", "A summary"],
+              "answer": "A main idea",
+              "explanation": "A thesis statement is the main idea of an essay."
+            },
+            {
+              "question": "What is a bibliography?",
+              "options": ["A list of books and sources used", "A type of essay", "A poem", "A summary"],
+              "answer": "A list of books and sources used",
+              "explanation": "A bibliography lists sources used in research."
+            },
+            {
+              "question": "What is paraphrasing?",
+              "options": ["Copying text", "Rewriting in your own words", "Quoting directly", "Summarizing"],
+              "answer": "Rewriting in your own words",
+              "explanation": "Paraphrasing is rewriting text in your own words."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Hard"
+        }
+      ],
+      "Mathematics": [
+        {
+          "id": "844-f4-math-1",
+          "title": "Calculus and Statistics",
+          "questions": [
+            {
+              "question": "What is the derivative of x^2?",
+              "options": ["x", "2x", "x^2", "2"],
+              "answer": "2x",
+              "explanation": "The derivative of x^2 is 2x."
+            },
+            {
+              "question": "What is the mean of 2, 4, 6, 8?",
+              "options": ["4", "5", "6", "7"],
+              "answer": "5",
+              "explanation": "Mean = (2+4+6+8)/4 = 5."
+            },
+            {
+              "question": "What is the median of 3, 1, 4, 2, 5?",
+              "options": ["2", "3", "4", "5"],
+              "answer": "3",
+              "explanation": "Median is the middle value when sorted: 1,2,3,4,5."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Hard"
+        }
+      ],
+      "Science": [
+        {
+          "id": "844-f4-sci-1",
+          "title": "Modern Physics",
+          "questions": [
+            {
+              "question": "Who developed the theory of relativity?",
+              "options": ["Isaac Newton", "Albert Einstein", "Niels Bohr", "Marie Curie"],
+              "answer": "Albert Einstein",
+              "explanation": "Albert Einstein developed the theory of relativity."
+            },
+            {
+              "question": "What is the speed of light?",
+              "options": ["3 x 10^8 m/s", "3 x 10^6 m/s", "3 x 10^5 m/s", "3 x 10^7 m/s"],
+              "answer": "3 x 10^8 m/s",
+              "explanation": "The speed of light is 3 x 10^8 meters per second."
+            },
+            {
+              "question": "What is an atom?",
+              "options": ["Smallest unit of matter", "A molecule", "A cell", "A proton"],
+              "answer": "Smallest unit of matter",
+              "explanation": "An atom is the smallest unit of matter."
+            }
+          ],
+          "duration": 15,
+          "type": "Free",
+          "difficulty": "Hard"
+        }
+      ]
+    }
+  }
+} 

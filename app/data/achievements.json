@@ -1,0 +1,299 @@
+{
+  "userStats": {
+    "totalQuizzesTaken": 47,
+    "averageScore": 78.5,
+    "highestScore": 95,
+    "totalTimeSpent": "23h 45m",
+    "streakDays": 12,
+    "rank": 15
+  },
+  "pastScores": [
+    {
+      "id": "quiz_001",
+      "title": "Mathematics - Algebra Basics",
+      "subject": "Mathematics",
+      "grade": "Form 2",
+      "system": "844",
+      "score": 85,
+      "totalQuestions": 20,
+      "correctAnswers": 17,
+      "timeTaken": "15m 30s",
+      "date": "2025-01-15",
+      "difficulty": "Medium"
+    },
+    {
+      "id": "quiz_002",
+      "title": "English - Grammar and Composition",
+      "subject": "English",
+      "grade": "Grade 7",
+      "system": "CBC",
+      "score": 92,
+      "totalQuestions": 25,
+      "correctAnswers": 23,
+      "timeTaken": "18m 45s",
+      "date": "2025-01-14",
+      "difficulty": "Easy"
+    },
+    {
+      "id": "quiz_003",
+      "title": "Biology - Cell Biology",
+      "subject": "Biology",
+      "grade": "Form 3",
+      "system": "844",
+      "score": 76,
+      "totalQuestions": 30,
+      "correctAnswers": 23,
+      "timeTaken": "22m 15s",
+      "date": "2025-01-13",
+      "difficulty": "Hard"
+    },
+    {
+      "id": "quiz_004",
+      "title": "Kiswahili - Sarufi",
+      "subject": "Kiswahili",
+      "grade": "Grade 8",
+      "system": "CBC",
+      "score": 88,
+      "totalQuestions": 20,
+      "correctAnswers": 18,
+      "timeTaken": "12m 30s",
+      "date": "2025-01-12",
+      "difficulty": "Medium"
+    },
+    {
+      "id": "quiz_005",
+      "title": "Chemistry - Atomic Structure",
+      "subject": "Chemistry",
+      "grade": "Form 4",
+      "system": "844",
+      "score": 81,
+      "totalQuestions": 25,
+      "correctAnswers": 20,
+      "timeTaken": "20m 10s",
+      "date": "2025-01-11",
+      "difficulty": "Hard"
+    }
+  ],
+  "leaderboards": {
+    "overall": [
+      {
+        "rank": 1,
+        "name": "Sarah Muthoni",
+        "school": "Alliance Girls High School",
+        "totalScore": 2847,
+        "quizzesTaken": 52,
+        "averageScore": 89.2,
+        "avatar": "👩‍🎓"
+      },
+      {
+        "rank": 2,
+        "name": "James Kiprop",
+        "school": "Starehe Boys Centre",
+        "totalScore": 2789,
+        "quizzesTaken": 48,
+        "averageScore": 87.8,
+        "avatar": "👨‍🎓"
+      },
+      {
+        "rank": 3,
+        "name": "Faith Wanjiku",
+        "school": "Kenya High School",
+        "totalScore": 2756,
+        "quizzesTaken": 50,
+        "averageScore": 86.9,
+        "avatar": "👩‍🎓"
+      },
+      {
+        "rank": 4,
+        "name": "David Ochieng",
+        "school": "Mang'u High School",
+        "totalScore": 2723,
+        "quizzesTaken": 45,
+        "averageScore": 86.1,
+        "avatar": "👨‍🎓"
+      },
+      {
+        "rank": 5,
+        "name": "Grace Akinyi",
+        "school": "Loreto Convent Valley Road",
+        "totalScore": 2698,
+        "quizzesTaken": 47,
+        "averageScore": 85.7,
+        "avatar": "👩‍🎓"
+      }
+    ],
+    "bySubject": {
+      "Mathematics": [
+        {
+          "rank": 1,
+          "name": "Peter Kamau",
+          "school": "Precious Blood Riruta",
+          "score": 98.5,
+          "quizzesTaken": 15,
+          "avatar": "👨‍🎓"
+        },
+        {
+          "rank": 2,
+          "name": "Sarah Muthoni",
+          "school": "Alliance Girls High School",
+          "score": 96.2,
+          "quizzesTaken": 12,
+          "avatar": "👩‍🎓"
+        },
+        {
+          "rank": 3,
+          "name": "John Muthee",
+          "school": "Starehe Boys Centre",
+          "score": 94.8,
+          "quizzesTaken": 14,
+          "avatar": "👨‍🎓"
+        }
+      ],
+      "English": [
+        {
+          "rank": 1,
+          "name": "Faith Wanjiku",
+          "school": "Kenya High School",
+          "score": 97.3,
+          "quizzesTaken": 10,
+          "avatar": "👩‍🎓"
+        },
+        {
+          "rank": 2,
+          "name": "Grace Akinyi",
+          "school": "Loreto Convent Valley Road",
+          "score": 95.1,
+          "quizzesTaken": 11,
+          "avatar": "👩‍🎓"
+        },
+        {
+          "rank": 3,
+          "name": "David Ochieng",
+          "school": "Mang'u High School",
+          "score": 93.7,
+          "quizzesTaken": 9,
+          "avatar": "👨‍🎓"
+        }
+      ],
+      "Biology": [
+        {
+          "rank": 1,
+          "name": "James Kiprop",
+          "school": "Starehe Boys Centre",
+          "score": 96.8,
+          "quizzesTaken": 8,
+          "avatar": "👨‍🎓"
+        },
+        {
+          "rank": 2,
+          "name": "Sarah Muthoni",
+          "school": "Alliance Girls High School",
+          "score": 94.5,
+          "quizzesTaken": 7,
+          "avatar": "👩‍🎓"
+        },
+        {
+          "rank": 3,
+          "name": "Faith Wanjiku",
+          "school": "Kenya High School",
+          "score": 92.1,
+          "quizzesTaken": 9,
+          "avatar": "👩‍🎓"
+        }
+      ]
+    }
+  },
+  "achievements": [
+    {
+      "id": "first_quiz",
+      "title": "First Steps",
+      "description": "Complete your first quiz",
+      "icon": "🎯",
+      "unlocked": true,
+      "date": "2025-01-05"
+    },
+    {
+      "id": "streak_7",
+      "title": "Week Warrior",
+      "description": "Maintain a 7-day study streak",
+      "icon": "🔥",
+      "unlocked": true,
+      "date": "2025-01-12"
+    },
+    {
+      "id": "perfect_score",
+      "title": "Perfect Score",
+      "description": "Get 100% on any quiz",
+      "icon": "⭐",
+      "unlocked": false,
+      "progress": 95
+    },
+    {
+      "id": "math_master",
+      "title": "Math Master",
+      "description": "Complete 20 mathematics quizzes",
+      "icon": "📐",
+      "unlocked": false,
+      "progress": 15
+    },
+    {
+      "id": "speed_demon",
+      "title": "Speed Demon",
+      "description": "Complete a quiz in under 10 minutes",
+      "icon": "⚡",
+      "unlocked": true,
+      "date": "2025-01-10"
+    },
+    {
+      "id": "subject_expert",
+      "title": "Subject Expert",
+      "description": "Master 5 different subjects",
+      "icon": "🎓",
+      "unlocked": false,
+      "progress": 3
+    }
+  ],
+  "progress": {
+    "subjects": {
+      "Mathematics": {
+        "completed": 15,
+        "total": 25,
+        "averageScore": 82.3,
+        "strength": "Strong"
+      },
+      "English": {
+        "completed": 12,
+        "total": 20,
+        "averageScore": 88.7,
+        "strength": "Excellent"
+      },
+      "Biology": {
+        "completed": 8,
+        "total": 15,
+        "averageScore": 76.2,
+        "strength": "Good"
+      },
+      "Chemistry": {
+        "completed": 6,
+        "total": 18,
+        "averageScore": 71.8,
+        "strength": "Needs Improvement"
+      },
+      "Kiswahili": {
+        "completed": 10,
+        "total": 12,
+        "averageScore": 85.4,
+        "strength": "Strong"
+      }
+    },
+    "weeklyActivity": [
+      { "day": "Mon", "quizzes": 3, "time": 45 },
+      { "day": "Tue", "quizzes": 2, "time": 30 },
+      { "day": "Wed", "quizzes": 4, "time": 60 },
+      { "day": "Thu", "quizzes": 1, "time": 15 },
+      { "day": "Fri", "quizzes": 3, "time": 40 },
+      { "day": "Sat", "quizzes": 5, "time": 75 },
+      { "day": "Sun", "quizzes": 2, "time": 25 }
+    ]
+  }
+} 
