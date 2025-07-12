@@ -55,7 +55,7 @@ npm run dev
 pnpm dev
 ```
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
+4. Open [http://localhost:3000] in your browser
 
 ## 📁 Project Structure
 
@@ -154,4 +154,3 @@ NEXT_PUBLIC_APP_URL=https://your-domain.com
 ## 📄 License
 
 This project is proprietary software developed by Nation Media Group × Roodito.
-
