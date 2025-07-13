@@ -12,8 +12,8 @@ export default function Hero() {
           <div className="space-y-8">
             <div className="space-y-4">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                For Every Learner,{" "}
-                <span className="text-[#14BF96]">Every Classroom</span>
+                Kwa Kila Mwanafunzi,{" "}
+                <span className="text-[#14BF96]">Kila Darasa</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-100 leading-relaxed">
                 Curated quizzes to help students prepare and revise confidently across all grades and subjects.

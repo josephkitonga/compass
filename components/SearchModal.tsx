@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-// Import data service instead of direct JSON
+// Imported data service for our mock data
 import { getAllQuizzes } from "@/lib/data-service"
 
 interface SearchResult {
@@ -38,7 +38,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
       const quizzes = getAllQuizzes()
       setAllQuizzes(quizzes)
     } catch (error) {
-      // Silent error handling for production
+      // Silent error handling
     }
   }, [])
 

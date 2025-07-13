@@ -66,12 +66,6 @@ export default function Header() {
               alt="Nation Media Group" 
               className="h-8 w-auto"
             />
-            <span className="text-nmg-primary text-xl font-bold">•</span>
-            <img 
-              src="/roodito.png" 
-              alt="Roodito" 
-              className="h-8 w-auto"
-            />
           </div>
           <Link href="/" className="hidden md:block">
             <h1 className="text-xl font-semibold text-gray-900">Revision Portal</h1>

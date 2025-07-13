@@ -45,12 +45,6 @@ export default function Footer() {
                 alt="Nation Media Group" 
                 className="h-10 w-auto"
               />
-              <span className="text-nmg-primary text-xl font-bold">•</span>
-              <img 
-                src="/roodito.png" 
-                alt="Roodito" 
-                className="h-10 w-auto"
-              />
             </div>
             <h3 className="text-xl font-bold text-nmg-secondary mb-2">Revision Portal</h3>
             <p className="text-nmg-secondary/80 text-sm text-center md:text-left">
