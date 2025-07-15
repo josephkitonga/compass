@@ -79,8 +79,8 @@ export default function Footer() {
               </div>
             </div>
             <div className="text-center md:text-right w-full">
-              <p className="text-nmg-secondary/80 text-sm mb-2">Powered by Nation Media Group • Roodito</p>
-              <p className="text-nmg-secondary/60 text-xs">© 2025 All rights reserved.</p>
+              <p className="text-nmg-secondary/80 text-sm mb-2">ReviseNaNMG Powered By Roodito</p>
+              <p className="text-nmg-secondary/60 text-xs">© {new Date().getFullYear()} All rights reserved.</p>
             </div>
           </div>
         </div>

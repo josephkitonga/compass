@@ -20,10 +20,10 @@ import {
   Zap,
   Brain
 } from "lucide-react"
-import type { Quiz } from "@/lib/data-service"
+import type { ApiQuiz } from "@/lib/data-service"
 
 interface QuizCardProps {
-  quiz: Quiz
+  quiz: ApiQuiz
   subject: string
   grade: string
   system: string
@@ -102,6 +102,17 @@ export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps
   const subjectColor = subjectColors[subject] || "bg-gray-500"
   const difficultyColor = difficultyColors[quiz.difficulty] || "bg-gray-100 text-gray-800"
 
+  // Handle quiz redirection - if quizLink exists, use it, otherwise use internal route
+  const handleQuizClick = () => {
+    if (quiz.quizLink) {
+      // Open external quiz link in new tab
+      window.open(quiz.quizLink, '_blank')
+    } else {
+      // Fallback to internal route
+      window.location.href = `/quiz/${quiz.id}`
+    }
+  }
+
   return (
     <Card className="hover:shadow-lg transition-shadow duration-200 border-l-4 border-l-nmg-primary">
       <CardHeader className="pb-3">
@@ -128,7 +139,7 @@ export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps
           <div className="flex items-center space-x-4 text-sm text-gray-600">
             <div className="flex items-center space-x-1">
               <Target className="h-4 w-4" />
-              <span>{Array.isArray(quiz.questions) ? quiz.questions.length : quiz.questions} Questions</span>
+              <span>{quiz.questions} Questions</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="h-4 w-4" />
@@ -144,11 +155,13 @@ export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps
           <div className="text-xs text-gray-500">
             {grade} • {system}
           </div>
-          <Link href={`/quiz/${quiz.id}`}>
-            <Button size="sm" className="bg-khan-green hover:bg-khan-green/90 text-white">
-              Revise
-            </Button>
-          </Link>
+          <Button 
+            size="sm" 
+            className="bg-khan-green hover:bg-khan-green/90 text-white"
+            onClick={handleQuizClick}
+          >
+            {quiz.quizLink ? 'Take Quiz' : 'Revise'}
+          </Button>
         </div>
       </CardContent>
     </Card>

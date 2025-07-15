@@ -19,6 +19,7 @@ interface SearchResult {
   difficulty: string
   questions: number
   type: string
+  quizLink?: string // Added for external links
 }
 
 interface SearchModalProps {
@@ -34,12 +35,15 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
   // Load quiz data on component mount
   useEffect(() => {
-    try {
-      const quizzes = getAllQuizzes()
-      setAllQuizzes(quizzes)
-    } catch (error) {
-      // Silent error handling
+    async function loadQuizzes() {
+      try {
+        const quizzes = await getAllQuizzes();
+        setAllQuizzes(Array.isArray(quizzes) ? quizzes : []);
+      } catch (error) {
+        setAllQuizzes([]);
+      }
     }
+    loadQuizzes();
   }, [])
 
   useEffect(() => {
@@ -74,13 +78,12 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     // Simulate search delay
     const timeoutId = setTimeout(() => {
       const searchTerm = query.toLowerCase()
-      const filtered = allQuizzes.filter(quiz => 
+      const filtered = Array.isArray(allQuizzes) ? allQuizzes.filter(quiz => 
         quiz.title.toLowerCase().includes(searchTerm) ||
         quiz.subject.toLowerCase().includes(searchTerm) ||
         quiz.grade.toLowerCase().includes(searchTerm) ||
         quiz.system.toLowerCase().includes(searchTerm)
-      )
-      
+      ) : [];
       setResults(filtered.slice(0, 10)) // Limit to 10 results
       setIsSearching(false)
     }, 300)
@@ -150,7 +153,13 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
             ) : results.length > 0 ? (
               <div className="space-y-3">
                 {results.map((result) => (
-                  <Card key={result.id} className="hover:shadow-md transition-shadow cursor-pointer">
+                  <Card key={result.id} className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => {
+                    if (result.quizLink) {
+                      window.open(result.quizLink, '_blank', 'noopener,noreferrer');
+                    } else {
+                      window.location.href = `/quiz/${result.id}`;
+                    }
+                  }}>
                     <CardContent className="p-4">
                       <div className="flex items-start justify-between">
                         <div className="flex-1">

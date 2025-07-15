@@ -2,18 +2,102 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowRight, BookOpen, Users, Target } from "lucide-react"
+import { useEffect, useState } from "react"
 
 export default function Hero() {
+  const english = "For Every Student, ";
+  const englishAccent = "Every Classroom";
+  const swahili = "Kwa Kila Mwanafunzi, ";
+  const swahiliAccent = "Kila Darasa";
+
+  const swahiliWords = (swahili + swahiliAccent).trim().split(/\s+/);
+
+  const [showSwahili, setShowSwahili] = useState(false);
+  const [swahiliProgress, setSwahiliProgress] = useState(0);
+
+  // Alternate every 10 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowSwahili((prev) => !prev);
+    }, 10000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Reset swahili animation progress each time it appears
+  useEffect(() => {
+    if (showSwahili) {
+      setSwahiliProgress(0);
+    }
+  }, [showSwahili]);
+
+  useEffect(() => {
+    if (showSwahili && swahiliProgress < swahiliWords.length) {
+      const wordTimer = setTimeout(() => {
+        setSwahiliProgress((p) => p + 1);
+      }, 300);
+      return () => clearTimeout(wordTimer);
+    }
+  }, [showSwahili, swahiliProgress, swahiliWords.length]);
+
+  // Helper to animate words and alternate colors
+  const renderAnimatedWords = (words: string[], progress: number) => (
+    <>
+      {words.map((word, i) => (
+        <span
+          key={"word-" + i}
+          className={`inline-block transition-all duration-300 mx-1 ${progress > i ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'} ${i % 2 === 1 ? 'text-[#14BF96]' : ''}`}
+          aria-hidden={progress <= i}
+        >
+          {word}{i < words.length - 1 ? ' ' : ''}
+        </span>
+      ))}
+    </>
+  );
+
+  const englishWords = (english + englishAccent).trim().split(/\s+/);
+
+  // Track progress for both languages
+  const [progress, setProgress] = useState(0);
+
+  // Animate word-by-word for both languages
+  useEffect(() => {
+    setProgress(0);
+  }, [showSwahili]);
+
+  useEffect(() => {
+    const words = showSwahili ? swahiliWords : englishWords;
+    if (progress < words.length) {
+      const wordTimer = setTimeout(() => {
+        setProgress((p) => p + 1);
+      }, 300);
+      return () => clearTimeout(wordTimer);
+    }
+  }, [showSwahili, progress, swahiliWords.length, englishWords.length]);
+
   return (
     <section className="bg-gradient-to-br from-nmg-primary via-nmg-accent to-khan-green text-white">
       <div className="w-full px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Column - Content */}
           <div className="space-y-8">
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                Kwa Kila Mwanafunzi,{" "}
-                <span className="text-[#14BF96]">Kila Darasa</span>
+            <div className="space-y-1">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight min-h-[3.0em] relative">
+                {/* English headline, word-by-word animation */}
+                <span
+                  className={`absolute left-0 top-0 w-full transition-opacity duration-700 ${showSwahili ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+                  aria-hidden={showSwahili}
+                >
+                  {renderAnimatedWords(englishWords, !showSwahili ? progress : 0)}
+                </span>
+                {/* Swahili headline, word-by-word animation, alternating colors */}
+                <span
+                  className={`absolute left-0 top-0 w-full transition-opacity duration-700 ${showSwahili ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                  aria-hidden={!showSwahili}
+                >
+                  {renderAnimatedWords(swahiliWords, showSwahili ? progress : 0)}
+                </span>
+                {/* For accessibility, show the Swahili version in the DOM always */}
+                <span className="sr-only">Kwa Kila Mwanafunzi, Kila Darasa</span>
               </h1>
               <p className="text-xl md:text-2xl text-gray-100 leading-relaxed">
                 Curated quizzes to help students prepare and revise confidently across all grades and subjects.
@@ -25,7 +109,7 @@ export default function Hero() {
                 size="lg" 
                 className="bg-nmg-primary hover:bg-nmg-primary/90 text-white text-lg px-8 py-6 h-auto transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
                 onClick={() => {
-                  document.getElementById('cbc')?.scrollIntoView({ behavior: 'smooth' })
+                  window.open('https://roodito.com/', '_blank', 'noopener,noreferrer');
                 }}
               >
                 Start Revising

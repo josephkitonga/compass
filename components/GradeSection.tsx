@@ -4,11 +4,11 @@ import { useState } from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronRight, ChevronDown } from "lucide-react"
 import SubjectBlock from "./SubjectBlock"
-import type { GradeData } from "@/lib/data-service"
+import type { QuizApiData } from "@/lib/api-service"
 
 interface GradeSectionProps {
   title: string
-  data: GradeData
+  data: { [grade: string]: QuizApiData[] }
   system: string
   level: string
 }
@@ -26,7 +26,7 @@ export default function GradeSection({ title, data, system, level }: GradeSectio
             </div>
             <div className="text-left">
               <h4 className="text-lg font-semibold text-gray-900">{title}</h4>
-              <p className="text-sm text-gray-600">{Object.keys(data || {}).length} subjects</p>
+              <p className="text-sm text-gray-600">{Object.keys(data || {}).length} {system === 'CBC' ? (Object.keys(data || {}).length === 1 ? 'grade' : 'grades') : (Object.keys(data || {}).length === 1 ? 'subject' : 'subjects')}</p>
             </div>
           </div>
           {isOpen ? (
@@ -39,7 +39,7 @@ export default function GradeSection({ title, data, system, level }: GradeSectio
       
       <CollapsibleContent className="mt-3 space-y-3">
         {Object.entries(data || {}).map(([subjectKey, subjectData]) => {
-          // subjectData is always Quiz[]
+          // subjectData is QuizApiData[]
           const quizzes = Array.isArray(subjectData) ? subjectData : [];
           return (
             <SubjectBlock

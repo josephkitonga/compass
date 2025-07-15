@@ -4,11 +4,12 @@ import { useState } from "react"
 import { ChevronDown, ChevronRight } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import QuizCard from "./QuizCard"
-import type { Quiz } from "@/lib/data-service"
+import type { QuizApiData } from "@/lib/api-service"
+import { transformQuizApiData } from "@/lib/api-service"
 
 interface SubjectBlockProps {
   subjectName: string
-  quizzes: Quiz[]
+  quizzes: QuizApiData[]
   grade: string
   system: string
   level: string
@@ -17,8 +18,14 @@ interface SubjectBlockProps {
 export default function SubjectBlock({ subjectName, quizzes, grade, system, level }: SubjectBlockProps) {
   const [isOpen, setIsOpen] = useState(false)
 
-  // Ensure quizzes is an array
+  // Ensure quizzes is an array and transform to the format expected by QuizCard
   const quizzesArray = Array.isArray(quizzes) ? quizzes : []
+  const transformedQuizzes = quizzesArray.map(transformQuizApiData)
+
+  // Filter out duplicate quiz IDs
+  const uniqueQuizzes = Array.from(
+    new Map(transformedQuizzes.map(q => [q.id, q])).values()
+  )
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
@@ -39,16 +46,18 @@ export default function SubjectBlock({ subjectName, quizzes, grade, system, leve
         </button>
       </CollapsibleTrigger>
       
-      <CollapsibleContent className="mt-3 space-y-3">
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {quizzesArray.map((quiz: Quiz) => (
-            <QuizCard
+      <CollapsibleContent className="mt-3">
+        <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {uniqueQuizzes.map((quiz, idx) => (
+            <a
               key={quiz.id}
-              quiz={quiz}
-              subject={subjectName}
-              grade={grade}
-              system={system}
-            />
+              href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
+              target={quiz.quizLink ? '_blank' : undefined}
+              rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
+              className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
+            >
+              {`Quiz ${idx + 1}`}
+            </a>
           ))}
         </div>
       </CollapsibleContent>

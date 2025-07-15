@@ -4,13 +4,13 @@ import { useState } from "react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronRight, ChevronDown } from "lucide-react"
 import GradeSection from "./GradeSection"
-import type { SystemData, GradeData } from "@/lib/data-service"
+import type { QuizApiData } from "@/lib/api-service"
 
 interface AccordionSectionProps {
   title: string
   description?: string
   system: string
-  data: SystemData
+  data: { [level: string]: { [grade: string]: QuizApiData[] } }
 }
 
 export default function AccordionSection({ title, description, system, data }: AccordionSectionProps) {
@@ -44,7 +44,7 @@ export default function AccordionSection({ title, description, system, data }: A
           <GradeSection
             key={levelKey}
             title={levelKey}
-            data={levelData as GradeData}
+            data={levelData}
             system={system}
             level={levelKey}
           />

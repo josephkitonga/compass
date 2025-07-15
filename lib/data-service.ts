@@ -1,5 +1,11 @@
-// Data service to handle JSON imports server-side
-import quizData from '@/app/data/quizzes.json'
+// Data service to handle API integration with Roodito
+import { 
+  QuizApiService, 
+  transformQuizApiData, 
+  groupQuizzesBySystem,
+  type QuizApiData,
+  type QuizFilters 
+} from './api-service'
 import achievementsData from '@/app/data/achievements.json'
 
 export interface Question {
@@ -18,6 +24,22 @@ export interface Quiz {
   difficulty: string
 }
 
+// Extended interface for API-based quizzes
+export interface ApiQuiz {
+  id: string
+  title: string
+  subject: string
+  grade: string
+  level?: string
+  questions: number // Number of questions, not the actual questions
+  duration: number
+  type: string
+  difficulty: string
+  quizLink?: string
+  date?: string
+  system: string
+}
+
 export interface GradeData {
   [subject: string]: Quiz[]
 }
@@ -29,6 +51,15 @@ export interface SystemData {
 export interface QuizData {
   CBC: SystemData
   "844": SystemData
+}
+
+// New interface for API-based quiz data structure
+export interface ApiQuizData {
+  [system: string]: {
+    [level: string]: {
+      [grade: string]: QuizApiData[]
+    }
+  }
 }
 
 export interface Achievement {
@@ -92,91 +123,164 @@ export interface AchievementsData {
   }
 }
 
-// Export the data with proper typing
-export const getQuizData = (): QuizData => {
-  return quizData as unknown as QuizData
+// Cache for API responses
+let quizCache: QuizApiData[] | null = null
+let cacheTimestamp: number = 0
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+
+// Get all quizzes from API with caching
+export const getQuizData = async (): Promise<ApiQuizData> => {
+  try {
+    const now = Date.now()
+    
+    // Use cache if it's still valid
+    if (quizCache && (now - cacheTimestamp) < CACHE_DURATION) {
+      return groupQuizzesBySystem(quizCache)
+    }
+    
+    // Fetch all pages from API
+    let allQuizzes: QuizApiData[] = [];
+    let page = 1;
+    let totalPages = 1;
+    const perPage = 400;
+    do {
+      const response = await QuizApiService.getQuizzes({ per_page: perPage, page });
+      if (response.data && Array.isArray(response.data)) {
+        allQuizzes = allQuizzes.concat(response.data);
+      }
+      totalPages = response.pagination?.total_pages || 1;
+      page++;
+    } while (page <= totalPages);
+    quizCache = allQuizzes;
+    cacheTimestamp = now;
+    
+    return groupQuizzesBySystem(allQuizzes)
+  } catch (error) {
+    console.error('Failed to fetch quiz data:', error)
+    // Return empty structure if API fails
+    return { CBC: {}, "844": {} }
+  }
+}
+
+// Get all quizzes as a flat array for search and UI
+export const getAllQuizzes = async (): Promise<ApiQuiz[]> => {
+  try {
+    // Fetch all pages from API
+    let allQuizzes: QuizApiData[] = [];
+    let page = 1;
+    let totalPages = 1;
+    const perPage = 400;
+    do {
+      const response = await QuizApiService.getQuizzes({ per_page: perPage, page });
+      if (response.data && Array.isArray(response.data)) {
+        allQuizzes = allQuizzes.concat(response.data);
+      }
+      totalPages = response.pagination?.total_pages || 1;
+      page++;
+    } while (page <= totalPages);
+    return allQuizzes.map(transformQuizApiData);
+  } catch (error) {
+    console.error('Failed to fetch all quizzes:', error)
+    return []
+  }
+}
+
+// Find quiz by ID from API
+export const findQuizById = async (quizId: string): Promise<{ quiz: ApiQuiz; subject: string; grade: string; system: string; level?: string } | null> => {
+  try {
+    const apiQuiz = await QuizApiService.getQuizById(quizId)
+    if (!apiQuiz) return null;
+    const transformedQuiz = transformQuizApiData(apiQuiz)
+    
+    return {
+      quiz: transformedQuiz,
+      subject: transformedQuiz.subject,
+      grade: transformedQuiz.grade,
+      system: transformedQuiz.system,
+      level: transformedQuiz.level
+    }
+  } catch (error) {
+    console.error(`Failed to find quiz with ID ${quizId}:`, error)
+    return null
+  }
+}
+
+// Search quizzes
+export const searchQuizzes = async (query: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
+  try {
+    const results = await QuizApiService.searchQuizzes(query, filters)
+    return results.map(transformQuizApiData)
+  } catch (error) {
+    console.error('Failed to search quizzes:', error)
+    return []
+  }
+}
+
+// Get quizzes by subject
+export const getQuizzesBySubject = async (subject: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
+  try {
+    const results = await QuizApiService.getQuizzesBySubject(subject, filters)
+    return results.map(transformQuizApiData)
+  } catch (error) {
+    console.error(`Failed to get quizzes for subject ${subject}:`, error)
+    return []
+  }
+}
+
+// Get quizzes by grade
+export const getQuizzesByGrade = async (grade: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
+  try {
+    const results = await QuizApiService.getQuizzesByGrade(grade, filters)
+    return results.map(transformQuizApiData)
+  } catch (error) {
+    console.error(`Failed to get quizzes for grade ${grade}:`, error)
+    return []
+  }
+}
+
+// Get quizzes by level
+export const getQuizzesByLevel = async (level: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
+  try {
+    const results = await QuizApiService.getQuizzesByLevel(level, filters)
+    return results.map(transformQuizApiData)
+  } catch (error) {
+    console.error(`Failed to get quizzes for level ${level}:`, error)
+    return []
+  }
+}
+
+// Get paginated quizzes
+export const getPaginatedQuizzes = async (page: number = 1, perPage: number = 10, filters: QuizFilters = {}): Promise<{
+  quizzes: ApiQuiz[]
+  pagination: {
+    total: number
+    page: number
+    per_page: number
+    total_pages: number
+  }
+}> => {
+  try {
+    const response = await QuizApiService.getQuizzes({ 
+      page, 
+      per_page: perPage, 
+      ...filters 
+    })
+    
+    return {
+      quizzes: response.data.map(transformQuizApiData),
+      pagination: response.pagination
+    }
+  } catch (error) {
+    console.error('Failed to get paginated quizzes:', error)
+    return {
+      quizzes: [],
+      pagination: { total: 0, page: 1, per_page: perPage, total_pages: 0 }
+    }
+  }
 }
 
 export const getAchievementsData = (): AchievementsData => {
   return achievementsData as unknown as AchievementsData
-}
-
-// Recursively collect all quizzes from any nested structure
-function collectQuizzes(obj: any, meta: any = {}, result: any[] = []) {
-  if (Array.isArray(obj)) {
-    obj.forEach((quiz) => {
-      result.push({
-        ...quiz,
-        ...meta
-      })
-    })
-  } else if (typeof obj === 'object' && obj !== null) {
-    Object.entries(obj).forEach(([key, value]) => {
-      // If this is a system, level, grade, or subject, add to meta
-      let newMeta = { ...meta }
-      if (meta.system === undefined) newMeta.system = key
-      else if (meta.level === undefined && key.match(/Primary|Secondary|Form/)) newMeta.level = key
-      else if (meta.grade === undefined && key.match(/Grade|Form/)) newMeta.grade = key
-      else if (meta.subject === undefined && typeof value === 'object' && Array.isArray(value)) newMeta.subject = key
-      collectQuizzes(value, newMeta, result)
-    })
-  }
-  return result
-}
-
-export const getAllQuizzes = () => {
-  const data = getQuizData()
-  // Start recursion at the system level
-  const quizzes: any[] = []
-  Object.entries(data).forEach(([system, systemData]) => {
-    collectQuizzes(systemData, { system }, quizzes)
-  })
-  // Normalize output for search and UI
-  return quizzes.map(q => ({
-    id: q.id,
-    title: q.title || 'Untitled Quiz',
-    subject: q.subject || '',
-    grade: q.grade || '',
-    system: q.system || '',
-    difficulty: q.difficulty || 'Medium',
-    questions: Array.isArray(q.questions) ? q.questions.length : (q.questions || 0),
-    type: q.type || 'quiz'
-  }))
-}
-
-export interface QuizMeta {
-  quiz: any
-  subject: string
-  grade: string
-  system: string
-  level?: string
-}
-
-export const findQuizById = (quizId: string): QuizMeta | null => {
-  const data = getQuizData()
-  let found: QuizMeta | null = null
-  function search(obj: any, meta: any = {}) {
-    if (Array.isArray(obj)) {
-      obj.forEach((quiz) => {
-        if (quiz.id === quizId) {
-          found = { quiz, ...meta }
-        }
-      })
-    } else if (typeof obj === 'object' && obj !== null) {
-      Object.entries(obj).forEach(([key, value]) => {
-        let newMeta = { ...meta }
-        if (meta.system === undefined) newMeta.system = key
-        else if (meta.level === undefined && key.match(/Primary|Secondary|Form/)) newMeta.level = key
-        else if (meta.grade === undefined && key.match(/Grade|Form/)) newMeta.grade = key
-        else if (meta.subject === undefined && typeof value === 'object' && Array.isArray(value)) newMeta.subject = key
-        search(value, newMeta)
-      })
-    }
-  }
-  Object.entries(data).forEach(([system, systemData]) => {
-    search(systemData, { system })
-  })
-  return found
 }
 
 // Placeholder for saving quiz results (to be implemented by backend dev)

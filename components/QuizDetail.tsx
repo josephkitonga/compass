@@ -24,26 +24,22 @@ import {
   Brain,
   PartyPopper,
   RefreshCw,
-  Home
+  Home,
+  ExternalLink
 } from "lucide-react"
 import Link from "next/link"
-import type { Quiz } from "@/lib/data-service"
+import type { ApiQuiz } from "@/lib/data-service"
 import { saveQuizResult } from "@/lib/data-service"
 import Confetti from "react-confetti"
 
 interface QuizDetailProps {
-  quiz: Quiz
+  quiz: ApiQuiz
   subject: string
   grade: string
   system: string
 }
 
 export default function QuizDetail({ quiz, subject, grade, system }: QuizDetailProps) {
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: string }>({})
-  const [showResults, setShowResults] = useState(false)
-  const [score, setScore] = useState(0)
-  const [results, setResults] = useState<any[]>([])
   const [showConfetti, setShowConfetti] = useState(false)
 
   const subjectIcons: { [key: string]: React.ComponentType<{ className?: string }> } = {
@@ -118,200 +114,138 @@ export default function QuizDetail({ quiz, subject, grade, system }: QuizDetailP
   const subjectColor = subjectColors[subject] || "bg-gray-500"
   const difficultyColor = difficultyColors[quiz.difficulty] || "bg-gray-100 text-gray-800"
 
-  // Helper to get questions array or fallback
-  const questionsArr = Array.isArray(quiz.questions) ? quiz.questions : []
-
-  // Handle answer selection
-  const handleAnswer = (answer: string) => {
-    setSelectedAnswers((prev) => ({ ...prev, [currentQuestion]: answer }))
-  }
-
-  // Handle next question or finish
-  const handleNext = async () => {
-    if (currentQuestion < questionsArr.length - 1) {
-      setCurrentQuestion((prev) => prev + 1)
-    } else {
-      // Calculate score
-      let correct = 0
-      const resultsArr = questionsArr.map((q: any, idx: number) => {
-        const userAnswer = selectedAnswers[idx]
-        const isCorrect = userAnswer === q.answer
-        if (isCorrect) correct++
-        return {
-          question: q.question,
-          correctAnswer: q.answer,
-          userAnswer,
-          isCorrect,
-          explanation: q.explanation
-        }
-      })
-      setScore(correct)
-      setResults(resultsArr)
-      setShowResults(true)
-      // Save result (placeholder for backend)
-      await saveQuizResult({
-        quizId: quiz.id,
-        subject,
-        grade,
-        system,
-        score: correct,
-        total: questionsArr.length,
-        answers: selectedAnswers
-      })
+  // Handle external quiz redirection
+  const handleTakeQuiz = () => {
+    if (quiz.quizLink) {
+      window.open(quiz.quizLink, '_blank')
     }
   }
 
-  useEffect(() => {
-    if (showResults) {
-      const percent = Math.round((score / questionsArr.length) * 100)
-      const passed = percent >= 60
-      setShowConfetti(passed)
-    } else {
-      setShowConfetti(false)
-    }
-  }, [showResults, score, questionsArr.length])
-
-  if (!Array.isArray(quiz.questions)) {
-    return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mx-auto text-center">
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-gray-900 mb-2">Quiz Not Fully Implemented</CardTitle>
-                <div className="text-lg text-gray-700 mb-4">This quiz does not have questions yet. Please check back later.</div>
-              </CardHeader>
-              <CardContent>
-                <Link href="/" className="bg-nmg-primary text-white px-6 py-2 rounded-lg hover:bg-nmg-primary/90">Back to Home</Link>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (showResults) {
-    const percent = Math.round((score / questionsArr.length) * 100)
-    const passed = percent >= 60
-    const correct = score
-    const incorrect = questionsArr.length - score
-    const recommendation = passed
-      ? "Great job! You passed. Try another quiz or review your answers."
-      : "Don't worry! Review your mistakes and try again."
-
-    // For demo, fake time taken
-    const timeTaken = `${questionsArr.length * 0.7} min`
-
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-nmg-primary/10 to-nmg-accent/10 py-8 relative">
-        {showConfetti && <Confetti width={window.innerWidth} height={window.innerHeight} numberOfPieces={200} recycle={false} />}
-        <div className="w-full px-4 sm:px-6 lg:px-8">
-          <div className="max-w-2xl mx-auto">
-            <Card className="shadow-2xl border-2 border-nmg-primary">
-              <CardHeader>
-                <CardTitle className="text-3xl font-extrabold text-nmg-primary mb-2 flex items-center gap-2">
-                  {passed ? <CheckCircle className="text-green-500 h-7 w-7 animate-bounce" /> : <XCircle className="text-red-500 h-7 w-7 animate-bounce" />}
-                  {passed ? "Congratulations!" : "Keep Practicing!"}
-                </CardTitle>
-                <div className="flex flex-col items-center gap-2">
-                  <div className="text-5xl font-black text-gray-900 animate-pulse">{percent}%</div>
-                  <Progress value={percent} className="h-4 mt-2 bg-gray-200" />
-                  <div className="mt-2">
-                    <Badge className={passed ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                      {passed ? "Passed" : "Try Again"}
-                    </Badge>
-                  </div>
-                  <div className="text-lg text-gray-700 mt-2 font-medium">{recommendation}</div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4 my-6">
-                  <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold text-green-600">{correct}</span>
-                    <span className="text-sm text-gray-600">Correct</span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold text-red-600">{incorrect}</span>
-                    <span className="text-sm text-gray-600">Incorrect</span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold text-blue-600">{questionsArr.length}</span>
-                    <span className="text-sm text-gray-600">Total</span>
-                  </div>
-                  <div className="flex flex-col items-center">
-                    <span className="text-2xl font-bold text-purple-600">{timeTaken}</span>
-                    <span className="text-sm text-gray-600">Time</span>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-4 justify-center mt-6">
-                  <Button onClick={() => window.location.reload()} className="bg-nmg-accent text-white flex items-center gap-2">
-                    <RefreshCw className="h-4 w-4" /> Retake Quiz
-                  </Button>
-                  <Link href="/">
-                    <Button variant="outline" className="flex items-center gap-2 border-nmg-primary text-nmg-primary">
-                      <Home className="h-4 w-4" /> Back to Home
-                    </Button>
-                  </Link>
-                </div>
-                <div className="mt-8">
-                  <h3 className="text-lg font-bold mb-2 text-gray-900">Review Answers</h3>
-                  <div className="space-y-4">
-                    {results.map((res, idx) => (
-                      <div key={idx} className={`p-4 rounded-lg ${res.isCorrect ? 'bg-green-50' : 'bg-red-50'}`}> 
-                        <div className="font-semibold text-gray-900">Q{idx + 1}: {res.question}</div>
-                        <div className="mt-1 text-sm">Your answer: <span className={res.isCorrect ? 'text-green-700' : 'text-red-700'}>{res.userAnswer || 'No answer'}</span></div>
-                        {!res.isCorrect && (
-                          <div className="text-sm text-gray-700">Correct answer: <span className="font-semibold">{res.correctAnswer}</span></div>
-                        )}
-                        {res.explanation && (
-                          <div className="text-xs text-gray-500 mt-1">Explanation: {res.explanation}</div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Quiz-taking UI
-  const q = questionsArr[currentQuestion]
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-nmg-primary/10 to-nmg-accent/10 py-8 relative">
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
-          <Card>
+        <div className="max-w-4xl mx-auto">
+          {/* Header */}
+          <div className="mb-8">
+            <Link href="/" className="inline-flex items-center text-nmg-primary hover:text-nmg-primary/80 mb-4">
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to Home
+            </Link>
+            <div className="flex items-center gap-4 mb-4">
+              <div className={`p-3 rounded-lg ${subjectColor} text-white`}>
+                <IconComponent className="h-6 w-6" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">{quiz.title}</h1>
+                <p className="text-lg text-gray-600">{subject} • {grade} • {system}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Quiz Info Card */}
+          <Card className="shadow-xl border-2 border-nmg-primary mb-8">
             <CardHeader>
-              <CardTitle className="text-xl font-bold text-gray-900 mb-2">{quiz.title}</CardTitle>
-              <div className="text-gray-700 mb-2">Question {currentQuestion + 1} of {questionsArr.length}</div>
+              <CardTitle className="text-2xl font-bold text-gray-900 mb-4">Quiz Information</CardTitle>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="flex items-center space-x-3">
+                  <Target className="h-5 w-5 text-nmg-primary" />
+                  <div>
+                    <p className="text-sm text-gray-600">Questions</p>
+                    <p className="text-lg font-semibold text-gray-900">{quiz.questions}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Clock className="h-5 w-5 text-nmg-primary" />
+                  <div>
+                    <p className="text-sm text-gray-600">Duration</p>
+                    <p className="text-lg font-semibold text-gray-900">{quiz.duration} min</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <BookOpen className="h-5 w-5 text-nmg-primary" />
+                  <div>
+                    <p className="text-sm text-gray-600">Type</p>
+                    <p className="text-lg font-semibold text-gray-900">{quiz.type}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <div>
+                    <p className="text-sm text-gray-600">Difficulty</p>
+                    <Badge className={difficultyColor}>{quiz.difficulty}</Badge>
+                  </div>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
-              <div className="mb-4 font-semibold">{q?.question}</div>
-              <div className="space-y-2">
-                {q?.options?.map((opt: string, idx: number) => (
-                  <Button
-                    key={idx}
-                    variant={selectedAnswers[currentQuestion] === opt ? 'default' : 'outline'}
-                    className="w-full text-left"
-                    onClick={() => handleAnswer(opt)}
-                  >
-                    {opt}
-                  </Button>
-                ))}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                      <BookOpen className="h-4 w-4 text-blue-600" />
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-blue-900 mb-2">Ready to Start?</h3>
+                    <p className="text-blue-800 mb-4">
+                      This quiz contains {quiz.questions} questions and should take approximately {quiz.duration} minutes to complete.
+                      {quiz.quizLink ? " Click the button below to start the quiz on the external platform." : " The quiz will open in a new tab."}
+                    </p>
+                    {quiz.quizLink && (
+                      <Button 
+                        onClick={handleTakeQuiz}
+                        className="bg-khan-green hover:bg-khan-green/90 text-white flex items-center gap-2"
+                        size="lg"
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                        Take Quiz on Roodito
+                      </Button>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="mt-6 flex justify-end">
-                <Button
-                  onClick={handleNext}
-                  disabled={selectedAnswers[currentQuestion] == null}
-                  className="bg-nmg-primary text-white"
-                >
-                  {currentQuestion === questionsArr.length - 1 ? 'Finish' : 'Next'}
-                </Button>
+
+              {quiz.date && (
+                <div className="text-sm text-gray-500">
+                  <p>Created: {new Date(quiz.date).toLocaleDateString()}</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Instructions */}
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold text-gray-900">Instructions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-nmg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    1
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Read Carefully</h4>
+                    <p className="text-gray-600">Read each question and all answer choices carefully before selecting your answer.</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-nmg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    2
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Manage Your Time</h4>
+                    <p className="text-gray-600">You have {quiz.duration} minutes to complete {quiz.questions} questions. Pace yourself accordingly.</p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <div className="flex-shrink-0 w-6 h-6 bg-nmg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                    3
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-gray-900">Submit Your Answers</h4>
+                    <p className="text-gray-600">Review your answers before submitting. Once submitted, you cannot change them.</p>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
