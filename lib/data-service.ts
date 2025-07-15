@@ -142,7 +142,8 @@ export const getQuizData = async (): Promise<ApiQuizData> => {
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    const perPage = 400;
+    // Use a small perPage for production stability and fastest loading
+    const perPage = 20;
     do {
       const response = await QuizApiService.getQuizzes({ per_page: perPage, page });
       if (response.data && Array.isArray(response.data)) {
@@ -169,7 +170,8 @@ export const getAllQuizzes = async (): Promise<ApiQuiz[]> => {
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    const perPage = 400;
+    // Use a small perPage for production stability and fastest loading
+    const perPage = 20;
     do {
       const response = await QuizApiService.getQuizzes({ per_page: perPage, page });
       if (response.data && Array.isArray(response.data)) {
@@ -278,6 +280,54 @@ export const getPaginatedQuizzes = async (page: number = 1, perPage: number = 10
     }
   }
 }
+
+// Get paginated quizzes as raw QuizApiData (for infinite scroll)
+export const getPaginatedQuizApiData = async (page: number = 1, perPage: number = 10, filters: QuizFilters = {}): Promise<{
+  quizzes: QuizApiData[]
+  pagination: {
+    total: number
+    page: number
+    per_page: number
+    total_pages: number
+  }
+}> => {
+  try {
+    const response = await QuizApiService.getQuizzes({ 
+      page, 
+      per_page: perPage, 
+      ...filters 
+    })
+    return {
+      quizzes: response.data,
+      pagination: response.pagination
+    }
+  } catch (error) {
+    console.error('Failed to get paginated quizzes (raw):', error)
+    return {
+      quizzes: [],
+      pagination: { total: 0, page: 1, per_page: perPage, total_pages: 0 }
+    }
+  }
+}
+
+// Fetch a range of quiz pages in parallel (with concurrency limit)
+export const fetchQuizPagesInBatch = async (startPage = 1, endPage = 5, perPage = 20) => {
+  const pages = [];
+  for (let i = startPage; i <= endPage; i++) pages.push(i);
+
+  const concurrency = 5;
+  let results: QuizApiData[] = [];
+  for (let i = 0; i < pages.length; i += concurrency) {
+    const batch = pages.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(page => QuizApiService.getQuizzes({ page, per_page: perPage }))
+    );
+    batchResults.forEach(res => {
+      if (res.data && Array.isArray(res.data)) results = results.concat(res.data);
+    });
+  }
+  return results;
+};
 
 export const getAchievementsData = (): AchievementsData => {
   return achievementsData as unknown as AchievementsData

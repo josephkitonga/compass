@@ -98,7 +98,8 @@ export class QuizApiService {
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    const perPage = filters.per_page || 400;
+    // Use a small perPage for production stability and fastest loading
+    const perPage = filters.per_page || 20;
     do {
       const response = await this.getQuizzes({ ...filters, per_page: perPage, page });
       if (response.data && Array.isArray(response.data)) {

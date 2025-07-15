@@ -39,13 +39,10 @@ export default function GradeSection({ title, data, system, level }: GradeSectio
       
       <CollapsibleContent className="mt-3 space-y-3">
         {Object.entries(data || {}).map(([subjectKey, subjectData]) => {
-          // subjectData is QuizApiData[]
-          const quizzes = Array.isArray(subjectData) ? subjectData : [];
           return (
             <SubjectBlock
               key={subjectKey}
               subjectName={subjectKey}
-              quizzes={quizzes}
               grade={title}
               system={system}
               level={level}

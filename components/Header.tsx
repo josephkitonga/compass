@@ -96,20 +96,17 @@ export default function Header() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-3">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="text-gray-600 hover:text-nmg-primary hover:bg-nmg-primary/10 transition-all duration-200"
+          
+          
+          <a
+            href="https://roodito.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow ml-2"
+            style={{ textDecoration: 'none' }}
           >
-            <Search className="h-4 w-4" />
-          </Button>
-          <Button 
-            className="bg-nmg-primary hover:bg-nmg-primary/90 text-white transition-all duration-200 hover:scale-105"
-            onClick={() => scrollToSection('cbc')}
-          >
-            Start Revising
-          </Button>
+            Roodito
+          </a>
         </div>
 
         {/* Mobile Menu Button */}
@@ -167,15 +164,15 @@ export default function Header() {
             >
               8-4-4
             </button>
-            <Button 
-              className="w-full bg-nmg-primary hover:bg-nmg-primary/90 text-white"
-              onClick={() => {
-                scrollToSectionMobile('cbc')
-                setIsMenuOpen(false)
-              }}
+            <a
+              href="https://roodito.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full text-center bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow mt-2"
+              style={{ textDecoration: 'none' }}
             >
-              Start Revising
-            </Button>
+              Roodito
+            </a>
           </nav>
         </div>
       )}
