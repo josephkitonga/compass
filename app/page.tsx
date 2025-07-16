@@ -119,7 +119,7 @@ export default function HomePage() {
                 description="Forms 2, 3, and 4"
                 system="844"
                 data={(() => {
-                  if (!groupedData?.['844']) return {};
+                  if (!groupedData?.['844']) return { Secondary: { 'Form 2': [], 'Form 3': [], 'Form 4': [] } };
                   const sec = groupedData['844']['Secondary'] || {};
                   return { Secondary: ensure844Forms(sec) };
                 })()}

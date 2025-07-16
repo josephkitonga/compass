@@ -11,6 +11,7 @@ interface AccordionSectionProps {
   description?: string
   system: string
   data: { [level: string]: { [grade: string]: QuizApiData[] } }
+  loading?: boolean
 }
 
 export default function AccordionSection({ title, description, system, data }: AccordionSectionProps) {

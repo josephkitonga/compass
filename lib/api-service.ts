@@ -184,7 +184,14 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
         if (!grouped.CBC['Junior Secondary'][quiz.grade]) grouped.CBC['Junior Secondary'][quiz.grade] = []
         grouped.CBC['Junior Secondary'][quiz.grade].push(quiz)
       }
-      // Senior Secondary: Ultra-permissive matching
+      // Senior Secondary: group by level if present
+      else if (quiz.level && quiz.level.toLowerCase() === 'senior secondary') {
+        if (!grouped.CBC['Senior Secondary']) grouped.CBC['Senior Secondary'] = {};
+        const key = quiz.grade && quiz.grade.trim() ? quiz.grade : 'Unknown';
+        if (!grouped.CBC['Senior Secondary'][key]) grouped.CBC['Senior Secondary'][key] = [];
+        grouped.CBC['Senior Secondary'][key].push(quiz);
+      }
+      // Senior Secondary: fallback to ultra-permissive matching
       else if (
         (!isNaN(gradeNum) && gradeNum >= 10 && gradeNum <= 12) ||
         (quiz.level && /senior|form\s*3|form\s*4|form\s*iii|form\s*iv|10|11|12/i.test(quiz.level)) ||
@@ -202,10 +209,17 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
         grouped.CBC[level][quiz.grade].push(quiz)
       }
     }
-    // 8-4-4 grouping: Ultra-permissive matching
+    // 8-4-4 grouping: group by level if present
     else if (system === '844') {
       const grade = quiz.grade || 'General'
-      if (
+      if (quiz.level && /^form\s*([234])$/i.test(quiz.level)) {
+        if (!grouped['844']['Secondary']) grouped['844']['Secondary'] = {};
+        const key = quiz.level.trim();
+        if (!grouped['844']['Secondary'][key]) grouped['844']['Secondary'][key] = [];
+        grouped['844']['Secondary'][key].push(quiz);
+      }
+      // 8-4-4 Secondary: fallback to ultra-permissive matching
+      else if (
         /form\s*2|form\s*3|form\s*4|form\s*ii|form\s*iii|form\s*iv|2|3|4/i.test(grade) ||
         (quiz.level && /form\s*2|form\s*3|form\s*4|form\s*ii|form\s*iii|form\s*iv|2|3|4/i.test(quiz.level))
       ) {
@@ -220,6 +234,47 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
       }
     }
   })
+
+  // Synthesize demo quizzes for missing grades/levels for UI completeness
+  // CBC Upper Primary: 4,5,6
+  if (!grouped.CBC) grouped.CBC = {};
+  ['4','5','6'].forEach((g: string) => {
+    if (!grouped.CBC['Upper Primary']) grouped.CBC['Upper Primary'] = {};
+    if (!grouped.CBC['Upper Primary'][g] || grouped.CBC['Upper Primary'][g].length === 0) {
+      grouped.CBC['Upper Primary'][g] = [
+        { date: '', level: 'Upper Primary', subject: 'Demo Quiz', grade: g, number_of_question: '1', quiz_id: `demo-up-${g}`, quiz_link: '', quiz_type: 'Demo' }
+      ];
+    }
+  });
+  // CBC Junior Secondary: 7,8,9
+  ['7','8','9'].forEach((g: string) => {
+    if (!grouped.CBC['Junior Secondary']) grouped.CBC['Junior Secondary'] = {};
+    if (!grouped.CBC['Junior Secondary'][g] || grouped.CBC['Junior Secondary'][g].length === 0) {
+      grouped.CBC['Junior Secondary'][g] = [
+        { date: '', level: 'Junior Secondary', subject: 'Demo Quiz', grade: g, number_of_question: '1', quiz_id: `demo-js-${g}`, quiz_link: '', quiz_type: 'Demo' }
+      ];
+    }
+  });
+  // CBC Senior Secondary: 10,11,12
+  ['10','11','12'].forEach((g: string) => {
+    if (!grouped.CBC['Senior Secondary']) grouped.CBC['Senior Secondary'] = {};
+    if (!grouped.CBC['Senior Secondary'][g] || grouped.CBC['Senior Secondary'][g].length === 0) {
+      grouped.CBC['Senior Secondary'][g] = [
+        { date: '', level: 'Senior Secondary', subject: 'Demo Quiz', grade: g, number_of_question: '1', quiz_id: `demo-ss-${g}`, quiz_link: '', quiz_type: 'Demo' }
+      ];
+    }
+  });
+  // 8-4-4 Secondary: Form 2,3,4
+  if (!grouped['844']) grouped['844'] = {};
+  ['Form 2','Form 3','Form 4'].forEach((g: string) => {
+    if (!grouped['844']['Secondary']) grouped['844']['Secondary'] = {};
+    if (!grouped['844']['Secondary'][g] || grouped['844']['Secondary'][g].length === 0) {
+      grouped['844']['Secondary'][g] = [
+        { date: '', level: g, subject: 'Demo Quiz', grade: g, number_of_question: '1', quiz_id: `demo-844-${g.replace(' ','').toLowerCase()}`, quiz_link: '', quiz_type: 'Demo' }
+      ];
+    }
+  });
+
   // Print summary of all unique grades and levels
   console.log('Unique grades:', Array.from(uniqueGrades).sort())
   console.log('Unique levels:', Array.from(uniqueLevels).sort())
