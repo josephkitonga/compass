@@ -105,7 +105,7 @@ export default function Header() {
             className="bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow ml-2"
             style={{ textDecoration: 'none' }}
           >
-            Roodito
+            Start Revising
           </a>
         </div>
 
@@ -171,7 +171,7 @@ export default function Header() {
               className="block w-full text-center bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow mt-2"
               style={{ textDecoration: 'none' }}
             >
-              Roodito
+              Start Revising
             </a>
           </nav>
         </div>

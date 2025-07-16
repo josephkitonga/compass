@@ -36,10 +36,10 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   // Load quiz data on component mount
   useEffect(() => {
     async function loadQuizzes() {
-      try {
+    try {
         const quizzes = await getAllQuizzes();
         setAllQuizzes(Array.isArray(quizzes) ? quizzes : []);
-      } catch (error) {
+    } catch (error) {
         setAllQuizzes([]);
       }
     }

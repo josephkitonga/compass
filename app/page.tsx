@@ -10,88 +10,52 @@ import ScrollToTop from "@/components/ScrollToTop"
 import { Button } from "@/components/ui/button"
 
 // Imported data service for our API data
-import { getQuizData, type ApiQuizData, fetchQuizPagesInBatch } from "@/lib/data-service"
+import { getQuizData, type ApiQuizData } from "@/lib/data-service"
 
 export default function HomePage() {
-  const [allQuizzes, setAllQuizzes] = useState<any[]>([])
   const [groupedData, setGroupedData] = useState<ApiQuizData | null>(null)
-  const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(true)
-  const [loadingMore, setLoadingMore] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
-  const sentinelRef = useRef<HTMLDivElement | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const loadInitial = async () => {
-      setLoading(true)
-      const quizzes = await fetchQuizPagesInBatch(1, 5, 20)
-      setAllQuizzes(quizzes)
-      setGroupedData(require("@/lib/api-service").groupQuizzesBySystem(quizzes))
-      setPage(5)
-      setHasMore(quizzes.length > 0)
-      setLoading(false)
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        const data = await getQuizData()
+        setGroupedData(data)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load quiz data')
+      } finally {
+        setLoading(false)
+      }
     }
-    loadInitial()
+    loadData()
   }, [])
 
-  const handleLoadMore = async () => {
-    if (loadingMore || !hasMore) return
-    setLoadingMore(true)
-    const nextStart = page + 1
-    const nextEnd = page + 5
-    const quizzes = await fetchQuizPagesInBatch(nextStart, nextEnd, 20)
-    if (quizzes.length === 0) {
-      setHasMore(false)
-      setLoadingMore(false)
-      return
-    }
-    setAllQuizzes(prev => [...prev, ...quizzes])
-    setGroupedData(require("@/lib/api-service").groupQuizzesBySystem([...allQuizzes, ...quizzes]))
-    setPage(nextEnd)
-    setLoadingMore(false)
+  // Helper to ensure all expected grades are present
+  function ensureCBCSeniorSecondary(grades: { [grade: string]: any }) {
+    const expected = ['10', '11', '12']
+    const out = { ...grades }
+    expected.forEach(g => { if (!out[g]) out[g] = [] })
+    return out
+  }
+  function ensure844Forms(grades: { [grade: string]: any }) {
+    const expected = ['Form 2', 'Form 3', 'Form 4']
+    const out = { ...grades }
+    expected.forEach(g => { if (!out[g]) out[g] = [] })
+    return out
   }
 
-  // Infinite scroll effect for both CBC and 8-4-4
-  useEffect(() => {
-    if (loadingMore || !hasMore) return
-    const observer = new window.IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && !loadingMore && hasMore) {
-          handleLoadMore()
-        }
-      },
-      { threshold: 1 }
-    )
-    if (sentinelRef.current) observer.observe(sentinelRef.current)
-    return () => {
-      if (sentinelRef.current) observer.unobserve(sentinelRef.current)
-    }
-  }, [loadingMore, hasMore, groupedData])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-nmg-primary mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading revision materials...</p>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    )
-  }
-
-  if (!groupedData) {
+  if (error) {
     return (
       <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">No Data Available</h2>
-            <p className="text-gray-600 mb-4">No quiz data is currently available.</p>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Data</h2>
+            <p className="text-gray-600 mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()} 
               className="bg-nmg-primary text-white px-6 py-2 rounded-lg hover:bg-nmg-primary/90"
@@ -117,7 +81,7 @@ export default function HomePage() {
               Choose Your Education System
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Explore comprehensive revision materials for both CBC and 8-4-4 education systems
+              Explore comprehensive revision materials for CBC (Grades 4-12) and 8-4-4 (Forms 2-4) education systems
             </p>
           </div>
           <div className="space-y-8 max-w-6xl mx-auto">
@@ -125,39 +89,44 @@ export default function HomePage() {
             <div id="cbc">
               <AccordionSection
                 title="CBC (Competency Based Curriculum)"
-                description="2-6-3-3-3 System: Upper Primary, Junior Secondary, Senior Secondary"
+                description="Upper Primary (Grades 4, 5, 6) • Junior Secondary (Grades 7, 8, 9) • Senior Secondary (Grades 10, 11, 12)"
                 system="CBC"
                 data={(() => {
-                  if (!groupedData.CBC) return {};
+                  if (!groupedData?.CBC) return {};
                   const order = [
                     'Upper Primary',
-                    ...Object.keys(groupedData.CBC).filter(l => l !== 'Upper Primary')
+                    'Junior Secondary',
+                    'Senior Secondary',
+                    ...Object.keys(groupedData.CBC).filter(l => !['Upper Primary', 'Junior Secondary', 'Senior Secondary'].includes(l))
                   ];
                   const ordered: typeof groupedData.CBC = {};
                   order.forEach(level => {
-                    if (groupedData.CBC[level]) ordered[level] = groupedData.CBC[level];
+                    if (level === 'Senior Secondary') {
+                      ordered[level] = ensureCBCSeniorSecondary(groupedData.CBC[level] || {})
+                    } else if (groupedData.CBC[level]) {
+                      ordered[level] = groupedData.CBC[level];
+                    }
                   });
                   return ordered;
                 })()}
+                loading={loading}
               />
             </div>
             {/* 8-4-4 System */}
             <div id="844">
               <AccordionSection
-                title="8-4-4"
+                title="8-4-4 Education System"
                 description="Forms 2, 3, and 4"
                 system="844"
-                data={groupedData["844"]}
+                data={(() => {
+                  if (!groupedData?.['844']) return {};
+                  const sec = groupedData['844']['Secondary'] || {};
+                  return { Secondary: ensure844Forms(sec) };
+                })()}
+                loading={loading}
               />
             </div>
           </div>
-          {/* Infinite scroll sentinel for both CBC and 8-4-4 */}
-          <div ref={sentinelRef} />
-          {loadingMore && (
-            <div className="flex justify-center py-4">
-              <span className="animate-spin rounded-full h-8 w-8 border-b-2 border-nmg-primary inline-block"></span>
-            </div>
-          )}
         </div>
       </section>
       {/* Features Section */}

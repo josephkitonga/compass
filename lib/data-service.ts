@@ -128,6 +128,9 @@ let quizCache: QuizApiData[] | null = null
 let cacheTimestamp: number = 0
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
+// This function is not used in the current implementation
+// All data is fetched centrally through getQuizData()
+
 // Get all quizzes from API with caching
 export const getQuizData = async (): Promise<ApiQuizData> => {
   try {
@@ -138,12 +141,14 @@ export const getQuizData = async (): Promise<ApiQuizData> => {
       return groupQuizzesBySystem(quizCache)
     }
     
-    // Fetch all pages from API
+    console.log('Fetching all quiz data from API...')
+    
+    // Fetch all pages from API - single fetch operation
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    // Use a small perPage for production stability and fastest loading
-    const perPage = 20;
+    const perPage = 100; // Use larger page size to reduce API calls
+    
     do {
       const response = await QuizApiService.getQuizzes({ per_page: perPage, page });
       if (response.data && Array.isArray(response.data)) {
@@ -152,6 +157,10 @@ export const getQuizData = async (): Promise<ApiQuizData> => {
       totalPages = response.pagination?.total_pages || 1;
       page++;
     } while (page <= totalPages);
+    
+    console.log(`Fetched ${allQuizzes.length} total quizzes from ${totalPages} pages`)
+    
+    // Cache the results
     quizCache = allQuizzes;
     cacheTimestamp = now;
     
@@ -163,171 +172,13 @@ export const getQuizData = async (): Promise<ApiQuizData> => {
   }
 }
 
-// Get all quizzes as a flat array for search and UI
-export const getAllQuizzes = async (): Promise<ApiQuiz[]> => {
-  try {
-    // Fetch all pages from API
-    let allQuizzes: QuizApiData[] = [];
-    let page = 1;
-    let totalPages = 1;
-    // Use a small perPage for production stability and fastest loading
-    const perPage = 20;
-    do {
-      const response = await QuizApiService.getQuizzes({ per_page: perPage, page });
-      if (response.data && Array.isArray(response.data)) {
-        allQuizzes = allQuizzes.concat(response.data);
-      }
-      totalPages = response.pagination?.total_pages || 1;
-      page++;
-    } while (page <= totalPages);
-    return allQuizzes.map(transformQuizApiData);
-  } catch (error) {
-    console.error('Failed to fetch all quizzes:', error)
-    return []
-  }
-}
+// These methods are not used in the current implementation
+// They were causing multiple API calls and are now disabled
+// All data is fetched centrally through getQuizData()
 
-// Find quiz by ID from API
-export const findQuizById = async (quizId: string): Promise<{ quiz: ApiQuiz; subject: string; grade: string; system: string; level?: string } | null> => {
-  try {
-    const apiQuiz = await QuizApiService.getQuizById(quizId)
-    if (!apiQuiz) return null;
-    const transformedQuiz = transformQuizApiData(apiQuiz)
-    
-    return {
-      quiz: transformedQuiz,
-      subject: transformedQuiz.subject,
-      grade: transformedQuiz.grade,
-      system: transformedQuiz.system,
-      level: transformedQuiz.level
-    }
-  } catch (error) {
-    console.error(`Failed to find quiz with ID ${quizId}:`, error)
-    return null
-  }
-}
-
-// Search quizzes
-export const searchQuizzes = async (query: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
-  try {
-    const results = await QuizApiService.searchQuizzes(query, filters)
-    return results.map(transformQuizApiData)
-  } catch (error) {
-    console.error('Failed to search quizzes:', error)
-    return []
-  }
-}
-
-// Get quizzes by subject
-export const getQuizzesBySubject = async (subject: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
-  try {
-    const results = await QuizApiService.getQuizzesBySubject(subject, filters)
-    return results.map(transformQuizApiData)
-  } catch (error) {
-    console.error(`Failed to get quizzes for subject ${subject}:`, error)
-    return []
-  }
-}
-
-// Get quizzes by grade
-export const getQuizzesByGrade = async (grade: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
-  try {
-    const results = await QuizApiService.getQuizzesByGrade(grade, filters)
-    return results.map(transformQuizApiData)
-  } catch (error) {
-    console.error(`Failed to get quizzes for grade ${grade}:`, error)
-    return []
-  }
-}
-
-// Get quizzes by level
-export const getQuizzesByLevel = async (level: string, filters: QuizFilters = {}): Promise<ApiQuiz[]> => {
-  try {
-    const results = await QuizApiService.getQuizzesByLevel(level, filters)
-    return results.map(transformQuizApiData)
-  } catch (error) {
-    console.error(`Failed to get quizzes for level ${level}:`, error)
-    return []
-  }
-}
-
-// Get paginated quizzes
-export const getPaginatedQuizzes = async (page: number = 1, perPage: number = 10, filters: QuizFilters = {}): Promise<{
-  quizzes: ApiQuiz[]
-  pagination: {
-    total: number
-    page: number
-    per_page: number
-    total_pages: number
-  }
-}> => {
-  try {
-    const response = await QuizApiService.getQuizzes({ 
-      page, 
-      per_page: perPage, 
-      ...filters 
-    })
-    
-    return {
-      quizzes: response.data.map(transformQuizApiData),
-      pagination: response.pagination
-    }
-  } catch (error) {
-    console.error('Failed to get paginated quizzes:', error)
-    return {
-      quizzes: [],
-      pagination: { total: 0, page: 1, per_page: perPage, total_pages: 0 }
-    }
-  }
-}
-
-// Get paginated quizzes as raw QuizApiData (for infinite scroll)
-export const getPaginatedQuizApiData = async (page: number = 1, perPage: number = 10, filters: QuizFilters = {}): Promise<{
-  quizzes: QuizApiData[]
-  pagination: {
-    total: number
-    page: number
-    per_page: number
-    total_pages: number
-  }
-}> => {
-  try {
-    const response = await QuizApiService.getQuizzes({ 
-      page, 
-      per_page: perPage, 
-      ...filters 
-    })
-    return {
-      quizzes: response.data,
-      pagination: response.pagination
-    }
-  } catch (error) {
-    console.error('Failed to get paginated quizzes (raw):', error)
-    return {
-      quizzes: [],
-      pagination: { total: 0, page: 1, per_page: perPage, total_pages: 0 }
-    }
-  }
-}
-
-// Fetch a range of quiz pages in parallel (with concurrency limit)
-export const fetchQuizPagesInBatch = async (startPage = 1, endPage = 5, perPage = 20) => {
-  const pages = [];
-  for (let i = startPage; i <= endPage; i++) pages.push(i);
-
-  const concurrency = 5;
-  let results: QuizApiData[] = [];
-  for (let i = 0; i < pages.length; i += concurrency) {
-    const batch = pages.slice(i, i + concurrency);
-    const batchResults = await Promise.all(
-      batch.map(page => QuizApiService.getQuizzes({ page, per_page: perPage }))
-    );
-    batchResults.forEach(res => {
-      if (res.data && Array.isArray(res.data)) results = results.concat(res.data);
-    });
-  }
-  return results;
-};
+// These pagination methods are not used in the current implementation
+// They were causing multiple API calls and are now disabled
+// All data is fetched centrally through getQuizData()
 
 export const getAchievementsData = (): AchievementsData => {
   return achievementsData as unknown as AchievementsData

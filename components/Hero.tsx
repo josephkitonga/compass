@@ -6,9 +6,9 @@ import { useEffect, useState } from "react"
 
 export default function Hero() {
   const english = "For Every Student, ";
-  const englishAccent = "Every Classroom";
+  const englishAccent = "Every Classroom .";
   const swahili = "Kwa Kila Mwanafunzi, ";
-  const swahiliAccent = "Kila Darasa";
+  const swahiliAccent = "Kila Darasa .";
 
   const swahiliWords = (swahili + swahiliAccent).trim().split(/\s+/);
 
@@ -107,12 +107,12 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
                 size="lg" 
-                className="bg-nmg-primary hover:bg-nmg-primary/90 text-white text-lg px-8 py-6 h-auto transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl"
+                className="bg-nmg-primary hover:bg-nmg-primary/90 text-white text-lg px-8 py-6 h-auto transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
                 onClick={() => {
                   window.open('https://roodito.com/', '_blank', 'noopener,noreferrer');
                 }}
               >
-                Start Revising
+                <span>Start Revising</span>
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
               <Button 

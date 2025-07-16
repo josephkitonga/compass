@@ -40,15 +40,19 @@ export default function AccordionSection({ title, description, system, data }: A
       </CollapsibleTrigger>
       
       <CollapsibleContent className="mt-4 space-y-4">
-        {Object.entries(data || {}).map(([levelKey, levelData]) => (
-          <GradeSection
-            key={levelKey}
-            title={levelKey}
-            data={levelData}
-            system={system}
-            level={levelKey}
-          />
-        ))}
+        {Object.entries(data || {}).length === 0 ? (
+          <div className="text-center text-gray-400 py-4 text-sm">No quizzes available for this level yet.</div>
+        ) : (
+          Object.entries(data || {}).map(([levelKey, levelData]) => (
+            <GradeSection
+              key={levelKey}
+              title={levelKey}
+              data={levelData}
+              system={system}
+              level={levelKey}
+            />
+          ))
+        )}
       </CollapsibleContent>
     </Collapsible>
   )

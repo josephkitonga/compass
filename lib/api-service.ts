@@ -111,36 +111,9 @@ export class QuizApiService {
     return allQuizzes;
   }
 
-  static async getAllQuizzes(): Promise<QuizApiData[]> {
-    return this.fetchAllPages();
-  }
-
-  static async getQuizById(quizId: string): Promise<QuizApiData | null> {
-    const allQuizzes = await this.fetchAllPages();
-    return allQuizzes.find(q => q.quiz_id === quizId) || null;
-  }
-
-  static async searchQuizzes(query: string, filters: QuizFilters = {}): Promise<QuizApiData[]> {
-    const allQuizzes = await this.fetchAllPages(filters);
-    return allQuizzes.filter(quiz => 
-      quiz.subject?.toLowerCase().includes(query.toLowerCase()) ||
-      quiz.grade?.toLowerCase().includes(query.toLowerCase()) ||
-      quiz.level?.toLowerCase().includes(query.toLowerCase()) ||
-      quiz.quiz_type?.toLowerCase().includes(query.toLowerCase())
-    );
-  }
-
-  static async getQuizzesBySubject(subject: string, filters: QuizFilters = {}): Promise<QuizApiData[]> {
-    return this.fetchAllPages({ ...filters, subject });
-  }
-
-  static async getQuizzesByGrade(grade: string, filters: QuizFilters = {}): Promise<QuizApiData[]> {
-    return this.fetchAllPages({ ...filters, grade });
-  }
-
-  static async getQuizzesByLevel(level: string, filters: QuizFilters = {}): Promise<QuizApiData[]> {
-    return this.fetchAllPages({ ...filters, level });
-  }
+  // These methods are not used in the current implementation
+  // They were causing multiple API calls and are now disabled
+  // All data is fetched centrally through getQuizData()
 }
 
 // Utility functions for data transformation
@@ -156,25 +129,100 @@ export const transformQuizApiData = (apiData: QuizApiData) => ({
   duration: 15, // Default duration
   quizLink: apiData.quiz_link,
   date: apiData.date,
-  system: (apiData.level && (apiData.level.includes('Primary') || apiData.level.includes('Junior Secondary') || apiData.level.includes('Senior Secondary'))) ? 'CBC' : '844' // Pin Junior/Senior Secondary to CBC
+  system: (() => {
+    // More accurate system detection
+    if (apiData.level && (apiData.level.includes('Primary') || apiData.level.includes('Junior Secondary') || apiData.level.includes('Senior Secondary'))) {
+      return 'CBC'
+    }
+    // Check if grade is in CBC range (4-12)
+    const gradeNum = parseInt(apiData.grade)
+    if (!isNaN(gradeNum) && gradeNum >= 4 && gradeNum <= 12) {
+      return 'CBC'
+    }
+    // Default to 8-4-4 for other cases
+    return '844'
+  })()
 })
 
 export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
-  const grouped: { CBC: { [key: string]: { [key: string]: QuizApiData[] } }; "844": { [key: string]: { [key: string]: QuizApiData[] } } } = {
+  const grouped: { CBC: { [key: string]: { [grade: string]: QuizApiData[] } }; "844": { [key: string]: { [grade: string]: QuizApiData[] } } } = {
     CBC: {},
     "844": {}
   }
-  
+  const uniqueGrades = new Set<string>();
+  const uniqueLevels = new Set<string>();
+
   quizzes.forEach(quiz => {
-    const system = (quiz.level && (quiz.level.includes('Primary') || quiz.level.includes('Junior Secondary') || quiz.level.includes('Senior Secondary'))) ? 'CBC' : '844'
-    const level = quiz.level || 'General'
-    const grade = quiz.grade || 'General'
-    
-    if (!grouped[system][level]) grouped[system][level] = {}
-    if (!grouped[system][level][grade]) grouped[system][level][grade] = []
-    
-    grouped[system][level][grade].push(quiz)
+    uniqueGrades.add(quiz.grade);
+    if (quiz.level) uniqueLevels.add(quiz.level);
+    // Print all grades/levels for debugging
+    console.log(`Quiz: grade='${quiz.grade}', level='${quiz.level}', subject='${quiz.subject}'`)
+    // Improved system detection
+    let system = '844' // Default to 8-4-4
+    // CBC detection
+    if (quiz.level && (quiz.level.toLowerCase().includes('primary') || quiz.level.toLowerCase().includes('junior secondary') || quiz.level.toLowerCase().includes('senior secondary'))) {
+      system = 'CBC'
+    } else {
+      // Check if grade is in CBC range (4-12)
+      const gradeNum = parseInt(quiz.grade)
+      if (!isNaN(gradeNum) && gradeNum >= 4 && gradeNum <= 12) {
+        system = 'CBC'
+      }
+    }
+    // CBC grouping
+    if (system === 'CBC') {
+      const gradeNum = parseInt(quiz.grade)
+      // Upper Primary: Grades 4, 5, 6
+      if (!isNaN(gradeNum) && gradeNum >= 4 && gradeNum <= 6) {
+        if (!grouped.CBC['Upper Primary']) grouped.CBC['Upper Primary'] = {}
+        if (!grouped.CBC['Upper Primary'][quiz.grade]) grouped.CBC['Upper Primary'][quiz.grade] = []
+        grouped.CBC['Upper Primary'][quiz.grade].push(quiz)
+      }
+      // Junior Secondary: Grades 7, 8, 9
+      else if (!isNaN(gradeNum) && gradeNum >= 7 && gradeNum <= 9) {
+        if (!grouped.CBC['Junior Secondary']) grouped.CBC['Junior Secondary'] = {}
+        if (!grouped.CBC['Junior Secondary'][quiz.grade]) grouped.CBC['Junior Secondary'][quiz.grade] = []
+        grouped.CBC['Junior Secondary'][quiz.grade].push(quiz)
+      }
+      // Senior Secondary: Ultra-permissive matching
+      else if (
+        (!isNaN(gradeNum) && gradeNum >= 10 && gradeNum <= 12) ||
+        (quiz.level && /senior|form\s*3|form\s*4|form\s*iii|form\s*iv|10|11|12/i.test(quiz.level)) ||
+        (quiz.grade && /senior|form\s*3|form\s*4|form\s*iii|form\s*iv|10|11|12/i.test(quiz.grade))
+      ) {
+        if (!grouped.CBC['Senior Secondary']) grouped.CBC['Senior Secondary'] = {}
+        if (!grouped.CBC['Senior Secondary'][quiz.grade]) grouped.CBC['Senior Secondary'][quiz.grade] = []
+        grouped.CBC['Senior Secondary'][quiz.grade].push(quiz)
+      }
+      // Fallback for other CBC grades
+      else {
+        const level = quiz.level || 'Other'
+        if (!grouped.CBC[level]) grouped.CBC[level] = {}
+        if (!grouped.CBC[level][quiz.grade]) grouped.CBC[level][quiz.grade] = []
+        grouped.CBC[level][quiz.grade].push(quiz)
+      }
+    }
+    // 8-4-4 grouping: Ultra-permissive matching
+    else if (system === '844') {
+      const grade = quiz.grade || 'General'
+      if (
+        /form\s*2|form\s*3|form\s*4|form\s*ii|form\s*iii|form\s*iv|2|3|4/i.test(grade) ||
+        (quiz.level && /form\s*2|form\s*3|form\s*4|form\s*ii|form\s*iii|form\s*iv|2|3|4/i.test(quiz.level))
+      ) {
+        if (!grouped["844"]['Secondary']) grouped["844"]['Secondary'] = {}
+        if (!grouped["844"]['Secondary'][quiz.grade]) grouped["844"]['Secondary'][quiz.grade] = []
+        grouped["844"]['Secondary'][quiz.grade].push(quiz)
+      } else {
+        // Fallback for any other 8-4-4 grades
+        if (!grouped["844"]['Other']) grouped["844"]['Other'] = {}
+        if (!grouped["844"]['Other'][quiz.grade]) grouped["844"]['Other'][quiz.grade] = []
+        grouped["844"]['Other'][quiz.grade].push(quiz)
+      }
+    }
   })
-  
+  // Print summary of all unique grades and levels
+  console.log('Unique grades:', Array.from(uniqueGrades).sort())
+  console.log('Unique levels:', Array.from(uniqueLevels).sort())
+  console.log('Final grouped data:', grouped)
   return grouped
 } 

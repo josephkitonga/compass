@@ -25,15 +25,15 @@ export default function QuizDetailPage() {
       try {
         setLoading(true)
         const result = await findQuizById(quizId)
-        if (result && result.quiz) {
-          setQuiz(result.quiz)
-          setSubject(result.subject)
-          setGrade(result.grade)
-          setSystem(result.system)
-          setNotFound(false)
-        } else {
-          setNotFound(true)
-        }
+    if (result && result.quiz) {
+      setQuiz(result.quiz)
+      setSubject(result.subject)
+      setGrade(result.grade)
+      setSystem(result.system)
+      setNotFound(false)
+    } else {
+      setNotFound(true)
+    }
       } catch (error) {
         console.error('Failed to load quiz:', error)
         setNotFound(true)
@@ -85,7 +85,7 @@ export default function QuizDetailPage() {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#002F6C] mx-auto mb-4"></div>
             <p className="text-gray-600">Loading quiz details...</p>
           </div>
-        </div>
+                </div>
         <Footer />
       </div>
     )
