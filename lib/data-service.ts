@@ -197,4 +197,64 @@ export async function fetchUserResults(userId: string) {
   // TODO: Implement backend API call here
   // Example: return await fetch(`/api/results?userId=${userId}`).then(res => res.json())
   return []
+}
+
+// Function to find a specific quiz by ID
+export async function findQuizById(quizId: string): Promise<{
+  quiz: ApiQuiz | null
+  subject: string
+  grade: string
+  system: string
+} | null> {
+  try {
+    // Get all quiz data
+    const allQuizData = await getQuizData()
+    
+    // Search through all systems and levels
+    for (const [system, levels] of Object.entries(allQuizData)) {
+      for (const [level, grades] of Object.entries(levels)) {
+        for (const [grade, quizzes] of Object.entries(grades)) {
+          for (const quiz of quizzes) {
+            if (quiz.quiz_id === quizId) {
+              return {
+                quiz: transformQuizApiData(quiz),
+                subject: quiz.subject || 'General',
+                grade: quiz.grade,
+                system: system
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    return null
+  } catch (error) {
+    console.error('Failed to find quiz by ID:', error)
+    return null
+  }
+}
+
+// Function to get all quizzes as a flat array for search functionality
+export async function getAllQuizzes(): Promise<ApiQuiz[]> {
+  try {
+    const allQuizData = await getQuizData()
+    const allQuizzes: ApiQuiz[] = []
+    
+    // Flatten the nested structure
+    for (const [system, levels] of Object.entries(allQuizData)) {
+      for (const [level, grades] of Object.entries(levels)) {
+        for (const [grade, quizzes] of Object.entries(grades)) {
+          for (const quiz of quizzes) {
+            allQuizzes.push(transformQuizApiData(quiz))
+          }
+        }
+      }
+    }
+    
+    return allQuizzes
+  } catch (error) {
+    console.error('Failed to get all quizzes:', error)
+    return []
+  }
 } 

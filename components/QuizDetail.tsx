@@ -29,7 +29,6 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import type { ApiQuiz } from "@/lib/data-service"
-import { saveQuizResult } from "@/lib/data-service"
 import Confetti from "react-confetti"
 
 interface QuizDetailProps {

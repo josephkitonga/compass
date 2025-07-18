@@ -59,38 +59,38 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
           </div>
         ) : (
           <>
-            <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {currentPageQuizzes.map((quiz, idx) => (
-                <a
-                  key={quiz.id}
-                  href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
-                  target={quiz.quizLink ? '_blank' : undefined}
-                  rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
-                  className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
-                >
-                  {`Quiz ${(page - 1) * quizzesPerPage + idx + 1}`}
-                </a>
-              ))}
-            </div>
-            {/* Pagination controls */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center gap-2 mt-4">
-                <button
-                  className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
-                  onClick={() => setPage(page - 1)}
-                  disabled={page === 1}
-                >
-                  Previous
-                </button>
-                <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
-                <button
-                  className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
-                  onClick={() => setPage(page + 1)}
-                  disabled={page === totalPages}
-                >
-                  Next
-                </button>
-              </div>
+        <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {currentPageQuizzes.map((quiz, idx) => (
+            <a
+              key={quiz.id}
+              href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
+              target={quiz.quizLink ? '_blank' : undefined}
+              rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
+              className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
+            >
+              {`Quiz ${(page - 1) * quizzesPerPage + idx + 1}`}
+            </a>
+          ))}
+        </div>
+        {/* Pagination controls */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-2 mt-4">
+            <button
+              className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
+            <button
+              className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+              onClick={() => setPage(page + 1)}
+              disabled={page === totalPages}
+            >
+              Next
+            </button>
+          </div>
             )}
           </>
         )}

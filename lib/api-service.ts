@@ -151,7 +151,7 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
   }
   const uniqueGrades = new Set<string>();
   const uniqueLevels = new Set<string>();
-
+  
   quizzes.forEach(quiz => {
     uniqueGrades.add(quiz.grade);
     if (quiz.level) uniqueLevels.add(quiz.level);

@@ -67,17 +67,17 @@ export default function GradeSection({ title, data, system, level, loading }: Gr
           </div>
         ) : (
           Object.entries(data || {}).map(([subjectKey, subjectData]) => {
-            return (
-              <SubjectBlock
-                key={subjectKey}
-                subjectName={subjectKey}
-                grade={title}
-                system={system}
-                level={level}
+          return (
+            <SubjectBlock
+              key={subjectKey}
+              subjectName={subjectKey}
+              grade={title}
+              system={system}
+              level={level}
                 quizzes={subjectData}
                 loading={loading}
-              />
-            )
+            />
+          )
           })
         )}
       </CollapsibleContent>

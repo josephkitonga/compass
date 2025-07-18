@@ -20,14 +20,14 @@ export default function HomePage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        setLoading(true)
+      setLoading(true)
         setError(null)
         const data = await getQuizData()
         setGroupedData(data)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load quiz data')
       } finally {
-        setLoading(false)
+      setLoading(false)
       }
     }
     loadData()
