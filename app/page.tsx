@@ -9,7 +9,6 @@ import AchievementsSection from "@/components/AchievementsSection"
 import ScrollToTop from "@/components/ScrollToTop"
 import { Button } from "@/components/ui/button"
 
-// Imported data service for our API data
 import { getQuizData, getCachedQuizData, type LoadingState } from "@/lib/data-service"
 import type { ApiQuizData } from "@/lib/data-service"
 
@@ -32,24 +31,19 @@ export default function HomePage() {
         setLoading(true)
         setError(null)
         
-        // First, try to show cached data immediately if available
         const cachedData = getCachedQuizData()
         if (cachedData) {
           setGroupedData(cachedData)
           setLoading(false)
-          console.log('Using cached data for immediate display')
         }
 
-        // Then fetch fresh data in the background with progressive rendering
         const data = await getQuizData(
           (state) => {
             setLoadingState(state)
           },
           (partialData) => {
-            // Update UI with partial data as it loads
             setGroupedData(partialData)
-            setLoading(false) // Stop showing loading spinner once we have some data
-            console.log('Updated UI with partial data')
+            setLoading(false)
           }
         )
         setGroupedData(data)
@@ -62,13 +56,13 @@ export default function HomePage() {
     loadData()
   }, [])
 
-  // Helper to ensure all expected grades are present
   function ensureCBCSeniorSecondary(grades: { [grade: string]: any }) {
     const expected = ['10', '11', '12']
     const out = { ...grades }
     expected.forEach(g => { if (!out[g]) out[g] = [] })
     return out
   }
+  
   function ensure844Forms(grades: { [grade: string]: any }) {
     const expected = ['Form 2', 'Form 3', 'Form 4']
     const out = { ...grades }
@@ -102,7 +96,7 @@ export default function HomePage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       <Hero />
-      {/* Main Content - Revision Structure */}
+      
       <section id="cbc" className="py-16 bg-white">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -112,7 +106,6 @@ export default function HomePage() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Explore comprehensive revision materials for CBC (Grades 4-12) and 8-4-4 (Forms 2-4) education systems
             </p>
-            {/* Subtle loading indicator */}
             {loadingState.isLoading && loadingState.progress > 0 && (
               <div className="mt-4 text-sm text-gray-500">
                 Loading quizzes... {loadingState.progress.toFixed(0)}% complete
@@ -121,7 +114,6 @@ export default function HomePage() {
           </div>
           
           <div className="space-y-8 max-w-6xl mx-auto">
-            {/* CBC System */}
             <div id="cbc">
               <AccordionSection
                 title="CBC (Competency Based Curriculum)"
@@ -148,7 +140,7 @@ export default function HomePage() {
                 loading={loading}
               />
             </div>
-            {/* 8-4-4 System */}
+            
             <div id="844">
               <AccordionSection
                 title="8-4-4 Education System"
@@ -165,7 +157,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      {/* Features Section */}
+      
       <section id="features" className="py-16 bg-gray-50">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
@@ -207,7 +199,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      {/* <AchievementsSection /> */}
+      
       <Footer />
       <ScrollToTop />
     </div>

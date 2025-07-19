@@ -34,7 +34,7 @@ export interface QuizFilters {
 }
 
 const API_BASE_URL = '/api';
-const REQUEST_TIMEOUT = 30000; // 30 seconds timeout
+const REQUEST_TIMEOUT = 30000;
 
 class ApiError extends Error {
   constructor(
@@ -50,15 +50,13 @@ class ApiError extends Error {
 export class QuizApiService {
   private static async makeRequest<T>(endpoint: string, options?: RequestInit): Promise<T> {
     try {
-      console.log('Fetching:', `${API_BASE_URL}/${endpoint}`)
-      
-      // Create abort controller for timeout
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT)
       
       const response = await fetch(`${API_BASE_URL}/quiz_table_data${endpoint.replace('quiz_table_data', '')}`, {
         headers: {
-          'User-Agent': 'Mozilla/5.0',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
           ...options?.headers,
         },
         signal: controller.signal,
@@ -66,11 +64,10 @@ export class QuizApiService {
       })
 
       clearTimeout(timeoutId)
-      console.log('Response status:', response.status)
       
       if (!response.ok) {
         throw new ApiError(
-          `API request failed: ${response.status} ${response.statusText}`,
+          `API request failed: ${response.status}`,
           response.status
         )
       }
@@ -93,25 +90,24 @@ export class QuizApiService {
 
   static async getQuizzes(filters: QuizFilters = {}): Promise<QuizApiResponse> {
     const params = new URLSearchParams()
-    // Use smaller page size for faster initial loads
-    let perPage = filters.per_page || 20;
+    const perPage = filters.per_page || 20;
+    
     if (filters.page) params.append('page', filters.page.toString())
     params.append('per_page', perPage.toString())
     if (filters.subject) params.append('subject', filters.subject)
     if (filters.grade) params.append('grade', filters.grade)
     if (filters.level) params.append('level', filters.level)
     if (filters.quiz_type) params.append('quiz_type', filters.quiz_type)
+    
     const queryString = params.toString()
     const endpoint = `quiz_table_data${queryString ? `?${queryString}` : ''}`
     return this.makeRequest<QuizApiResponse>(endpoint)
   }
 
-  // Helper to fetch all pages for a given filter with optimized pagination
   static async fetchAllPages(filters: QuizFilters = {}): Promise<QuizApiData[]> {
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    // Use smaller perPage for faster loading and better user experience
     const perPage = filters.per_page || 20;
     
     do {
@@ -124,17 +120,12 @@ export class QuizApiService {
         page++;
       } catch (error) {
         console.error(`Failed to fetch page ${page}:`, error);
-        // Continue with partial data rather than failing completely
         break;
       }
     } while (page <= totalPages);
     
     return allQuizzes;
   }
-
-  // These methods are not used in the current implementation
-  // They were causing multiple API calls and are now disabled
-  // All data is fetched centrally through getQuizData()
 }
 
 // Utility functions for data transformation
@@ -146,21 +137,18 @@ export const transformQuizApiData = (apiData: QuizApiData) => ({
   level: apiData.level || undefined,
   questions: parseInt(apiData.number_of_question) || 0,
   type: apiData.quiz_type || 'Quiz',
-  difficulty: 'Medium', // Default since API doesn't provide this
-  duration: 15, // Default duration
+  difficulty: 'Medium',
+  duration: 15,
   quizLink: apiData.quiz_link,
   date: apiData.date,
   system: (() => {
-    // More accurate system detection
     if (apiData.level && (apiData.level.includes('Primary') || apiData.level.includes('Junior Secondary') || apiData.level.includes('Senior Secondary'))) {
       return 'CBC'
     }
-    // Check if grade is in CBC range (4-12)
     const gradeNum = parseInt(apiData.grade)
     if (!isNaN(gradeNum) && gradeNum >= 4 && gradeNum <= 12) {
       return 'CBC'
     }
-    // Default to 8-4-4 for other cases
     return '844'
   })()
 })
@@ -170,14 +158,8 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
     CBC: {},
     "844": {}
   }
-  const uniqueGrades = new Set<string>();
-  const uniqueLevels = new Set<string>();
-
+  
   quizzes.forEach(quiz => {
-    uniqueGrades.add(quiz.grade);
-    if (quiz.level) uniqueLevels.add(quiz.level);
-    // Print all grades/levels for debugging
-    // console.log(`Quiz: grade='${quiz.grade}', level='${quiz.level}', subject='${quiz.subject}'`)
     let system = '844';
     if (quiz.level && (quiz.level.toLowerCase().includes('primary') || quiz.level.toLowerCase().includes('junior secondary') || quiz.level.toLowerCase().includes('senior secondary'))) {
       system = 'CBC';
@@ -187,6 +169,7 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
         system = 'CBC';
       }
     }
+    
     if (system === 'CBC') {
       const gradeNum = parseInt(quiz.grade);
       if (!isNaN(gradeNum) && gradeNum >= 4 && gradeNum <= 6) {
@@ -237,9 +220,6 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
       }
     }
   });
-  // Debug logs
-  console.log('Unique grades:', Array.from(uniqueGrades).sort());
-  console.log('Unique levels:', Array.from(uniqueLevels).sort());
-  console.log('Final grouped data:', grouped);
+  
   return grouped;
 } 

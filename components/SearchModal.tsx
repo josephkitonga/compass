@@ -37,7 +37,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   // Load quiz data on component mount - use cached data first
   useEffect(() => {
     async function loadQuizzes() {
-      try {
+    try {
         // First try to get cached data for immediate results
         const cachedData = getCachedQuizData()
         if (cachedData) {
@@ -49,7 +49,7 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
         // If no cached data, fetch fresh data (this will be slow but only happens once)
         const quizzes = await getAllQuizzes()
         setAllQuizzes(Array.isArray(quizzes) ? quizzes : [])
-      } catch (error) {
+    } catch (error) {
         console.warn('Failed to load quizzes for search:', error)
         setAllQuizzes([])
       }

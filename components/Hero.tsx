@@ -107,13 +107,13 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link href="#cbc" scroll={true}>
-                <Button 
-                  size="lg" 
-                  className="bg-nmg-primary hover:bg-nmg-primary/90 text-white text-lg px-8 py-6 h-auto transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
-                >
-                  <span>Start Revising</span>
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
+              <Button 
+                size="lg" 
+                className="bg-nmg-primary hover:bg-nmg-primary/90 text-white text-lg px-8 py-6 h-auto transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
+              >
+                <span>Start Revising</span>
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
               </Link>
               <Button 
                 variant="outline" 

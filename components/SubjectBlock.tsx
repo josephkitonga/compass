@@ -66,15 +66,15 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
             </div>
           ) : (
             currentPageQuizzes.map((quiz, idx) => (
-              <a
-                key={quiz.id}
-                href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
-                target={quiz.quizLink ? '_blank' : undefined}
-                rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
-                className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
-              >
+            <a
+              key={quiz.id}
+              href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
+              target={quiz.quizLink ? '_blank' : undefined}
+              rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
+              className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
+            >
                 {quiz.title}
-              </a>
+            </a>
             ))
           )}
         </div>

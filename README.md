@@ -1,156 +1,145 @@
-# NMG × Roodito Revision Portal
+# NMG Quiz Revision Portal
 
-A comprehensive education revision portal designed for Kenyan students, supporting both CBC (Competency Based Curriculum) and 8-4-4 education systems.
+A professional quiz revision portal for Kenyan students, integrating with the Roodito API to provide comprehensive educational content across CBC and 8-4-4 education systems.
 
-## 🎯 Overview
+## 🚀 Features
 
-The NMG × Roodito Revision Portal is a modern, responsive web application that provides students with access to curriculum-aligned quizzes, progress tracking, and achievement systems. Built with Next.js 15, TypeScript, and Tailwind CSS, it offers a seamless learning experience across all devices.
+- **Curriculum-Aligned Content**: Quizzes designed according to official Kenyan curriculum standards
+- **Multi-System Support**: CBC (Grades 4-12) and 8-4-4 (Forms 2-4) education systems
+- **Progressive Loading**: Fast initial load with background data fetching
+- **Professional API Integration**: Secure proxy to Roodito API with proper error handling
+- **Responsive Design**: Modern UI optimized for all devices
 
-## Features
+## 🏗️ Architecture
 
-- **Dual Curriculum Support**: CBC and 8-4-4 education systems
-- **Interactive Quizzes**: Subject-specific quizzes with real-time feedback
-- **Progress Tracking**: Comprehensive achievement and progress monitoring
-- **Search Functionality**: Advanced quiz search across subjects and grades
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
-- **Performance Optimized**: Fast loading with Next.js 15 and optimized images
+### Backend API Integration
+- **API Proxy**: `/api/quiz_table_data` - Secure proxy to Roodito API
+- **Authentication**: Tutor ID integration (`62fa2e148efknmg`)
+- **Caching**: 10-minute cache for improved performance
+- **Error Handling**: Comprehensive error handling with retry logic
+- **Pagination**: Efficient pagination with 50 items per page
 
-## Tech Stack
+### Frontend Structure
+- **Next.js 14**: App Router with TypeScript
+- **State Management**: React hooks with custom data service
+- **UI Components**: Shadcn/ui components with Tailwind CSS
+- **Progressive Enhancement**: Immediate UI rendering with background data loading
 
-- **Framework**: Next.js 15 (App Router)
+## 🛠️ Technical Stack
+
+- **Framework**: Next.js 14 (App Router)
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **UI Components**: Radix UI + Custom Components
-- **Icons**: Lucide React
-- **State Management**: React Hooks
-- **Form Handling**: React Hook Form + Zod
+- **Styling**: Tailwind CSS + Shadcn/ui
+- **API**: Roodito API integration
+- **Caching**: In-memory cache with TTL
 - **Deployment**: Vercel-ready
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18+ 
-- npm 8+ or pnpm
-
-### Installation
-
-1. Clone the repository
-```bash
-git clone https://github.com/brooke2384/nmg
-cd nmg-roodito-revision-portal
-```
-
-2. Install dependencies
-```bash
-npm install
-# or
-pnpm install
-```
-
-3. Run the development server
-```bash
-npm run dev
-# or
-pnpm dev
-```
-
-4. Open [http://localhost:3000] in your browser
 
 ## 📁 Project Structure
 
 ```
-nmg-roodito-revision-portal/
-├── app/                    # Next.js App Router
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page
-│   └── quiz/[id]/         # Quiz detail pages
-├── components/            # React components
-│   ├── ui/               # Reusable UI components
-│   ├── Header.tsx        # Navigation header
-│   ├── Hero.tsx          # Hero section
-│   └── ...               # Other components
-├── lib/                  # Utility functions
-│   ├── data-service.ts   # Data management
-│   └── utils.ts          # Helper functions
-├── hooks/                # Custom React hooks
-├── public/               # Static assets
-└── styles/               # Additional styles
+nmg/
+├── app/
+│   ├── api/quiz_table_data/     # API proxy route
+│   ├── data/                    # Static data files
+│   └── page.tsx                 # Main application page
+├── components/
+│   ├── ui/                      # Shadcn/ui components
+│   ├── AccordionSection.tsx     # Education system sections
+│   ├── GradeSection.tsx         # Grade-level organization
+│   └── SubjectBlock.tsx         # Subject-specific quiz display
+├── lib/
+│   ├── api-service.ts           # API integration layer
+│   ├── data-service.ts          # Data management & caching
+│   └── utils.ts                 # Utility functions
+└── public/                      # Static assets
 ```
 
-## 🎨 Design System
+## 🔧 API Integration
 
-The application uses a custom design system based on Nation Media Group's brand colors:
+### Roodito API Endpoint
+```
+GET https://roodito.com/Api_controller/quiz_table_data
+```
 
-- **Primary**: `#11116b` (NMG Blue)
-- **Secondary**: `#c0c0ff` (Light Blue)
-- **Accent**: `#4d4cc1` (Purple)
-- **Success**: `#14BF96` (Green)
-- **Warning**: `#F59E0B` (Yellow)
-- **Error**: `#DC2626` (Red)
+### Required Parameters
+- `tutor_id`: `62fa2e148efknmg` (automatically included)
+- `page`: Page number for pagination
+- `per_page`: Items per page (default: 20)
+
+### Optional Parameters
+- `subject`: Filter by subject
+- `grade`: Filter by grade level
+- `level`: Filter by education level
+- `quiz_type`: Filter by quiz type
+
+## 🚀 Getting Started
+
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Run Development Server**
+   ```bash
+   npm run dev
+   ```
+
+3. **Access Application**
+   ```
+   http://localhost:3000
+   ```
+
+## 📊 Data Flow
+
+1. **Initial Load**: Display cached data immediately (if available)
+2. **Background Fetch**: Fetch fresh data from Roodito API
+3. **Progressive Update**: Update UI as new data arrives
+4. **Caching**: Cache results for 10 minutes to improve performance
+
+## 🔒 Security Features
+
+- **API Proxy**: All external API calls go through Next.js API routes
+- **Input Validation**: Query parameter validation and sanitization
+- **Error Handling**: Graceful error handling without exposing sensitive data
+- **Rate Limiting**: Built-in request timeout (30 seconds)
+
+## 🎯 Performance Optimizations
+
+- **Progressive Loading**: Show first 50 quizzes immediately
+- **Caching Strategy**: 10-minute cache with automatic invalidation
+- **Pagination**: Efficient pagination to reduce payload size
+- **Retry Logic**: Exponential backoff for failed requests
+- **Background Processing**: Non-blocking data fetching
 
 ## 📱 Responsive Design
 
-The application is fully responsive with breakpoints:
-- **Mobile**: < 768px
-- **Tablet**: 768px - 1024px
-- **Desktop**: > 1024px
+- **Mobile-First**: Optimized for mobile devices
+- **Tablet Support**: Responsive design for tablet screens
+- **Desktop Experience**: Enhanced features for desktop users
+- **Accessibility**: WCAG compliant design patterns
 
-## 🔧 Development
+## 🔄 Development Workflow
 
-### Available Scripts
+1. **Feature Development**: Create feature branches
+2. **Testing**: Test API integration and UI components
+3. **Code Review**: Ensure code quality and standards
+4. **Deployment**: Deploy to staging/production
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript type checking
-- `npm run format` - Format code with Prettier
+## 📈 Monitoring & Analytics
 
-### Code Quality
-
-- **TypeScript**: Strict type checking enabled
-- **ESLint**: Code linting with Next.js recommended rules
-- **Prettier**: Code formatting
-- **Pre-commit hooks**: Automated code quality checks
-
-##  Deployment
-
-The application is optimized for deployment on Vercel:
-
-1. Connect your GitHub repository to Vercel
-2. Configure environment variables if needed
-3. Deploy automatically on push to main branch
-
-### Environment Variables
-
-```env
-NEXT_PUBLIC_APP_URL=https://your-domain.com
-```
-
-## 📊 Performance
-
-- **Lighthouse Score**: 95+ across all metrics
-- **Core Web Vitals**: Optimized for all metrics
-- **Bundle Size**: Optimized with Next.js 15
-- **Image Optimization**: Automatic WebP/AVIF conversion
-
-## 🔒 Security
-
-- **Security Headers**: X-Frame-Options, X-Content-Type-Options
-- **Content Security Policy**: Configured for production
-- **Input Validation**: Zod schema validation
-- **Error Boundaries**: Graceful error handling
+- **API Performance**: Monitor response times and success rates
+- **Error Tracking**: Track and resolve API errors
+- **User Analytics**: Monitor user engagement and quiz completion
+- **Cache Performance**: Track cache hit rates and efficiency
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+1. Follow TypeScript best practices
+2. Maintain clean architecture principles
+3. Add proper error handling
+4. Include TypeScript types for all interfaces
+5. Test API integration thoroughly
 
 ## 📄 License
 
-This project is proprietary software developed by Nation Media Group × Roodito.
+This project is proprietary to Nation Media Group.
