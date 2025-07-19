@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { ArrowRight, BookOpen, Users, Target } from "lucide-react"
 import { useEffect, useState } from "react"
+import Link from 'next/link';
 
 export default function Hero() {
   const english = "For Every Student, ";
@@ -105,16 +106,15 @@ export default function Hero() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <Button 
-                size="lg" 
-                className="bg-nmg-primary hover:bg-nmg-primary/90 text-white text-lg px-8 py-6 h-auto transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
-                onClick={() => {
-                  window.open('https://roodito.com/', '_blank', 'noopener,noreferrer');
-                }}
-              >
-                <span>Start Revising</span>
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="#cbc" scroll={true}>
+                <Button 
+                  size="lg" 
+                  className="bg-nmg-primary hover:bg-nmg-primary/90 text-white text-lg px-8 py-6 h-auto transition-all duration-200 hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center"
+                >
+                  <span>Start Revising</span>
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Button 
                 variant="outline" 
                 size="lg" 

@@ -98,15 +98,13 @@ export default function Header() {
         <div className="hidden md:flex items-center space-x-3">
           
           
-          <a
-            href="https://roodito.com/"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="#cbc"
             className="bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow ml-2"
             style={{ textDecoration: 'none' }}
           >
             Start Revising
-          </a>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -164,15 +162,13 @@ export default function Header() {
             >
               8-4-4
             </button>
-            <a
-              href="https://roodito.com/"
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="#cbc"
               className="block w-full text-center bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow mt-2"
               style={{ textDecoration: 'none' }}
             >
               Start Revising
-            </a>
+            </Link>
           </nav>
         </div>
       )}

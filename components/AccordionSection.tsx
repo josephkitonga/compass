@@ -14,8 +14,15 @@ interface AccordionSectionProps {
   loading?: boolean
 }
 
-export default function AccordionSection({ title, description, system, data }: AccordionSectionProps) {
+export default function AccordionSection({ title, description, system, data, loading }: AccordionSectionProps) {
   const [isOpen, setIsOpen] = useState(false)
+
+  // Count total quizzes in this section
+  const totalQuizzes = Object.values(data || {}).reduce((levelTotal, grades) => {
+    return levelTotal + Object.values(grades).reduce((gradeTotal, quizzes) => {
+      return gradeTotal + quizzes.length
+    }, 0)
+  }, 0)
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
@@ -30,6 +37,13 @@ export default function AccordionSection({ title, description, system, data }: A
               {description && (
                 <p className="text-sm text-gray-600">{description}</p>
               )}
+              {loading ? (
+                <p className="text-xs text-blue-600 mt-1">Loading quizzes...</p>
+              ) : (
+                <p className="text-xs text-gray-500 mt-1">
+                  {totalQuizzes} {totalQuizzes === 1 ? 'quiz' : 'quizzes'} available
+                </p>
+              )}
             </div>
           </div>
           {isOpen ? (
@@ -42,7 +56,16 @@ export default function AccordionSection({ title, description, system, data }: A
       
       <CollapsibleContent className="mt-4 space-y-4">
         {Object.entries(data || {}).length === 0 ? (
-          <div className="text-center text-gray-400 py-4 text-sm">No quizzes available for this level yet.</div>
+          <div className="text-center text-gray-400 py-4 text-sm">
+            {loading ? (
+              <div className="flex items-center justify-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-nmg-primary"></div>
+                <span>Loading quizzes...</span>
+              </div>
+            ) : (
+              "No quizzes available for this level yet."
+            )}
+          </div>
         ) : (
           Object.entries(data || {}).map(([levelKey, levelData]) => (
             <GradeSection

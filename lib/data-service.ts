@@ -123,52 +123,168 @@ export interface AchievementsData {
   }
 }
 
-// Cache for API responses
-let quizCache: QuizApiData[] | null = null
-let cacheTimestamp: number = 0
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+// Enhanced caching system
+interface CacheEntry {
+  data: QuizApiData[]
+  timestamp: number
+  groupedData: ApiQuizData
+}
 
-// This function is not used in the current implementation
-// All data is fetched centrally through getQuizData()
+let quizCache: CacheEntry | null = null
+const CACHE_DURATION = 10 * 60 * 1000 // 10 minutes cache
+const MAX_RETRIES = 3
+const RETRY_DELAY = 1000 // 1 second
 
-// Get all quizzes from API with caching
-export const getQuizData = async (): Promise<ApiQuizData> => {
+// Progressive loading state
+export interface LoadingState {
+  isLoading: boolean
+  progress: number
+  currentPage: number
+  totalPages: number
+  loadedQuizzes: number
+  totalQuizzes: number
+}
+
+// Get all quizzes from API with enhanced caching and progressive loading
+export const getQuizData = async (onProgress?: (state: LoadingState) => void, onPartialData?: (data: ApiQuizData) => void): Promise<ApiQuizData> => {
   try {
     const now = Date.now()
     
     // Use cache if it's still valid
-    if (quizCache && (now - cacheTimestamp) < CACHE_DURATION) {
-      return groupQuizzesBySystem(quizCache)
+    if (quizCache && (now - quizCache.timestamp) < CACHE_DURATION) {
+      console.log('Using cached quiz data')
+      return quizCache.groupedData
     }
     
     console.log('Fetching all quiz data from API...')
     
-    // Fetch all pages from API - single fetch operation
+    // Initialize loading state
+    let loadingState: LoadingState = {
+      isLoading: true,
+      progress: 0,
+      currentPage: 1,
+      totalPages: 1,
+      loadedQuizzes: 0,
+      totalQuizzes: 0
+    }
+    
+    // Fetch all pages from API with retry logic and progress tracking
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    const perPage = 100; // Use larger page size to reduce API calls
+    const perPage = 50; // Smaller page size for faster initial loads
     
-    do {
-      const response = await QuizApiService.getQuizzes({ per_page: perPage, page });
-      if (response.data && Array.isArray(response.data)) {
-        allQuizzes = allQuizzes.concat(response.data);
+    // First, get the first page to determine total pages
+    try {
+      const firstResponse = await QuizApiService.getQuizzes({ per_page: perPage, page: 1 });
+      if (firstResponse.data && Array.isArray(firstResponse.data)) {
+        allQuizzes = firstResponse.data;
+        totalPages = firstResponse.pagination?.total_pages || 1;
+        
+        // Update loading state
+        loadingState.totalPages = totalPages;
+        loadingState.totalQuizzes = firstResponse.pagination?.total || 0;
+        loadingState.loadedQuizzes = allQuizzes.length;
+        loadingState.progress = (1 / totalPages) * 100;
+        onProgress?.(loadingState);
+        
+        // Immediately show first page data
+        const initialGroupedData = groupQuizzesBySystem(allQuizzes);
+        onPartialData?.(initialGroupedData);
+        console.log('Showing initial data from first page');
       }
-      totalPages = response.pagination?.total_pages || 1;
-      page++;
-    } while (page <= totalPages);
+    } catch (error) {
+      console.error('Failed to fetch first page:', error);
+      throw error;
+    }
+    
+    // Fetch remaining pages with retry logic
+    for (let currentPage = 2; currentPage <= totalPages; currentPage++) {
+      let retries = 0;
+      let success = false;
+      
+      while (retries < MAX_RETRIES && !success) {
+        try {
+          const response = await QuizApiService.getQuizzes({ per_page: perPage, page: currentPage });
+          if (response.data && Array.isArray(response.data)) {
+            allQuizzes = allQuizzes.concat(response.data);
+            success = true;
+            
+            // Update loading state
+            loadingState.currentPage = currentPage;
+            loadingState.loadedQuizzes = allQuizzes.length;
+            loadingState.progress = (currentPage / totalPages) * 100;
+            onProgress?.(loadingState);
+            
+            // Show updated data after each page
+            const updatedGroupedData = groupQuizzesBySystem(allQuizzes);
+            onPartialData?.(updatedGroupedData);
+            console.log(`Updated data after page ${currentPage}`);
+          }
+        } catch (error) {
+          retries++;
+          console.warn(`Failed to fetch page ${currentPage}, retry ${retries}/${MAX_RETRIES}:`, error);
+          
+          if (retries < MAX_RETRIES) {
+            await new Promise(resolve => setTimeout(resolve, RETRY_DELAY * retries));
+          } else {
+            console.error(`Failed to fetch page ${currentPage} after ${MAX_RETRIES} retries`);
+            // Continue with partial data rather than failing completely
+            break;
+          }
+        }
+      }
+    }
     
     console.log(`Fetched ${allQuizzes.length} total quizzes from ${totalPages} pages`)
     
-    // Cache the results
-    quizCache = allQuizzes;
-    cacheTimestamp = now;
+    // Group the data
+    const groupedData = groupQuizzesBySystem(allQuizzes);
     
-    return groupQuizzesBySystem(allQuizzes)
+    // Cache the results
+    quizCache = {
+      data: allQuizzes,
+      timestamp: now,
+      groupedData
+    };
+    
+    // Final loading state
+    loadingState.isLoading = false;
+    loadingState.progress = 100;
+    onProgress?.(loadingState);
+    
+    return groupedData;
   } catch (error) {
     console.error('Failed to fetch quiz data:', error)
     // Return empty structure if API fails
     return { CBC: {}, "844": {} }
+  }
+}
+
+// Get cached data without fetching (for immediate UI rendering)
+export const getCachedQuizData = (): ApiQuizData | null => {
+  if (quizCache && (Date.now() - quizCache.timestamp) < CACHE_DURATION) {
+    return quizCache.groupedData;
+  }
+  return null;
+}
+
+// Clear cache (useful for testing or manual refresh)
+export const clearQuizCache = (): void => {
+  quizCache = null;
+}
+
+// Get quiz data with fallback to cached data
+export const getQuizDataWithFallback = async (): Promise<ApiQuizData> => {
+  try {
+    return await getQuizData();
+  } catch (error) {
+    console.warn('Failed to fetch fresh data, using cached data if available');
+    const cached = getCachedQuizData();
+    if (cached) {
+      return cached;
+    }
+    return { CBC: {}, "844": {} };
   }
 }
 
@@ -238,6 +354,26 @@ export async function findQuizById(quizId: string): Promise<{
 // Function to get all quizzes as a flat array for search functionality
 export async function getAllQuizzes(): Promise<ApiQuiz[]> {
   try {
+    // First try to use cached data
+    const cachedData = getCachedQuizData()
+    if (cachedData) {
+      const allQuizzes: ApiQuiz[] = []
+      
+      // Flatten the nested structure from cached data
+      for (const [system, levels] of Object.entries(cachedData)) {
+        for (const [level, grades] of Object.entries(levels)) {
+          for (const [grade, quizzes] of Object.entries(grades)) {
+            for (const quiz of quizzes) {
+              allQuizzes.push(transformQuizApiData(quiz))
+            }
+          }
+        }
+      }
+      
+      return allQuizzes
+    }
+    
+    // If no cached data, fetch fresh data (this will be slow but only happens once)
     const allQuizData = await getQuizData()
     const allQuizzes: ApiQuiz[] = []
     

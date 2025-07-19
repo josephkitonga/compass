@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useRef, useEffect, useState } from "react"
 import Header from "@/components/Header"
@@ -10,24 +10,53 @@ import ScrollToTop from "@/components/ScrollToTop"
 import { Button } from "@/components/ui/button"
 
 // Imported data service for our API data
-import { getQuizData, type ApiQuizData } from "@/lib/data-service"
+import { getQuizData, getCachedQuizData, type LoadingState } from "@/lib/data-service"
+import type { ApiQuizData } from "@/lib/data-service"
 
 export default function HomePage() {
   const [groupedData, setGroupedData] = useState<ApiQuizData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [loadingState, setLoadingState] = useState<LoadingState>({
+    isLoading: false,
+    progress: 0,
+    currentPage: 1,
+    totalPages: 1,
+    loadedQuizzes: 0,
+    totalQuizzes: 0
+  })
 
   useEffect(() => {
     const loadData = async () => {
       try {
-      setLoading(true)
+        setLoading(true)
         setError(null)
-        const data = await getQuizData()
+        
+        // First, try to show cached data immediately if available
+        const cachedData = getCachedQuizData()
+        if (cachedData) {
+          setGroupedData(cachedData)
+          setLoading(false)
+          console.log('Using cached data for immediate display')
+        }
+
+        // Then fetch fresh data in the background with progressive rendering
+        const data = await getQuizData(
+          (state) => {
+            setLoadingState(state)
+          },
+          (partialData) => {
+            // Update UI with partial data as it loads
+            setGroupedData(partialData)
+            setLoading(false) // Stop showing loading spinner once we have some data
+            console.log('Updated UI with partial data')
+          }
+        )
         setGroupedData(data)
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to load quiz data')
       } finally {
-      setLoading(false)
+        setLoading(false)
       }
     }
     loadData()
@@ -74,7 +103,7 @@ export default function HomePage() {
       <Header />
       <Hero />
       {/* Main Content - Revision Structure */}
-      <section className="py-16 bg-white">
+      <section id="cbc" className="py-16 bg-white">
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
@@ -83,7 +112,14 @@ export default function HomePage() {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Explore comprehensive revision materials for CBC (Grades 4-12) and 8-4-4 (Forms 2-4) education systems
             </p>
+            {/* Subtle loading indicator */}
+            {loadingState.isLoading && loadingState.progress > 0 && (
+              <div className="mt-4 text-sm text-gray-500">
+                Loading quizzes... {loadingState.progress.toFixed(0)}% complete
+              </div>
+            )}
           </div>
+          
           <div className="space-y-8 max-w-6xl mx-auto">
             {/* CBC System */}
             <div id="cbc">

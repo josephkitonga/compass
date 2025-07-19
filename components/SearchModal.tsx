@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
-// Imported data service for our mock data
-import { getAllQuizzes } from "@/lib/data-service"
+// Imported data service for our cached data
+import { getCachedQuizData, getAllQuizzes } from "@/lib/data-service"
+import type { QuizApiData } from "@/lib/api-service"
 
 interface SearchResult {
   id: string
@@ -33,17 +34,27 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const [isSearching, setIsSearching] = useState(false)
   const [allQuizzes, setAllQuizzes] = useState<SearchResult[]>([])
 
-  // Load quiz data on component mount
+  // Load quiz data on component mount - use cached data first
   useEffect(() => {
     async function loadQuizzes() {
-    try {
-        const quizzes = await getAllQuizzes();
-        setAllQuizzes(Array.isArray(quizzes) ? quizzes : []);
-    } catch (error) {
-        setAllQuizzes([]);
+      try {
+        // First try to get cached data for immediate results
+        const cachedData = getCachedQuizData()
+        if (cachedData) {
+          const quizzes = await getAllQuizzes()
+          setAllQuizzes(Array.isArray(quizzes) ? quizzes : [])
+          return
+        }
+        
+        // If no cached data, fetch fresh data (this will be slow but only happens once)
+        const quizzes = await getAllQuizzes()
+        setAllQuizzes(Array.isArray(quizzes) ? quizzes : [])
+      } catch (error) {
+        console.warn('Failed to load quizzes for search:', error)
+        setAllQuizzes([])
       }
     }
-    loadQuizzes();
+    loadQuizzes()
   }, [])
 
   useEffect(() => {
@@ -198,17 +209,9 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
               <div className="text-center py-8">
                 <Search className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">Search for quizzes</h3>
-                <p className="text-gray-500">Enter keywords to find revision materials</p>
+                <p className="text-gray-500">Type to search by subject, grade, or quiz title</p>
               </div>
             )}
-          </div>
-
-          {/* Footer */}
-          <div className="p-4 border-t bg-gray-50">
-            <div className="flex items-center justify-between text-sm text-gray-500">
-              <span>{results.length} results found</span>
-              <span>Press Esc to close</span>
-            </div>
           </div>
         </div>
       </div>

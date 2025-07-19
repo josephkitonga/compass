@@ -60,17 +60,23 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
         ) : (
           <>
         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {currentPageQuizzes.map((quiz, idx) => (
-            <a
-              key={quiz.id}
-              href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
-              target={quiz.quizLink ? '_blank' : undefined}
-              rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
-              className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
-            >
-              {`Quiz ${(page - 1) * quizzesPerPage + idx + 1}`}
-            </a>
-          ))}
+          {currentPageQuizzes.length === 0 ? (
+            <div className="col-span-full text-center text-gray-400 py-4 text-sm">
+              No quizzes available for this grade yet.
+            </div>
+          ) : (
+            currentPageQuizzes.map((quiz, idx) => (
+              <a
+                key={quiz.id}
+                href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
+                target={quiz.quizLink ? '_blank' : undefined}
+                rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
+                className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
+              >
+                {quiz.title}
+              </a>
+            ))
+          )}
         </div>
         {/* Pagination controls */}
         {totalPages > 1 && (
