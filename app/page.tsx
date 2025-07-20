@@ -6,6 +6,7 @@ import Hero from "@/components/Hero"
 import AccordionSection from "@/components/AccordionSection"
 import Footer from "@/components/Footer"
 import AchievementsSection from "@/components/AchievementsSection"
+import PricingSection from "@/components/PricingSection"
 import ScrollToTop from "@/components/ScrollToTop"
 import { Button } from "@/components/ui/button"
 
@@ -199,6 +200,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      
+      <PricingSection />
       
       <Footer />
       <ScrollToTop />

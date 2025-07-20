@@ -92,6 +92,12 @@ export default function Header() {
           >
             8-4-4
           </button>
+          <button 
+            onClick={() => scrollToSection('pricing')}
+            className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
+          >
+            Pricing
+          </button>
         </nav>
 
         {/* Desktop Actions */}
@@ -161,6 +167,15 @@ export default function Header() {
               className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
             >
               8-4-4
+            </button>
+            <button
+              onClick={() => {
+                scrollToSectionMobile('pricing')
+                setIsMenuOpen(false)
+              }}
+              className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+            >
+              Pricing
             </button>
             <Link
               href="#cbc"
