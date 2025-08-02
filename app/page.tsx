@@ -1,210 +1,280 @@
 'use client'
 
-import { useRef, useEffect, useState } from "react"
-import Header from "@/components/Header"
-import Hero from "@/components/Hero"
-import AccordionSection from "@/components/AccordionSection"
-import Footer from "@/components/Footer"
-import AchievementsSection from "@/components/AchievementsSection"
-import PricingSection from "@/components/PricingSection"
-import ScrollToTop from "@/components/ScrollToTop"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { CheckCircle, BookOpen, Target, Users, Star, ArrowRight } from "lucide-react"
+import Link from "next/link"
 
-import { getQuizData, getCachedQuizData, type LoadingState } from "@/lib/data-service"
-import type { ApiQuizData } from "@/lib/data-service"
+export default function LandingPage() {
+  const [isHovered, setIsHovered] = useState(false)
 
-export default function HomePage() {
-  const [groupedData, setGroupedData] = useState<ApiQuizData | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [loadingState, setLoadingState] = useState<LoadingState>({
-    isLoading: false,
-    progress: 0,
-    currentPage: 1,
-    totalPages: 1,
-    loadedQuizzes: 0,
-    totalQuizzes: 0
-  })
-
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-        
-        const cachedData = getCachedQuizData()
-        if (cachedData) {
-          setGroupedData(cachedData)
-          setLoading(false)
-        }
-
-        const data = await getQuizData(
-          (state) => {
-            setLoadingState(state)
-          },
-          (partialData) => {
-            setGroupedData(partialData)
-            setLoading(false)
-          }
-        )
-        setGroupedData(data)
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load quiz data')
-      } finally {
-        setLoading(false)
-      }
+  const features = [
+    {
+      icon: <BookOpen className="w-6 h-6" />,
+      title: "Curriculum Aligned",
+      description: "All quizzes designed according to official Kenyan curriculum standards"
+    },
+    {
+      icon: <Target className="w-6 h-6" />,
+      title: "Practice Focused",
+      description: "Interactive quizzes to help students practice and improve their skills"
+    },
+    {
+      icon: <Users className="w-6 h-6" />,
+      title: "Comprehensive Coverage",
+      description: "Covering all major subjects across both CBC and 8-4-4 systems"
     }
-    loadData()
-  }, [])
-
-  function ensureCBCSeniorSecondary(grades: { [grade: string]: any }) {
-    const expected = ['10', '11', '12']
-    const out = { ...grades }
-    expected.forEach(g => { if (!out[g]) out[g] = [] })
-    return out
-  }
-  
-  function ensure844Forms(grades: { [grade: string]: any }) {
-    const expected = ['Form 2', 'Form 3', 'Form 4']
-    const out = { ...grades }
-    expected.forEach(g => { if (!out[g]) out[g] = [] })
-    return out
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Data</h2>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <button
-              onClick={() => window.location.reload()} 
-              className="bg-nmg-primary text-white px-6 py-2 rounded-lg hover:bg-nmg-primary/90"
-            >
-              Refresh
-            </button>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    )
-  }
+  ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <Hero />
-      
-      <section id="cbc" className="py-16 bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-2">
+              <img src="/Nation logo.svg" alt="NMG Logo" className="h-8 w-auto" />
+              <span className="text-xl font-bold text-gray-900">Revision Portal</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              <Link href="/auth">
+                <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/auth">
+                <Button className="bg-[#002F6C] hover:bg-[#002F6C]/90">
+                  Get Started
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="w-full">
+          <div className="text-center mb-12">
+            <Badge variant="secondary" className="mb-6 bg-[#14BF96]/10 text-[#14BF96] border-[#14BF96]/20">
+              <Star className="w-4 h-4 mr-2" />
+              Trusted by Kenyan Students
+            </Badge>
+            
+            <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              Master Your
+              <span className="text-[#002F6C]"> Revision</span>
+              <br />
+              <span className="text-[#14BF96]">Confidently</span>
+            </h1>
+            
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Comprehensive revision materials for CBC and 8-4-4 education systems. 
+              Practice with curriculum-aligned quizzes designed specifically for Kenyan students.
+            </p>
+            
+            <div className="flex justify-center items-center mb-12">
+              <Link href="/auth">
+                <Button 
+                  size="lg" 
+                  className="bg-[#002F6C] hover:bg-[#002F6C]/90 text-lg px-8 py-3"
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                >
+                  Start Learning Now
+                  <ArrowRight className={`ml-2 w-5 h-5 transition-transform ${isHovered ? 'translate-x-1' : ''}`} />
+                </Button>
+              </Link>
+            </div>
+
+            <div className="flex justify-center items-center space-x-8 text-sm text-gray-500">
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                Curriculum Aligned
+              </div>
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                CBC & 8-4-4 Systems
+              </div>
+              <div className="flex items-center">
+                <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+                All Subjects Covered
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
+        <div className="w-full">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Choose Your Education System
+              Why Choose Roodito?
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Explore comprehensive revision materials for CBC (Grades 4-12) and 8-4-4 (Forms 2-4) education systems
+            <p className="text-lg text-gray-600">
+              Designed specifically for Kenyan students, our platform provides everything you need for effective revision
             </p>
-            {loadingState.isLoading && loadingState.progress > 0 && (
-              <div className="mt-4 text-sm text-gray-500">
-                Loading quizzes... {loadingState.progress.toFixed(0)}% complete
-              </div>
-            )}
           </div>
           
-          <div className="space-y-8 max-w-6xl mx-auto">
-            <div id="cbc">
-              <AccordionSection
-                title="CBC (Competency Based Curriculum)"
-                description="Upper Primary (Grades 4, 5, 6) • Junior Secondary (Grades 7, 8, 9) • Senior Secondary (Grades 10, 11, 12)"
-                system="CBC"
-                data={(() => {
-                  if (!groupedData?.CBC) return {};
-                  const order = [
-                    'Upper Primary',
-                    'Junior Secondary',
-                    'Senior Secondary',
-                    ...Object.keys(groupedData.CBC).filter(l => !['Upper Primary', 'Junior Secondary', 'Senior Secondary'].includes(l))
-                  ];
-                  const ordered: typeof groupedData.CBC = {};
-                  order.forEach(level => {
-                    if (level === 'Senior Secondary') {
-                      ordered[level] = ensureCBCSeniorSecondary(groupedData.CBC[level] || {})
-                    } else if (groupedData.CBC[level]) {
-                      ordered[level] = groupedData.CBC[level];
-                    }
-                  });
-                  return ordered;
-                })()}
-                loading={loading}
-              />
-            </div>
-            
-            <div id="844">
-              <AccordionSection
-                title="8-4-4 Education System"
-                description="Forms 2, 3, and 4"
-                system="844"
-                data={(() => {
-                  if (!groupedData?.['844']) return { Secondary: { 'Form 2': [], 'Form 3': [], 'Form 4': [] } };
-                  const sec = groupedData['844']['Secondary'] || {};
-                  return { Secondary: ensure844Forms(sec) };
-                })()}
-                loading={loading}
-              />
-            </div>
+          <div className="grid md:grid-cols-3 gap-8">
+            {features.map((feature, index) => (
+              <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-shadow">
+                <CardHeader className="text-center">
+                  <div className="w-12 h-12 bg-[#002F6C] rounded-lg flex items-center justify-center mx-auto mb-4">
+                    <div className="text-white">
+                      {feature.icon}
+                    </div>
+                  </div>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center text-gray-600">
+                    {feature.description}
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
-      
-      <section id="features" className="py-16 bg-gray-50">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+
+      {/* Education Systems Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="w-full">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Our Revision Portal?
+              Supporting Both Education Systems
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Comprehensive, curriculum-aligned materials designed for Kenyan students
+            <p className="text-lg text-gray-600">
+              Whether you're in CBC or 8-4-4, we've got you covered with comprehensive revision materials
             </p>
           </div>
-          <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-              <div className="w-16 h-16 bg-[#002F6C] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold text-xl">✓</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Curriculum Aligned</h3>
-              <p className="text-gray-600">
-                All quizzes are designed according to the official Kenyan curriculum standards
-              </p>
-            </div>
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-              <div className="w-16 h-16 bg-[#14BF96] rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold text-xl">📚</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Comprehensive Coverage</h3>
-              <p className="text-gray-600">
-                Covering all major subjects across both CBC and 8-4-4 systems
-              </p>
-            </div>
-            <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-              <div className="w-16 h-16 bg-yellow-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-white font-bold text-xl">🎯</span>
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Practice Focused</h3>
-              <p className="text-gray-600">
-                Interactive quizzes to help students practice and improve their skills
-              </p>
-            </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl text-[#002F6C]">CBC System</CardTitle>
+                <CardDescription className="text-lg">
+                  Competency Based Curriculum
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                    <span>Upper Primary (Grades 4-6)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                    <span>Junior Secondary (Grades 7-9)</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                    <span>Senior Secondary (Grades 10-12)</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            <Card className="border-0 shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-2xl text-[#14BF96]">8-4-4 System</CardTitle>
+                <CardDescription className="text-lg">
+                  Traditional Education System
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                    <span>Form 2</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                    <span>Form 3</span>
+                  </div>
+                  <div className="flex items-center">
+                    <CheckCircle className="w-5 h-5 text-green-500 mr-3" />
+                    <span>Form 4</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
-      
-      <PricingSection />
-      
-      <Footer />
-      <ScrollToTop />
+
+      {/* CTA Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-[#002F6C]">
+        <div className="w-full text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            Ready to Start Your Revision Journey?
+          </h2>
+          <p className="text-xl text-blue-100 mb-8">
+            Join thousands of students who are already improving their grades with Roodito
+          </p>
+          <Link href="/auth">
+            <Button size="lg" className="bg-white text-[#002F6C] hover:bg-gray-100 text-lg px-8 py-3">
+              Get Started Now
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div className="w-full">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center space-x-2 mb-4">
+                <img src="/Nation logo.svg" alt="NMG Logo" className="h-6 w-auto" />
+                <span className="font-bold">Revision Portal</span>
+              </div>
+              <p className="text-gray-400">
+                Empowering Kenyan students with comprehensive revision materials for academic excellence.
+              </p>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Education Systems</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>CBC System</li>
+                <li>8-4-4 System</li>
+                <li>All Subjects</li>
+                <li>All Grades</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Resources</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Practice Quizzes</li>
+                <li>Revision Materials</li>
+                <li>Study Guides</li>
+                <li>Progress Tracking</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h3 className="font-semibold mb-4">Support</h3>
+              <ul className="space-y-2 text-gray-400">
+                <li>Help Center</li>
+                <li>Contact Us</li>
+                <li>Privacy Policy</li>
+                <li>Terms of Service</li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2025 Nation Media Group • Roodito. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -1,7 +1,9 @@
-import type React from "react"
+import React from "react"
 import type { Metadata } from "next"
 import { Lato } from "next/font/google"
 import "./globals.css"
+import { Toaster } from "@/components/ui/toaster"
+import { ClientAuthProvider } from "@/components/ClientAuthProvider"
 
 const lato = Lato({
   subsets: ["latin"],
@@ -32,7 +34,12 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={lato.className}>
-      <body>{children}</body>
+      <body>
+        <ClientAuthProvider>
+          {children}
+          <Toaster />
+        </ClientAuthProvider>
+      </body>
     </html>
   )
 }

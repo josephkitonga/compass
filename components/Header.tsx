@@ -74,38 +74,42 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center justify-center flex-1 space-x-8">
-          <button 
-            onClick={scrollToHome}
+          <Link 
+            href="/"
             className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
           >
             Home
-          </button>
-          <button 
-            onClick={() => scrollToSection('cbc')}
+          </Link>
+          <Link 
+            href="/dashboard#cbc"
             className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
           >
             CBC
-          </button>
-          <button 
-            onClick={() => scrollToSection('844')}
+          </Link>
+          <Link 
+            href="/dashboard#844"
             className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
           >
             8-4-4
-          </button>
-          <button 
-            onClick={() => scrollToSection('pricing')}
+          </Link>
+          <Link 
+            href="/dashboard#pricing"
             className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
           >
             Pricing
-          </button>
+          </Link>
         </nav>
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-3">
-          
-          
           <Link
-            href="#cbc"
+            href="/auth"
+            className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/dashboard"
             className="bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow ml-2"
             style={{ textDecoration: 'none' }}
           >
@@ -141,44 +145,42 @@ export default function Header() {
       {isMenuOpen && (
         <div className="md:hidden border-t bg-white">
           <nav className="px-4 py-3 space-y-3">
-            <button
-              onClick={() => {
-                scrollToHome()
-                setIsMenuOpen(false)
-              }}
+            <Link
+              href="/"
+              onClick={() => setIsMenuOpen(false)}
               className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
             >
               Home
-            </button>
-            <button
-              onClick={() => {
-                scrollToSectionMobile('cbc')
-                setIsMenuOpen(false)
-              }}
+            </Link>
+            <Link
+              href="/dashboard#cbc"
+              onClick={() => setIsMenuOpen(false)}
               className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
             >
               CBC
-            </button>
-            <button
-              onClick={() => {
-                scrollToSectionMobile('844')
-                setIsMenuOpen(false)
-              }}
+            </Link>
+            <Link
+              href="/dashboard#844"
+              onClick={() => setIsMenuOpen(false)}
               className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
             >
               8-4-4
-            </button>
-            <button
-              onClick={() => {
-                scrollToSectionMobile('pricing')
-                setIsMenuOpen(false)
-              }}
+            </Link>
+            <Link
+              href="/dashboard#pricing"
+              onClick={() => setIsMenuOpen(false)}
               className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
             >
               Pricing
-            </button>
+            </Link>
             <Link
-              href="#cbc"
+              href="/auth"
+              className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/dashboard"
               className="block w-full text-center bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow mt-2"
               style={{ textDecoration: 'none' }}
             >

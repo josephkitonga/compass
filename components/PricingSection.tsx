@@ -4,7 +4,6 @@ import { Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
 
 const pricingPlans = [
   {
@@ -32,7 +31,6 @@ const pricingPlans = [
 ];
 
 export default function PricingSection() {
-  const [hoveredCard, setHoveredCard] = useState<number | null>(null);
 
   return (
     <section id="pricing" className="py-16 bg-gradient-to-b from-background to-muted/20">
@@ -57,8 +55,6 @@ export default function PricingSection() {
                   ? 'border-blue-500 shadow-lg' 
                   : 'border-blue-300'
               }`}
-              onMouseEnter={() => setHoveredCard(index)}
-              onMouseLeave={() => setHoveredCard(null)}
             >
               {plan.popular && (
                 <div className="absolute -top-3 left-0 right-0 mx-auto w-fit">
@@ -91,7 +87,7 @@ export default function PricingSection() {
                 </div>
               </CardContent>
 
-              {plan.cta && (index === 0 || hoveredCard === index) && (
+              {plan.cta && (
                 <CardFooter className="pt-4">
                   <Button 
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white"
