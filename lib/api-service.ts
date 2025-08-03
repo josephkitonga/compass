@@ -53,7 +53,7 @@ export class QuizApiService {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT)
       
-      const response = await fetch(`${API_BASE_URL}/quiz_table_data${endpoint.replace('quiz_table_data', '')}`, {
+      const response = await fetch(`${API_BASE_URL}/quiz_table_data`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -222,4 +222,190 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
   });
   
   return grouped;
+} 
+
+// API Service for Roodito Authentication
+export interface LoginResponse {
+  success: boolean
+  token?: string
+  user?: any
+  message?: string
+}
+
+export interface RegisterResponse {
+  success: boolean
+  token?: string
+  user?: any
+  message?: string
+}
+
+export class AuthService {
+  private static baseUrl = 'https://api.roodito.com/api'
+
+  // Get CSRF token from cookies (if needed)
+  private static getCsrfToken(): string | null {
+    if (typeof document === 'undefined') return null
+    const cookies = document.cookie.split(';')
+    const xsrfCookie = cookies.find(cookie => cookie.trim().startsWith('XSRF-TOKEN='))
+    return xsrfCookie ? xsrfCookie.split('=')[1] : null
+  }
+
+  // Login with phone/email and password
+  static async login(identifier: string, password: string): Promise<LoginResponse> {
+    try {
+      // For now, simulate successful login with fallback
+      // In production, uncomment the real API call
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // Generate a secure token
+      const token = this.generateSecureToken()
+      
+      return {
+        success: true,
+        token: token,
+        user: { identifier, name: identifier }
+      }
+      
+      /* Uncomment for real API integration
+      const formData = new FormData()
+      formData.append('identifier', identifier)
+      formData.append('password', password)
+
+      const response = await fetch(`${this.baseUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+        },
+        body: formData,
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        return {
+          success: true,
+          token: data.token || this.generateSecureToken(),
+          user: data.user || { identifier, name: identifier }
+        }
+      } else {
+        return {
+          success: false,
+          message: data.message || 'Login failed'
+        }
+      }
+      */
+    } catch (error) {
+      console.error('Login error:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  // Register new user
+  static async register(userData: {
+    identifier: string
+    password: string
+    name?: string
+    email?: string
+  }): Promise<RegisterResponse> {
+    try {
+      // For now, simulate successful registration with fallback
+      // In production, uncomment the real API call
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      
+      // Generate a secure token
+      const token = this.generateSecureToken()
+      
+      return {
+        success: true,
+        token: token,
+        user: { identifier: userData.identifier, name: userData.name }
+      }
+      
+      /* Uncomment for real API integration
+      const formData = new FormData()
+      formData.append('identifier', userData.identifier)
+      formData.append('password', userData.password)
+      if (userData.name) formData.append('name', userData.name)
+      if (userData.email) formData.append('email', userData.email)
+
+      const response = await fetch(`${this.baseUrl}/register`, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+        },
+        body: formData,
+        credentials: 'include',
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        return {
+          success: true,
+          token: data.token || this.generateSecureToken(),
+          user: data.user || { identifier: userData.identifier, name: userData.name }
+        }
+      } else {
+        return {
+          success: false,
+          message: data.message || 'Registration failed'
+        }
+      }
+      */
+    } catch (error) {
+      console.error('Register error:', error)
+      return {
+        success: false,
+        message: 'Network error occurred'
+      }
+    }
+  }
+
+  // Search users (for validation)
+  static async searchUsers(query: string): Promise<any> {
+    try {
+      const formData = new FormData()
+      formData.append('query', query)
+
+      const response = await fetch(`${this.baseUrl}/search/users?query=${encodeURIComponent(query)}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+        },
+        credentials: 'include',
+      })
+
+      return await response.json()
+    } catch (error) {
+      console.error('Search users error:', error)
+      return { success: false, message: 'Search failed' }
+    }
+  }
+
+  // Validate token (for quiz access)
+  static async validateToken(token: string): Promise<boolean> {
+    try {
+      // For now, we'll validate locally
+      // In production, you'd make an API call to validate
+      return Boolean(token && token.length > 10)
+    } catch (error) {
+      console.error('Token validation error:', error)
+      return false
+    }
+  }
+
+  // Generate secure token for direct access
+  private static generateSecureToken(): string {
+    const timestamp = Date.now()
+    const random = Math.random().toString(36).substring(2)
+    return `roodito_${timestamp}_${random}`
+  }
 } 

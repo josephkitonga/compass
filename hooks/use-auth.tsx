@@ -1,13 +1,15 @@
 'use client'
 
 import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react'
+import { AuthService } from '@/lib/api-service'
 
 interface User {
   id: string
   email: string
   name: string
-  grade?: string
-  educationSystem?: string
+  lastName?: string
+  phone?: string
+  dob?: string
   provider?: string
 }
 
@@ -91,12 +93,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             })
           }
         } catch (error) {
-          console.error('Auth check error:', error)
           if (typeof window !== 'undefined') {
             localStorage.removeItem('auth_token')
             localStorage.removeItem('user')
             localStorage.removeItem('guest_session')
           }
+          
           setAuthState({
             user: null,
             isAuthenticated: false,
@@ -112,45 +114,70 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => clearTimeout(timer)
   }, [])
 
-  const login = async (email: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     setAuthState(prev => ({ ...prev, isLoading: true }))
     
     try {
-      // TODO: Replace with real API call
-      // const response = await fetch('/api/auth/login', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({ email, password })
-      // })
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: 'Test User',
-        grade: 'Grade 10',
-        educationSystem: 'CBC'
-      }
-      const mockToken = 'mock_jwt_token_' + Date.now()
-      
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('auth_token', mockToken)
-        localStorage.setItem('user', JSON.stringify(mockUser))
-        localStorage.removeItem('guest_session')
-      }
-      
-      setAuthState({
-        user: mockUser,
-        isAuthenticated: true,
-        isLoading: false,
-        isGuest: false
+      const loginResponse = await fetch('/api/auth/roodito-session', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ identifier, password })
       })
+      
+      if (loginResponse.ok) {
+        const loginData = await loginResponse.json()
+        
+        // Store token in localStorage for quiz access
+        if (loginData.token && typeof window !== 'undefined') {
+          localStorage.setItem('roodito_token', loginData.token)
+        }
+        
+        // Create user object
+        const user: User = {
+          id: '1',
+          email: identifier,
+          name: identifier,
+          lastName: '',
+          phone: identifier,
+          dob: '1990-01-01'
+        }
+        
+        // Generate a token for our app
+        const token = `web_session_${Date.now()}`
+        
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth_token', token)
+          localStorage.setItem('user', JSON.stringify(user))
+          localStorage.removeItem('guest_session')
+        }
+        
+        setAuthState({
+          user,
+          isAuthenticated: true,
+          isLoading: false,
+          isGuest: false
+        })
+        
+        window.location.href = '/dashboard'
+      } else {
+        const errorText = await loginResponse.text()
+        
+        // Parse error response
+        let errorMessage = 'Login failed'
+        try {
+          const errorData = JSON.parse(errorText)
+          errorMessage = errorData.error || errorData.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        
+        throw new Error(errorMessage)
+      }
     } catch (error) {
-      console.error('Login error:', error)
-      setAuthState(prev => ({ ...prev, isLoading: false }))
-      throw error
+      const errorMessage = error instanceof Error ? error.message : 'Login failed'
+      throw new Error(errorMessage)
     }
   }
 
@@ -158,68 +185,122 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setAuthState(prev => ({ ...prev, isLoading: true }))
     
     try {
-      // TODO: Replace with real API call
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(userData)
-      // })
+      // Format phone number for Kenyan format
+      const cleanPhone = userData.identifier.replace(/\D/g, '')
+      const formattedPhone = cleanPhone.startsWith('254') ? cleanPhone : 
+                           cleanPhone.startsWith('0') ? '254' + cleanPhone.substring(1) : 
+                           cleanPhone
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      const mockUser: User = {
-        id: '1',
-        email: userData.email,
-        name: userData.name,
-        grade: userData.grade,
-        educationSystem: userData.educationSystem
-      }
-      const mockToken = 'mock_jwt_token_' + Date.now()
-      
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('auth_token', mockToken)
-        localStorage.setItem('user', JSON.stringify(mockUser))
-        localStorage.removeItem('guest_session')
-      }
-      
-      setAuthState({
-        user: mockUser,
-        isAuthenticated: true,
-        isLoading: false,
-        isGuest: false
+      const registerResponse = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...userData,
+          identifier: formattedPhone
+        })
       })
+      
+      if (registerResponse.ok) {
+        const registerData = await registerResponse.json()
+        
+        // After successful registration, login to get token
+        // Use the formatted phone number for login
+        const loginResponse = await fetch('/api/auth/roodito-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            identifier: formattedPhone, // Use the formatted phone number
+            password: userData.password 
+          })
+        })
+        
+        if (loginResponse.ok) {
+          const loginData = await loginResponse.json()
+          
+          // Store token in localStorage for quiz access
+          if (loginData.token && typeof window !== 'undefined') {
+            localStorage.setItem('roodito_token', loginData.token)
+          }
+          
+          // Create user object
+          const user: User = {
+            id: registerData.data?.id?.toString() || '1',
+            email: userData.email,
+            name: userData.name,
+            lastName: userData.lastName || '',
+            phone: userData.identifier,
+            dob: userData.dob || '1990-01-01'
+          }
+          
+          // Generate a token for our app
+          const token = `web_session_${Date.now()}`
+          
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('auth_token', token)
+            localStorage.setItem('user', JSON.stringify(user))
+            localStorage.removeItem('guest_session')
+          }
+          
+          setAuthState({
+            user,
+            isAuthenticated: true,
+            isLoading: false,
+            isGuest: false
+          })
+          
+          window.location.href = '/dashboard'
+        } else {
+          const errorText = await loginResponse.text()
+          throw new Error('Registration successful but login failed')
+        }
+      } else {
+        const errorText = await registerResponse.text()
+        
+        // Parse error response
+        let errorMessage = 'Registration failed'
+        try {
+          const errorData = JSON.parse(errorText)
+          errorMessage = errorData.error || errorData.message || errorMessage
+        } catch {
+          errorMessage = errorText || errorMessage
+        }
+        
+        throw new Error(errorMessage)
+      }
     } catch (error) {
-      console.error('Register error:', error)
-      setAuthState(prev => ({ ...prev, isLoading: false }))
-      throw error
+      const errorMessage = error instanceof Error ? error.message : 'Registration failed'
+      throw new Error(errorMessage)
     }
   }
 
-  const loginWithSSO = async (provider: string) => {
+    const loginWithSSO = async (provider: string) => {
     setAuthState(prev => ({ ...prev, isLoading: true }))
     
     try {
-      // TODO: Replace with real SSO implementation
-      // const response = await fetch(`/api/auth/${provider}`, {
-      //   method: 'GET'
-      // })
+      // For now, simulate SSO with secure token
+      // In production, this would integrate with real OAuth providers
+      await new Promise(resolve => setTimeout(resolve, 1500))
       
-      // Simulate SSO flow
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      const timestamp = Date.now()
+      const random = Math.random().toString(36).substring(2)
+      const token = `roodito_sso_${timestamp}_${random}`
       
       const mockUser: User = {
         id: '1',
-        email: 'user@example.com',
+        email: `${provider}@example.com`,
         name: `${provider.charAt(0).toUpperCase() + provider.slice(1)} User`,
-        grade: 'Grade 10',
-        educationSystem: 'CBC',
+        lastName: '',
+        phone: `${provider}@example.com`,
+        dob: '1990-01-01',
         provider
       }
-      const mockToken = 'mock_sso_token_' + Date.now()
       
       if (typeof window !== 'undefined') {
-        localStorage.setItem('auth_token', mockToken)
+        localStorage.setItem('auth_token', token)
         localStorage.setItem('user', JSON.stringify(mockUser))
         localStorage.removeItem('guest_session')
       }
@@ -230,6 +311,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading: false,
         isGuest: false
       })
+      
+      // Redirect to dashboard after successful SSO
+      window.location.href = '/dashboard'
     } catch (error) {
       console.error('SSO error:', error)
       setAuthState(prev => ({ ...prev, isLoading: false }))
@@ -243,6 +327,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.removeItem('user')
       localStorage.removeItem('guest_session')
       localStorage.removeItem('guest_timestamp')
+      localStorage.removeItem('roodito_token') // Clear Roodito token on logout
     }
     
     setAuthState({
@@ -251,6 +336,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading: false,
       isGuest: false
     })
+    
+    // Redirect to home after logout
+    window.location.href = '/'
   }
 
   const setGuestMode = () => {
@@ -265,6 +353,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       isLoading: false,
       isGuest: true
     })
+    
+    window.location.href = '/dashboard'
   }
 
   const clearGuestMode = () => {

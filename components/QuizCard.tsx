@@ -21,6 +21,8 @@ import {
   Brain
 } from "lucide-react"
 import type { ApiQuiz } from "@/lib/data-service"
+import { useAuth } from "@/hooks/use-auth"
+
 
 interface QuizCardProps {
   quiz: ApiQuiz
@@ -30,6 +32,8 @@ interface QuizCardProps {
 }
 
 export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps) {
+  const { isAuthenticated } = useAuth()
+  
   const subjectIcons: { [key: string]: React.ComponentType<{ className?: string }> } = {
     "Mathematics": Calculator,
     "Physics": Zap,
@@ -102,14 +106,58 @@ export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps
   const subjectColor = subjectColors[subject] || "bg-gray-500"
   const difficultyColor = difficultyColors[quiz.difficulty] || "bg-gray-100 text-gray-800"
 
-  // Handle quiz redirection - if quizLink exists, use it, otherwise use internal route
+
+
+  // Get quiz URL with authentication token
+  const getQuizUrl = () => {
+    if (quiz.quizLink) {
+      // For Roodito quizzes, extract token from localStorage and append to URL
+      // Format: https://roodito.com/do-quiz/{quiz_id}/{token}
+      
+      // Get token from localStorage
+      const getToken = () => {
+        if (typeof window !== 'undefined') {
+          return localStorage.getItem('roodito_token')
+        }
+        return null
+      }
+      
+      const token = getToken()
+      
+      if (token) {
+        // Extract quiz ID from the URL
+        const quizIdMatch = quiz.quizLink.match(/\/do-quiz\/([^/?]+)/)
+        const quizId = quizIdMatch ? quizIdMatch[1] : null
+        
+        if (quizId) {
+          return `https://roodito.com/do-quiz/${quizId}/${token}`
+        }
+      }
+      
+      return quiz.quizLink
+    } else {
+      // Internal quiz with token
+      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
+      const baseUrl = `/quiz/${quiz.id}`
+      const finalUrl = token ? `${baseUrl}?token=${token}` : baseUrl
+      return finalUrl
+    }
+  }
+
+  // Handle quiz redirection
   const handleQuizClick = () => {
     if (quiz.quizLink) {
+      // Get the URL with session ID appended to path
+      const quizUrl = getQuizUrl()
+      
       // Open external quiz link in new tab
-      window.open(quiz.quizLink, '_blank')
+      window.open(quizUrl, '_blank')
     } else {
-      // Fallback to internal route
-      window.location.href = `/quiz/${quiz.id}`
+      // Internal quiz
+      const token = typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null
+      const baseUrl = `/quiz/${quiz.id}`
+      const finalUrl = token ? `${baseUrl}?token=${token}` : baseUrl
+      window.location.href = finalUrl
     }
   }
 

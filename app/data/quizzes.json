@@ -6,6 +6,7 @@
           {
             "id": "cbc-4-eng-1",
             "title": "English Basics",
+            "quizLink": "https://roodito.com/do-quiz/687b5c8e61c37",
             "questions": [
               {
                 "question": "What is the plural of 'child'?",
@@ -35,6 +36,7 @@
           {
             "id": "cbc-4-math-1",
             "title": "Basic Addition",
+            "quizLink": "https://roodito.com/do-quiz/math-quiz-001",
             "questions": [
               {
                 "question": "What is 5 + 3?",
@@ -64,6 +66,7 @@
           {
             "id": "cbc-4-sci-1",
             "title": "Living Things",
+            "quizLink": "https://roodito.com/do-quiz/science-quiz-001",
             "questions": [
               {
                 "question": "Which of these is a living thing?",

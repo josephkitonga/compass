@@ -1,126 +1,215 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { useParams } from "next/navigation"
-import Link from "next/link"
-import QuizDetail from "@/components/QuizDetail"
-import Header from "@/components/Header"
-import Footer from "@/components/Footer"
-import ScrollToTop from "@/components/ScrollToTop"
-import { findQuizById } from "@/lib/data-service"
-import type { ApiQuiz } from "@/lib/data-service"
+import { useEffect, useState } from 'react'
+import { useAuth } from '@/hooks/use-auth'
+import { AuthService } from '@/lib/api-service'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { ArrowLeft, BookOpen, AlertCircle } from 'lucide-react'
+import Link from 'next/link'
+import LoadingSpinner from '@/components/LoadingSpinner'
 
-export default function QuizDetailPage() {
-  const params = useParams()
-  const quizId = params.id as string
-  const [quiz, setQuiz] = useState<ApiQuiz | null>(null)
-  const [subject, setSubject] = useState("")
-  const [grade, setGrade] = useState("")
-  const [system, setSystem] = useState("")
-  const [notFound, setNotFound] = useState(false)
-  const [loading, setLoading] = useState(true)
+interface QuizPageProps {
+  params: { id: string }
+  searchParams: { token?: string }
+}
+
+export default function QuizPage({ params, searchParams }: QuizPageProps) {
+  const { id } = params
+  const { token } = searchParams
+  const { isAuthenticated, user, isLoading } = useAuth()
+  const [quizData, setQuizData] = useState<any>(null)
+  const [isLoadingQuiz, setIsLoadingQuiz] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [selectedAnswers, setSelectedAnswers] = useState<{ [key: string]: number }>({})
+
+  // Get the effective token (from URL or localStorage)
+  const effectiveToken = token || (typeof window !== 'undefined' ? localStorage.getItem('auth_token') : null)
 
   useEffect(() => {
     const loadQuiz = async () => {
       try {
-        setLoading(true)
-        const result = await findQuizById(quizId)
-    if (result && result.quiz) {
-      setQuiz(result.quiz)
-      setSubject(result.subject)
-      setGrade(result.grade)
-      setSystem(result.system)
-      setNotFound(false)
-    } else {
-      setNotFound(true)
-    }
+        setIsLoadingQuiz(true)
+        setError(null)
+
+        // Validate token if provided
+        if (effectiveToken) {
+          const isValid = await AuthService.validateToken(effectiveToken)
+          if (!isValid) {
+            setError('Invalid or expired token. Please sign in again.')
+            return
+          }
+        }
+
+        // Load quiz data (mock for now)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        setQuizData({
+          id,
+          title: `Quiz ${id}`,
+          description: 'This is a sample quiz for demonstration.',
+          questions: [
+            {
+              id: 1,
+              question: 'What is the capital of Kenya?',
+              options: ['Nairobi', 'Mombasa', 'Kisumu', 'Nakuru'],
+              correct: 0
+            },
+            {
+              id: 2,
+              question: 'Which education system is currently implemented in Kenya?',
+              options: ['8-4-4', 'CBC', 'Both', 'Neither'],
+              correct: 2
+            }
+          ]
+        })
       } catch (error) {
-        console.error('Failed to load quiz:', error)
-        setNotFound(true)
+        console.error('Error loading quiz:', error)
+        setError('Failed to load quiz. Please try again.')
       } finally {
-        setLoading(false)
+        setIsLoadingQuiz(false)
       }
     }
 
     loadQuiz()
-  }, [quizId])
+  }, [id, effectiveToken])
 
-  // Handle external quiz redirection
-  useEffect(() => {
-    if (quiz?.quizLink) {
-      // If quiz has an external link, redirect to it
-      window.open(quiz.quizLink, '_blank')
-      // Navigate back to home after a short delay
-      setTimeout(() => {
-        window.location.href = '/'
-      }, 1000)
-    }
-  }, [quiz])
-
-  if (notFound) {
+  if (isLoading || isLoadingQuiz) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Not Found</h2>
-            <p className="text-gray-600 mb-4">The quiz you're looking for doesn't exist.</p>
-            <Link href="/" className="bg-nmg-primary text-white px-6 py-2 rounded-lg hover:bg-nmg-primary/90">
-                Back to Home
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center">
+        <LoadingSpinner size="lg" text="Loading quiz..." />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle className="text-red-600">Access Error</CardTitle>
+            <CardDescription>
+              Unable to access this quiz
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+            
+            <div className="flex space-x-3">
+              <Link href="/auth">
+                <Button className="w-full">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/">
+                <Button variant="outline" className="w-full">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Go Home
+                </Button>
               </Link>
             </div>
-          </div>
-        <Footer />
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#002F6C] mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading quiz details...</p>
-          </div>
-                </div>
-        <Footer />
-      </div>
-    )
-  }
-
-  if (!quiz) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <div className="text-center">
-            <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Quiz Not Found</h2>
-            <p className="text-gray-600 mb-4">The quiz you're looking for doesn't exist.</p>
-            <Link href="/" className="bg-nmg-primary text-white px-6 py-2 rounded-lg hover:bg-nmg-primary/90">
-                Back to Home
-              </Link>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    )
+  const handleOptionSelect = (questionId: string, optionIndex: number) => {
+    setSelectedAnswers(prev => ({
+      ...prev,
+      [questionId]: optionIndex
+    }))
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      <QuizDetail 
-        quiz={quiz}
-        subject={subject}
-        grade={grade}
-        system={system}
-      />
-      <Footer />
-      <ScrollToTop />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
+      {/* Header */}
+      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-2">
+              <img src="/Nation logo.svg" alt="NMG Logo" className="h-8 w-auto" />
+              <span className="text-xl font-bold text-gray-900">Revision Portal</span>
+            </div>
+            <div className="flex items-center space-x-4">
+              {isAuthenticated && (
+                <span className="text-sm text-gray-600">
+                  Welcome, {user?.name || 'User'}
+                </span>
+              )}
+              <Link href="/">
+                <Button variant="outline">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Back to Home
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Quiz Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <div className="flex items-center space-x-2 mb-4">
+              <BookOpen className="w-6 h-6 text-blue-600" />
+              <h1 className="text-3xl font-bold text-gray-900">{quizData?.title}</h1>
+            </div>
+            <p className="text-lg text-gray-600">{quizData?.description}</p>
+          </div>
+
+          {/* Quiz Questions */}
+          <div className="space-y-6">
+            {quizData?.questions?.map((question: any, index: number) => (
+              <Card key={question.id} className="shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-lg">
+                    Question {index + 1}
+                  </CardTitle>
+                  <CardDescription>
+                    {question.question}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {question.options.map((option: string, optionIndex: number) => (
+                      <Button
+                        key={optionIndex}
+                        variant="outline"
+                        className="w-full justify-start text-left h-auto p-4"
+                        onClick={() => {
+                          // Handle answer selection
+                        }}
+                      >
+                        <span className="font-medium mr-3">{(optionIndex + 1).toString().padStart(2, '0')}.</span>
+                        {option}
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Quiz Actions */}
+          <div className="mt-8 flex justify-between items-center">
+            <Link href="/">
+              <Button variant="outline">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Quizzes
+              </Button>
+            </Link>
+            <Button className="bg-[#002F6C] hover:bg-[#002F6C]/90">
+              Submit Quiz
+            </Button>
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

@@ -58,10 +58,10 @@ export default function LandingPage() {
       <section className="pt-20 pb-16 px-4 sm:px-6 lg:px-8">
         <div className="w-full">
           <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-6 bg-[#14BF96]/10 text-[#14BF96] border-[#14BF96]/20">
-              <Star className="w-4 h-4 mr-2" />
-              Trusted by Kenyan Students
-            </Badge>
+                      <Badge variant="secondary" className="mb-6 bg-[#14BF96]/10 text-[#14BF96] border-[#14BF96]/20">
+            <Star className="w-4 h-4 mr-2" />
+            Trusted by Kenyan Students
+          </Badge>
             
             <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
               Master Your
@@ -75,34 +75,34 @@ export default function LandingPage() {
               Practice with curriculum-aligned quizzes designed specifically for Kenyan students.
             </p>
             
-            <div className="flex justify-center items-center mb-12">
-              <Link href="/auth">
-                <Button 
-                  size="lg" 
-                  className="bg-[#002F6C] hover:bg-[#002F6C]/90 text-lg px-8 py-3"
-                  onMouseEnter={() => setIsHovered(true)}
-                  onMouseLeave={() => setIsHovered(false)}
-                >
-                  Start Learning Now
-                  <ArrowRight className={`ml-2 w-5 h-5 transition-transform ${isHovered ? 'translate-x-1' : ''}`} />
-                </Button>
-              </Link>
-            </div>
+                      <div className="flex justify-center items-center mb-12">
+            <Link href="/auth">
+              <Button 
+                size="lg" 
+                className="bg-[#002F6C] hover:bg-[#002F6C]/90 text-lg px-8 py-3"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+              >
+                Start Learning Now
+                <ArrowRight className={`ml-2 w-5 h-5 transition-transform ${isHovered ? 'translate-x-1' : ''}`} />
+              </Button>
+            </Link>
+          </div>
 
-            <div className="flex justify-center items-center space-x-8 text-sm text-gray-500">
-              <div className="flex items-center">
-                <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                Curriculum Aligned
-              </div>
-              <div className="flex items-center">
-                <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                CBC & 8-4-4 Systems
-              </div>
-              <div className="flex items-center">
-                <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
-                All Subjects Covered
-              </div>
+                      <div className="flex justify-center items-center space-x-8 text-sm text-gray-500">
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+              Curriculum Aligned
             </div>
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+              CBC & 8-4-4 Systems
+            </div>
+            <div className="flex items-center">
+              <CheckCircle className="w-4 h-4 mr-2 text-green-500" />
+              All Subjects Covered
+            </div>
+          </div>
           </div>
         </div>
       </section>

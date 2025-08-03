@@ -30,8 +30,6 @@ export async function GET(req: NextRequest) {
 
     const apiUrl = `${ROODITO_API_BASE}?${queryParams.toString()}`;
     
-    console.log(`[API] Fetching: ${apiUrl}`);
-
     // Setup timeout and abort controller
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
@@ -82,8 +80,6 @@ export async function GET(req: NextRequest) {
       }
     }
 
-    console.log(`[API] Success: ${data?.data?.length || 0} quizzes returned`);
-    
     return NextResponse.json(data, {
       status: 200,
       headers: {

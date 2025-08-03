@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import Header from "@/components/Header"
 import Hero from "@/components/Hero"
 import AccordionSection from "@/components/AccordionSection"
@@ -9,11 +10,14 @@ import AchievementsSection from "@/components/AchievementsSection"
 import PricingSection from "@/components/PricingSection"
 import ScrollToTop from "@/components/ScrollToTop"
 import { Button } from "@/components/ui/button"
+import { useAuth } from "@/hooks/use-auth"
 
 import { getQuizData, getCachedQuizData, type LoadingState } from "@/lib/data-service"
 import type { ApiQuizData } from "@/lib/data-service"
 
 export default function DashboardPage() {
+  const searchParams = useSearchParams()
+  const { isAuthenticated } = useAuth()
   const [groupedData, setGroupedData] = useState<ApiQuizData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -57,6 +61,29 @@ export default function DashboardPage() {
     loadData()
   }, [])
 
+  // Handle OAuth callback
+  useEffect(() => {
+    const token = searchParams.get('token')
+    const userData = searchParams.get('user')
+    
+    if (token && userData && !isAuthenticated) {
+      try {
+        const user = JSON.parse(userData)
+        
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('auth_token', token)
+          localStorage.setItem('user', JSON.stringify(user))
+          localStorage.removeItem('guest_session')
+        }
+        
+        // Reload the page to update auth state
+        window.location.reload()
+      } catch (error) {
+        console.error('Error processing OAuth callback:', error)
+      }
+    }
+  }, [searchParams, isAuthenticated])
+
   function ensureCBCSeniorSecondary(grades: { [grade: string]: any }) {
     const expected = ['10', '11', '12']
     const out = { ...grades }
@@ -96,6 +123,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
+      
       <Hero />
       
       <section id="cbc" className="py-16 bg-white">

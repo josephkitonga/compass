@@ -1,13 +1,24 @@
 "use client"
 
 import Link from "next/link"
-import { Search, Menu, X } from "lucide-react"
+import { Search, Menu, X, User, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import SearchModal from "./SearchModal"
+import { useAuth } from "@/hooks/use-auth"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 export default function Header() {
+  const { isAuthenticated, user, logout } = useAuth()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
 
@@ -102,12 +113,53 @@ export default function Header() {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-3">
-          <Link
-            href="/auth"
-            className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
-          >
-            Sign In
-          </Link>
+          {isAuthenticated ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="flex items-center space-x-2">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-blue-100 text-blue-600">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="hidden sm:block text-sm font-medium">
+                    {user?.name || 'User'}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user?.name}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={logout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Link
+              href="/auth"
+              className="text-gray-600 hover:text-gray-900 transition-colors font-medium"
+            >
+              Sign In
+            </Link>
+          )}
           <Link
             href="/dashboard"
             className="bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow ml-2"
@@ -173,12 +225,43 @@ export default function Header() {
             >
               Pricing
             </Link>
-            <Link
-              href="/auth"
-              className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
-            >
-              Sign In
-            </Link>
+            {isAuthenticated ? (
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-blue-100 text-blue-600">
+                      {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {user?.name || 'User'}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  onClick={() => {
+                    logout()
+                    setIsMenuOpen(false)
+                  }}
+                  variant="ghost"
+                  className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </Button>
+              </div>
+            ) : (
+              <Link
+                href="/auth"
+                className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+              >
+                Sign In
+              </Link>
+            )}
             <Link
               href="/dashboard"
               className="block w-full text-center bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow mt-2"

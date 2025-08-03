@@ -262,7 +262,6 @@ export const getAchievementsData = (): AchievementsData => {
 
 export async function saveQuizResult(result: any) {
   // Implementation for saving quiz results
-  console.log('Saving quiz result:', result);
 }
 
 export async function fetchUserResults(userId: string) {
