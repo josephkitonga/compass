@@ -9,15 +9,13 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ArrowLeft, BookOpen, AlertCircle } from 'lucide-react'
 import Link from 'next/link'
 import LoadingSpinner from '@/components/LoadingSpinner'
+import { useParams, useSearchParams } from 'next/navigation'
 
-interface QuizPageProps {
-  params: { id: string }
-  searchParams: { token?: string }
-}
-
-export default function QuizPage({ params, searchParams }: QuizPageProps) {
-  const { id } = params
-  const { token } = searchParams
+export default function QuizPage() {
+  const params = useParams()
+  const searchParams = useSearchParams()
+  const id = params.id as string
+  const token = searchParams.get('token')
   const { isAuthenticated, user, isLoading } = useAuth()
   const [quizData, setQuizData] = useState<any>(null)
   const [isLoadingQuiz, setIsLoadingQuiz] = useState(true)

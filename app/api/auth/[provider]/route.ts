@@ -30,9 +30,9 @@ const OAUTH_CONFIG = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { provider: string } }
+  { params }: { params: Promise<{ provider: string }> }
 ) {
-  const { provider } = params
+  const { provider } = await params
   
   if (!OAUTH_CONFIG[provider as keyof typeof OAUTH_CONFIG]) {
     return NextResponse.json({ error: 'Invalid provider' }, { status: 400 })

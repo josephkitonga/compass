@@ -87,7 +87,8 @@ export default function PricingSection() {
                 </div>
               </CardContent>
 
-              {plan.cta && (
+              {/* Commented out Top Up buttons */}
+              {/* {plan.cta && (
                 <CardFooter className="pt-4">
                   <Button 
                     className="w-full bg-blue-500 hover:bg-blue-600 text-white"
@@ -95,7 +96,7 @@ export default function PricingSection() {
                     {plan.cta}
                   </Button>
                 </CardFooter>
-              )}
+              )} */}
             </Card>
           ))}
         </div>

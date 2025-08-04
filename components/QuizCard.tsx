@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -33,6 +34,15 @@ interface QuizCardProps {
 
 export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps) {
   const { isAuthenticated } = useAuth()
+  
+  // Debug: Check if token exists in localStorage on component mount
+  React.useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('roodito_token')
+      console.log('QuizCard mounted - roodito_token:', token ? `${token.substring(0, 20)}...` : 'null')
+      console.log('QuizCard mounted - quiz.quizLink:', quiz.quizLink)
+    }
+  }, [])
   
   const subjectIcons: { [key: string]: React.ComponentType<{ className?: string }> } = {
     "Mathematics": Calculator,
@@ -117,7 +127,17 @@ export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps
       // Get token from localStorage
       const getToken = () => {
         if (typeof window !== 'undefined') {
-          return localStorage.getItem('roodito_token')
+          // Try roodito_token first
+          let token = localStorage.getItem('roodito_token')
+          console.log('QuizCard: Retrieved roodito_token:', token ? `${token.substring(0, 20)}...` : 'null')
+          
+          // Fallback to auth_token if roodito_token is not available
+          if (!token) {
+            token = localStorage.getItem('auth_token')
+            console.log('QuizCard: Fallback to auth_token:', token ? `${token.substring(0, 20)}...` : 'null')
+          }
+          
+          return token
         }
         return null
       }
@@ -129,11 +149,18 @@ export default function QuizCard({ quiz, subject, grade, system }: QuizCardProps
         const quizIdMatch = quiz.quizLink.match(/\/do-quiz\/([^/?]+)/)
         const quizId = quizIdMatch ? quizIdMatch[1] : null
         
+        console.log('QuizCard: Extracted quiz ID:', quizId)
+        
         if (quizId) {
-          return `https://roodito.com/do-quiz/${quizId}/${token}`
+          const finalUrl = `https://roodito.com/do-quiz/${quizId}/${token}`
+          console.log('QuizCard: Generated URL:', finalUrl)
+          return finalUrl
         }
+      } else {
+        console.warn('QuizCard: No roodito_token found in localStorage')
       }
       
+      console.log('QuizCard: Returning original quiz link:', quiz.quizLink)
       return quiz.quizLink
     } else {
       // Internal quiz with token

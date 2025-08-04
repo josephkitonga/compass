@@ -59,22 +59,20 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
           </div>
         ) : (
           <>
-        <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {currentPageQuizzes.length === 0 ? (
             <div className="col-span-full text-center text-gray-400 py-4 text-sm">
               No quizzes available for this grade yet.
             </div>
           ) : (
             currentPageQuizzes.map((quiz, idx) => (
-            <a
-              key={quiz.id}
-              href={quiz.quizLink ? quiz.quizLink : `/quiz/${quiz.id}`}
-              target={quiz.quizLink ? '_blank' : undefined}
-              rel={quiz.quizLink ? 'noopener noreferrer' : undefined}
-              className="text-blue-800 underline font-medium hover:text-blue-600 transition-colors block"
-            >
-                {quiz.title}
-            </a>
+              <QuizCard
+                key={quiz.id}
+                quiz={quiz}
+                subject={subjectName}
+                grade={grade}
+                system={system}
+              />
             ))
           )}
         </div>
