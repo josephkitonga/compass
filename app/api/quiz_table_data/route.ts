@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const ROODITO_API_BASE = 'https://roodito.com/Api_controller/quiz_table_data';
-const TUTOR_ID = '62fa2e148efknmg';
+const TUTOR_ID = '62fa2e148efcomp';
 const REQUEST_TIMEOUT = 30000; // 30 seconds
 
 export async function GET(req: NextRequest) {
@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
     const response = await fetch(apiUrl, {
       method: 'GET',
       headers: {
-        'User-Agent': 'NMG-Quiz-Portal/1.0',
+        'User-Agent': 'Compass-Press-Quiz-Portal/1.0',
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },

@@ -12,20 +12,20 @@ const lato = Lato({
 })
 
 export const metadata: Metadata = {
-  title: "NMG . Roodito Revision Portal",
+  title: "Compass Press . Roodito Revision Portal",
   description: "Curated quizzes to help students prepare and revise confidently across all grades and subjects.",
-  keywords: "education, revision, quizzes, Kenya, students, learning, Nation Media Group, Roodito",
-  authors: [{ name: "Nation Media Group • Roodito" }],
+  keywords: "education, revision, quizzes, Kenya, students, learning, Compass Press, Roodito",
+  authors: [{ name: "Compass Press • Roodito" }],
   openGraph: {
-    title: "NMG . Roodito Revision Portal",
+    title: "Compass Press . Roodito Revision Portal",
     description: "For every learner, every classroom - comprehensive revision materials",
-    url: "https://nmg.roodito.com",
-    siteName: "NMG • Roodito Revision Portal",
+    url: "https://compass.roodito.com",
+    siteName: "Compass Press • Roodito Revision Portal",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "NMG • Roodito Revision Portal",
+    title: "Compass Press • Roodito Revision Portal",
     description: "For every learner, every classroom - comprehensive revision materials",
   },
   

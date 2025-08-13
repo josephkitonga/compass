@@ -257,7 +257,7 @@ export default function AuthPage() {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <img src="/Nation logo.svg" alt="NMG Logo" className="h-8 w-auto" />
+            <img src="/compass.png" alt="Compass Press Logo" className="h-8 w-auto" />
             <span className="text-xl font-bold text-gray-900">Revision Portal</span>
           </div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h1>

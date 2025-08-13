@@ -35,7 +35,7 @@ export default function LandingPage() {
         <div className="w-full px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
-              <img src="/Nation logo.svg" alt="NMG Logo" className="h-8 w-auto" />
+              <img src="/compass.png" alt="Compass Press Logo" className="h-8 w-auto" />
               <span className="text-xl font-bold text-gray-900">Revision Portal</span>
             </div>
             <div className="flex items-center space-x-4">
@@ -231,7 +231,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <img src="/Nation logo.svg" alt="NMG Logo" className="h-6 w-auto" />
+                <img src="/compass.png" alt="Compass Press Logo" className="h-6 w-auto" />
                 <span className="font-bold">Revision Portal</span>
               </div>
               <p className="text-gray-400">

@@ -1,4 +1,4 @@
-# NMG Quiz Revision Portal
+# Compass Press Quiz Revision Portal
 
 A professional quiz revision portal for Kenyan students, integrating with the Roodito API to provide comprehensive educational content across CBC and 8-4-4 education systems.
 
@@ -14,7 +14,7 @@ A professional quiz revision portal for Kenyan students, integrating with the Ro
 
 ### Backend API Integration
 - **API Proxy**: `/api/quiz_table_data` - Secure proxy to Roodito API
-- **Authentication**: Tutor ID integration (`62fa2e148efknmg`)
+- **Authentication**: Tutor ID integration (`62fa2e148efkcompass`)
 - **Caching**: 10-minute cache for improved performance
 - **Error Handling**: Comprehensive error handling with retry logic
 - **Pagination**: Efficient pagination with 50 items per page
@@ -37,7 +37,7 @@ A professional quiz revision portal for Kenyan students, integrating with the Ro
 ## 📁 Project Structure
 
 ```
-nmg/
+compass/
 ├── app/
 │   ├── api/quiz_table_data/     # API proxy route
 │   ├── data/                    # Static data files
@@ -62,7 +62,7 @@ GET https://roodito.com/Api_controller/quiz_table_data
 ```
 
 ### Required Parameters
-- `tutor_id`: `62fa2e148efknmg` (automatically included)
+- `tutor_id`: `62fa2e148efkcompass` (automatically included)
 - `page`: Page number for pagination
 - `per_page`: Items per page (default: 20)
 
@@ -142,4 +142,4 @@ GET https://roodito.com/Api_controller/quiz_table_data
 
 ## 📄 License
 
-This project is proprietary to Nation Media Group.
+This project is proprietary to Compass Press.

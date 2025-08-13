@@ -79,83 +79,83 @@ html {
 }
 
 @layer utilities {
-  .text-nmg-primary {
-    color: #11116b;
+  .text-compass-primary {
+    color: #00B4A6;
   }
 
-  .bg-nmg-primary {
-    background-color: #11116b;
+  .bg-compass-primary {
+    background-color: #00B4A6;
   }
 
-  .text-nmg-secondary {
-    color: #c0c0ff;
+  .text-compass-secondary {
+    color: #B8E6E0;
   }
 
-  .bg-nmg-secondary {
-    background-color: #c0c0ff;
+  .bg-compass-secondary {
+    background-color: #B8E6E0;
   }
 
-  .text-nmg-accent {
-    color: #4d4cc1;
+  .text-compass-accent {
+    color: #00C4B8;
   }
 
-  .bg-nmg-accent {
-    background-color: #4d4cc1;
+  .bg-compass-accent {
+    background-color: #00C4B8;
   }
 
-  .text-khan-green {
-    color: #14bf96;
+  .text-compass-teal {
+    color: #00D4CA;
   }
 
-  .bg-khan-green {
-    background-color: #14bf96;
+  .bg-compass-teal {
+    background-color: #00D4CA;
   }
 
-  .text-nmg-yellow {
-    color: #F59E0B;
+  .text-compass-orange {
+    color: #FF6B35;
   }
 
-  .bg-nmg-yellow {
-    background-color: #F59E0B;
+  .bg-compass-orange {
+    background-color: #FF6B35;
   }
 
-  .text-nmg-red {
-    color: #DC2626;
+  .text-compass-gray {
+    color: #4A5568;
   }
 
-  .bg-nmg-red {
-    background-color: #DC2626;
+  .bg-compass-gray {
+    background-color: #4A5568;
   }
 
-  .text-nmg-gray {
-    color: #6B7280;
+  .text-compass-light-gray {
+    color: #718096;
   }
 
-  .bg-nmg-gray {
-    background-color: #6B7280;
+  .bg-compass-light-gray {
+    background-color: #718096;
   }
 
-  .border-nmg-primary {
-    border-color: #11116b;
+  .border-compass-primary {
+    border-color: #00B4A6;
   }
 
-  .border-nmg-secondary {
-    border-color: #c0c0ff;
+  .border-compass-secondary {
+    border-color: #B8E6E0;
   }
 
-  .border-nmg-accent {
-    border-color: #4d4cc1;
+  .border-compass-accent {
+    border-color: #00C4B8;
   }
 
-  .border-khan-green {
-    border-color: #14bf96;
+  .border-compass-teal {
+    border-color: #00D4CA;
   }
 
-  .border-nmg-yellow {
-    border-color: #F59E0B;
+  .border-compass-orange {
+    border-color: #FF6B35;
   }
 
-  .border-nmg-red {
-    border-color: #DC2626;
+  .border-compass-gray {
+    border-color: #4A5568;
   }
 }

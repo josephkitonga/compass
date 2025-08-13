@@ -73,8 +73,8 @@ export default function Header() {
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
             <img 
-              src="/Nation logo.svg" 
-              alt="Nation Media Group" 
+              src="/compass-press-logo.svg" 
+              alt="Compass Press" 
               className="h-8 w-auto"
             />
           </div>
@@ -87,25 +87,25 @@ export default function Header() {
         <nav className="hidden md:flex items-center justify-center flex-1 space-x-8">
           <Link 
             href="/"
-            className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
+            className="text-gray-600 hover:text-compass-primary transition-colors font-medium"
           >
             Home
           </Link>
           <Link 
             href="/dashboard#cbc"
-            className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
+            className="text-gray-600 hover:text-compass-primary transition-colors font-medium"
           >
             CBC
           </Link>
           <Link 
             href="/dashboard#844"
-            className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
+            className="text-gray-600 hover:text-compass-primary transition-colors font-medium"
           >
             8-4-4
           </Link>
           <Link 
             href="/dashboard#pricing"
-            className="text-gray-600 hover:text-nmg-primary transition-colors font-medium"
+            className="text-gray-600 hover:text-compass-primary transition-colors font-medium"
           >
             Pricing
           </Link>
@@ -162,7 +162,7 @@ export default function Header() {
           )}
           <Link
             href="/dashboard"
-            className="bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow ml-2"
+            className="bg-compass-primary hover:bg-compass-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow ml-2"
             style={{ textDecoration: 'none' }}
           >
             Start Revising
@@ -200,28 +200,28 @@ export default function Header() {
             <Link
               href="/"
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+              className="block w-full text-left text-gray-600 hover:text-compass-primary transition-colors"
             >
               Home
             </Link>
             <Link
               href="/dashboard#cbc"
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+              className="block w-full text-left text-gray-600 hover:text-compass-primary transition-colors"
             >
               CBC
             </Link>
             <Link
               href="/dashboard#844"
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+              className="block w-full text-left text-gray-600 hover:text-compass-primary transition-colors"
             >
               8-4-4
             </Link>
             <Link
               href="/dashboard#pricing"
               onClick={() => setIsMenuOpen(false)}
-              className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+              className="block w-full text-left text-gray-600 hover:text-compass-primary transition-colors"
             >
               Pricing
             </Link>
@@ -257,14 +257,14 @@ export default function Header() {
             ) : (
               <Link
                 href="/auth"
-                className="block w-full text-left text-gray-600 hover:text-nmg-primary transition-colors"
+                className="block w-full text-left text-gray-600 hover:text-compass-primary transition-colors"
               >
                 Sign In
               </Link>
             )}
             <Link
               href="/dashboard"
-              className="block w-full text-center bg-nmg-primary hover:bg-nmg-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow mt-2"
+              className="block w-full text-center bg-compass-primary hover:bg-compass-primary/90 text-white font-semibold px-4 py-2 rounded-lg transition-colors shadow mt-2"
               style={{ textDecoration: 'none' }}
             >
               Start Revising
