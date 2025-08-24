@@ -4,8 +4,13 @@ import { Button } from "@/components/ui/button"
 import { ArrowRight, BookOpen, Users, Target } from "lucide-react"
 import { useEffect, useState } from "react"
 import Link from 'next/link';
+import type { ApiQuizData } from "@/lib/data-service"
 
-export default function Hero() {
+interface HeroProps {
+  quizData?: ApiQuizData | null
+}
+
+export default function Hero({ quizData }: HeroProps) {
   const english = "For Every Student, ";
   const englishAccent = "Every Classroom .";
   const swahili = "Kwa Kila Mwanafunzi, ";
@@ -15,6 +20,47 @@ export default function Hero() {
 
   const [showSwahili, setShowSwahili] = useState(false);
   const [swahiliProgress, setSwahiliProgress] = useState(0);
+
+  // Calculate total quiz count from data
+  const getTotalQuizCount = () => {
+    if (!quizData) return 0;
+    
+    let total = 0;
+    Object.values(quizData).forEach(system => {
+      Object.values(system).forEach(level => {
+        Object.values(level).forEach(grade => {
+          if (Array.isArray(grade)) {
+            total += grade.length;
+          }
+        });
+      });
+    });
+    return total;
+  };
+
+  // Calculate total subjects count
+  const getTotalSubjectsCount = () => {
+    if (!quizData) return 0;
+    
+    const subjects = new Set<string>();
+    Object.values(quizData).forEach(system => {
+      Object.values(system).forEach(level => {
+        Object.values(level).forEach(grade => {
+          if (Array.isArray(grade)) {
+            grade.forEach(quiz => {
+              if (quiz.subject) {
+                subjects.add(quiz.subject);
+              }
+            });
+          }
+        });
+      });
+    });
+    return subjects.size;
+  };
+
+  const totalQuizzes = getTotalQuizCount();
+  const totalSubjects = getTotalSubjectsCount();
 
   // Alternate every 10 seconds
   useEffect(() => {
@@ -131,23 +177,27 @@ export default function Hero() {
             <div className="grid grid-cols-3 gap-6 pt-8">
               <div className="text-center group">
                 <div className="flex items-center justify-center mb-2">
-                  <BookOpen className="h-6 w-6 text-[#14BF96] group-hover:scale-110 transition-transform duration-300" />
+                  <BookOpen className="h-6 w-6 text-nmg-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
-                <div className="text-2xl font-bold animate-pulse">500+</div>
+                <div className="text-2xl font-bold animate-pulse">
+                  {quizData ? totalQuizzes : '...'}
+                </div>
                 <div className="text-sm text-gray-200">Quizzes</div>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center mb-2">
-                  <Users className="h-6 w-6 text-[#14BF96] group-hover:scale-110 transition-transform duration-300" />
+                  <Users className="h-6 w-6 text-nmg-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
                 <div className="text-2xl font-bold animate-pulse">2</div>
                 <div className="text-sm text-gray-200">Education Systems</div>
               </div>
               <div className="text-center group">
                 <div className="flex items-center justify-center mb-2">
-                  <Target className="h-6 w-6 text-[#14BF96] group-hover:scale-110 transition-transform duration-300" />
+                  <Target className="h-6 w-6 text-nmg-primary group-hover:scale-110 transition-transform duration-300" />
                 </div>
-                <div className="text-2xl font-bold animate-pulse">15+</div>
+                <div className="text-2xl font-bold animate-pulse">
+                  {quizData ? totalSubjects : '...'}
+                </div>
                 <div className="text-sm text-gray-200">Subjects</div>
               </div>
             </div>
