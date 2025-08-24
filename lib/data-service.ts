@@ -165,14 +165,19 @@ export const getQuizData = async (
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    const perPage = 50;
+    const perPage = 100; // Increased page size to get more data per request
     
     // Fetch first page
     try {
       const firstResponse = await QuizApiService.getQuizzes({ per_page: perPage, page: 1 });
+      console.log('DataService: First API response:', firstResponse);
       if (firstResponse.data && Array.isArray(firstResponse.data)) {
         allQuizzes = firstResponse.data;
         totalPages = firstResponse.pagination?.total_pages || 1;
+        
+        console.log('DataService: First page data:', firstResponse.data.length, 'quizzes');
+        console.log('DataService: Total pages:', totalPages);
+        console.log('DataService: Total quizzes from API:', firstResponse.pagination?.total);
         
         loadingState.totalPages = totalPages;
         loadingState.totalQuizzes = firstResponse.pagination?.total || 0;
@@ -195,9 +200,12 @@ export const getQuizData = async (
       while (retries < MAX_RETRIES && !success) {
         try {
           const response = await QuizApiService.getQuizzes({ per_page: perPage, page: currentPage });
+          console.log(`DataService: Page ${currentPage} response:`, response.data?.length, 'quizzes');
           if (response.data && Array.isArray(response.data)) {
             allQuizzes = allQuizzes.concat(response.data);
             success = true;
+            
+            console.log(`DataService: Total quizzes after page ${currentPage}:`, allQuizzes.length);
             
             loadingState.currentPage = currentPage;
             loadingState.loadedQuizzes = allQuizzes.length;
@@ -219,6 +227,18 @@ export const getQuizData = async (
     }
     
     const groupedData = groupQuizzesBySystem(allQuizzes);
+    
+    console.log('DataService: Total quizzes fetched:', allQuizzes.length);
+    console.log('DataService: Grouped data structure:', groupedData);
+    console.log('DataService: CBC levels:', Object.keys(groupedData.CBC || {}));
+    console.log('DataService: 844 levels:', Object.keys(groupedData['844'] || {}));
+    
+    // Ensure all CBC levels are present even if empty
+    if (!groupedData.CBC['Upper Primary']) groupedData.CBC['Upper Primary'] = {};
+    if (!groupedData.CBC['Junior Secondary']) groupedData.CBC['Junior Secondary'] = {};
+    if (!groupedData.CBC['Senior Secondary']) groupedData.CBC['Senior Secondary'] = {};
+    
+    console.log('DataService: Final CBC levels after ensuring:', Object.keys(groupedData.CBC));
     
     quizCache = {
       data: allQuizzes,

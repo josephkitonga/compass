@@ -124,7 +124,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <Hero />
+      <Hero quizData={groupedData} />
       
       <section id="cbc" className="py-16 bg-white">
         <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -150,6 +150,9 @@ export default function DashboardPage() {
                 system="CBC"
                 data={(() => {
                   if (!groupedData?.CBC) return {};
+                  console.log('Dashboard: CBC data received:', groupedData.CBC);
+                  console.log('Dashboard: CBC levels found:', Object.keys(groupedData.CBC));
+                  
                   const order = [
                     'Upper Primary',
                     'Junior Secondary',
@@ -164,6 +167,8 @@ export default function DashboardPage() {
                       ordered[level] = groupedData.CBC[level];
                     }
                   });
+                  
+                  console.log('Dashboard: Final ordered CBC data:', ordered);
                   return ordered;
                 })()}
                 loading={loading}

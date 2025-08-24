@@ -46,7 +46,7 @@ export default function Hero() {
       {words.map((word, i) => (
         <span
           key={"word-" + i}
-          className={`inline-block transition-all duration-300 mx-1 ${progress > i ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'} ${i % 2 === 1 ? 'text-[#14BF96]' : ''}`}
+          className={`inline-block transition-all duration-300 mx-1 ${progress > i ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'} ${i % 2 === 1 ? 'text-nmg-primary' : ''}`}
           aria-hidden={progress <= i}
         >
           {word}{i < words.length - 1 ? ' ' : ''}
@@ -76,7 +76,7 @@ export default function Hero() {
   }, [showSwahili, progress, swahiliWords.length, englishWords.length]);
 
   return (
-    <section className="bg-gradient-to-br from-nmg-primary via-nmg-accent to-khan-green text-white">
+    <section className="bg-compass-primary text-white">
       <div className="w-full px-4 sm:px-6 lg:px-8 py-16 md:py-24">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
           {/* Left Column - Content */}

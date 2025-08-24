@@ -159,7 +159,9 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
     "844": {}
   }
   
-  quizzes.forEach(quiz => {
+  console.log('GroupQuizzesBySystem: Processing', quizzes.length, 'quizzes');
+  
+  quizzes.forEach((quiz, index) => {
     let system = '844';
     if (quiz.level && (quiz.level.toLowerCase().includes('primary') || quiz.level.toLowerCase().includes('junior secondary') || quiz.level.toLowerCase().includes('senior secondary'))) {
       system = 'CBC';
@@ -180,6 +182,7 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
         if (!grouped.CBC['Junior Secondary']) grouped.CBC['Junior Secondary'] = {};
         if (!grouped.CBC['Junior Secondary'][quiz.grade]) grouped.CBC['Junior Secondary'][quiz.grade] = [];
         grouped.CBC['Junior Secondary'][quiz.grade].push(quiz);
+        console.log(`Quiz ${index}: Added to Junior Secondary Grade ${quiz.grade}`);
       } else if (quiz.level && quiz.level.toLowerCase() === 'senior secondary') {
         if (!grouped.CBC['Senior Secondary']) grouped.CBC['Senior Secondary'] = {};
         const key = quiz.grade && quiz.grade.trim() ? quiz.grade : 'Unknown';
@@ -219,8 +222,11 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
         grouped["844"]['Other'][quiz.grade].push(quiz);
       }
     }
+    
+    console.log(`Quiz ${index}: Subject=${quiz.subject}, Grade=${quiz.grade}, Level=${quiz.level}, System=${system}`);
   });
   
+  console.log('GroupQuizzesBySystem: Final grouped structure:', grouped);
   return grouped;
 } 
 

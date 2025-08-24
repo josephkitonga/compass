@@ -158,4 +158,29 @@ html {
   .border-compass-gray {
     border-color: #4A5568;
   }
+
+  /* NMG and Khan Green colors */
+  .bg-nmg-primary {
+    background-color: #002F6C;
+  }
+
+  .text-nmg-primary {
+    color: #002F6C;
+  }
+
+  .bg-nmg-accent {
+    background-color: #14BF96;
+  }
+
+  .text-nmg-accent {
+    color: #14BF96;
+  }
+
+  .bg-khan-green {
+    background-color: #14BF96;
+  }
+
+  .text-khan-green {
+    color: #14BF96;
+  }
 }
