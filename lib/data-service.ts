@@ -165,13 +165,20 @@ export const getQuizData = async (
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    const perPage = 100; // Increased page size to get more data per request
+    // Using per_page: 200 to get all quizzes in one request
     
     // Fetch first page
     try {
-      const firstResponse = await QuizApiService.getQuizzes({ per_page: perPage, page: 1 });
+      const firstResponse = await QuizApiService.getQuizzes({ per_page: 200, page: 1 });
       console.log('DataService: First API response:', firstResponse);
-      if (firstResponse.data && Array.isArray(firstResponse.data)) {
+        
+        // Validate the response structure
+        if (!firstResponse.data || !Array.isArray(firstResponse.data)) {
+          console.error('DataService: Invalid response structure - data is not an array');
+          console.error('DataService: Response structure:', firstResponse);
+          throw new Error('Invalid API response structure');
+        }
+        
         allQuizzes = firstResponse.data;
         totalPages = firstResponse.pagination?.total_pages || 1;
         
@@ -179,15 +186,23 @@ export const getQuizData = async (
         console.log('DataService: Total pages:', totalPages);
         console.log('DataService: Total quizzes from API:', firstResponse.pagination?.total);
         
+        // Log sample quiz data to see the structure
+        if (firstResponse.data.length > 0) {
+          console.log('DataService: Sample quiz data:', firstResponse.data[0]);
+          console.log('DataService: Sample quiz grade:', firstResponse.data[0].grade);
+          console.log('DataService: Sample quiz level:', firstResponse.data[0].level);
+        }
+        
         loadingState.totalPages = totalPages;
         loadingState.totalQuizzes = firstResponse.pagination?.total || 0;
         loadingState.loadedQuizzes = allQuizzes.length;
         loadingState.progress = (1 / totalPages) * 100;
         onProgress?.(loadingState);
         
+        // For partial data, we'll use raw data but log the duplicate count
         const initialGroupedData = groupQuizzesBySystem(allQuizzes);
+        console.log('DataService: Partial data (raw) - Total quizzes:', allQuizzes.length);
         onPartialData?.(initialGroupedData);
-      }
     } catch (error) {
       throw error;
     }
@@ -199,7 +214,7 @@ export const getQuizData = async (
       
       while (retries < MAX_RETRIES && !success) {
         try {
-          const response = await QuizApiService.getQuizzes({ per_page: perPage, page: currentPage });
+          const response = await QuizApiService.getQuizzes({ per_page: 200, page: currentPage });
           console.log(`DataService: Page ${currentPage} response:`, response.data?.length, 'quizzes');
           if (response.data && Array.isArray(response.data)) {
             allQuizzes = allQuizzes.concat(response.data);
@@ -212,7 +227,9 @@ export const getQuizData = async (
             loadingState.progress = (currentPage / totalPages) * 100;
             onProgress?.(loadingState);
             
+            // For partial data, we'll use raw data but log the duplicate count
             const updatedGroupedData = groupQuizzesBySystem(allQuizzes);
+            console.log(`DataService: Partial data (raw) - Page ${currentPage} - Total quizzes:`, allQuizzes.length);
             onPartialData?.(updatedGroupedData);
           }
         } catch (error) {
@@ -226,9 +243,12 @@ export const getQuizData = async (
       }
     }
     
+    // Use all quizzes (including duplicates) for grouping to show all 70 items
+    console.log('DataService: Total quizzes fetched (raw):', allQuizzes.length);
+    
     const groupedData = groupQuizzesBySystem(allQuizzes);
     
-    console.log('DataService: Total quizzes fetched:', allQuizzes.length);
+    console.log('DataService: Total quizzes for grouping:', allQuizzes.length);
     console.log('DataService: Grouped data structure:', groupedData);
     console.log('DataService: CBC levels:', Object.keys(groupedData.CBC || {}));
     console.log('DataService: 844 levels:', Object.keys(groupedData['844'] || {}));
@@ -238,7 +258,11 @@ export const getQuizData = async (
     if (!groupedData.CBC['Junior Secondary']) groupedData.CBC['Junior Secondary'] = {};
     if (!groupedData.CBC['Senior Secondary']) groupedData.CBC['Senior Secondary'] = {};
     
+    // Ensure all 844 levels are present even if empty
+    if (!groupedData['844']['Secondary']) groupedData['844']['Secondary'] = {};
+    
     console.log('DataService: Final CBC levels after ensuring:', Object.keys(groupedData.CBC));
+    console.log('DataService: Final 844 levels after ensuring:', Object.keys(groupedData['844']));
     
     quizCache = {
       data: allQuizzes,
@@ -252,7 +276,22 @@ export const getQuizData = async (
     
     return groupedData;
   } catch (error) {
-    throw new Error(`Failed to fetch quiz data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.error('DataService: Error fetching quiz data:', error);
+    
+    // Return empty structure if API fails, but ensure all levels are present
+    const fallbackData: ApiQuizData = {
+      CBC: {
+        'Upper Primary': {},
+        'Junior Secondary': {},
+        'Senior Secondary': {}
+      },
+      '844': {
+        'Secondary': {}
+      }
+    };
+    
+    console.log('DataService: Returning fallback data structure');
+    return fallbackData;
   }
 }
 

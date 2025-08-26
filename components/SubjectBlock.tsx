@@ -35,18 +35,20 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
       <CollapsibleTrigger asChild>
-        <button className="flex items-center justify-between w-full p-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+        <button className="flex items-center justify-between w-full p-4 bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-lg hover:from-green-100 hover:to-green-200 transition-all duration-200 shadow-sm hover:shadow-md">
           <div className="flex items-center space-x-3">
-            <div className="flex items-center justify-center w-6 h-6 rounded-md bg-gray-200">
-              <span className="text-xs font-medium text-gray-600">{subjectName.charAt(0)}</span>
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-500 text-white">
+              <span className="text-sm font-bold">{subjectName.charAt(0)}</span>
             </div>
-            <h5 className="text-base font-medium text-gray-900">{subjectName}</h5>
-            <span className="text-sm text-gray-500">({totalQuizzes} quizzes)</span>
+            <div className="text-left">
+              <h5 className="text-base font-semibold text-green-800">{subjectName}</h5>
+              <span className="text-sm text-green-600 font-medium">({totalQuizzes} quizzes)</span>
+            </div>
           </div>
           {isOpen ? (
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+            <ChevronDown className="h-4 w-4 text-green-600" />
           ) : (
-            <ChevronRight className="h-4 w-4 text-gray-500" />
+            <ChevronRight className="h-4 w-4 text-green-600" />
           )}
         </button>
       </CollapsibleTrigger>

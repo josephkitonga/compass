@@ -24,6 +24,18 @@ export default function AccordionSection({ title, description, system, data, loa
     }, 0)
   }, 0)
 
+  // Get all levels that should be displayed
+  const getAllLevels = () => {
+    if (system === "CBC") {
+      return ['Upper Primary', 'Junior Secondary', 'Senior Secondary']
+    } else if (system === "844") {
+      return ['Secondary']
+    }
+    return Object.keys(data || {})
+  }
+
+  const allLevels = getAllLevels()
+
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
       <CollapsibleTrigger asChild>
@@ -55,27 +67,28 @@ export default function AccordionSection({ title, description, system, data, loa
       </CollapsibleTrigger>
       
       <CollapsibleContent className="mt-4 space-y-4">
-        {Object.entries(data || {}).length === 0 ? (
+        {loading ? (
           <div className="text-center text-gray-400 py-4 text-sm">
-            {loading ? (
-              <div className="flex items-center justify-center space-x-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-nmg-primary"></div>
-                <span>Loading quizzes...</span>
-              </div>
-            ) : (
-              "No quizzes available for this level yet."
-            )}
+            <div className="flex items-center justify-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-nmg-primary"></div>
+              <span>Loading quizzes...</span>
+            </div>
           </div>
         ) : (
-          Object.entries(data || {}).map(([levelKey, levelData]) => (
-            <GradeSection
-              key={levelKey}
-              title={levelKey}
-              data={levelData}
-              system={system}
-              level={levelKey}
-            />
-          ))
+          allLevels.map((levelKey) => {
+            const levelData = data[levelKey] || {}
+            
+            // Always render GradeSection for all levels, regardless of quiz count
+            return (
+              <GradeSection
+                key={levelKey}
+                title={levelKey}
+                data={levelData}
+                system={system}
+                level={levelKey}
+              />
+            )
+          })
         )}
       </CollapsibleContent>
     </Collapsible>

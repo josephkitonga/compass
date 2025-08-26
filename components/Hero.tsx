@@ -26,16 +26,37 @@ export default function Hero({ quizData }: HeroProps) {
     if (!quizData) return 0;
     
     let total = 0;
-    Object.values(quizData).forEach(system => {
-      Object.values(system).forEach(level => {
-        Object.values(level).forEach(grade => {
+    let systemBreakdown: { [key: string]: number } = {};
+    const uniqueQuizIds = new Set<string>();
+    
+    Object.entries(quizData).forEach(([systemKey, system]) => {
+      let systemTotal = 0;
+      Object.entries(system).forEach(([levelKey, level]) => {
+        let levelTotal = 0;
+        Object.entries(level).forEach(([gradeKey, grade]) => {
           if (Array.isArray(grade)) {
+            levelTotal += grade.length;
             total += grade.length;
+            // Count unique quizzes by quiz_id
+            grade.forEach(quiz => {
+              if (quiz.quiz_id) {
+                uniqueQuizIds.add(quiz.quiz_id);
+              }
+            });
           }
         });
+        console.log(`Hero: ${systemKey} - ${levelKey}: ${levelTotal} quizzes`);
       });
+      systemBreakdown[systemKey] = systemTotal;
     });
-    return total;
+    
+    console.log('Hero: System breakdown:', systemBreakdown);
+    console.log('Hero: Total items (including duplicates):', total);
+    console.log('Hero: Unique quizzes (by quiz_id):', uniqueQuizIds.size);
+    console.log('Hero: Quiz data structure:', quizData);
+    
+    // Return unique quiz count instead of total items
+    return uniqueQuizIds.size;
   };
 
   // Calculate total subjects count
@@ -56,6 +77,9 @@ export default function Hero({ quizData }: HeroProps) {
         });
       });
     });
+    
+    console.log('Hero: Unique subjects found:', subjects.size);
+    console.log('Hero: Subjects:', Array.from(subjects));
     return subjects.size;
   };
 
@@ -148,6 +172,9 @@ export default function Hero({ quizData }: HeroProps) {
               </h1>
               <p className="text-xl md:text-2xl text-gray-100 leading-relaxed">
                 Curated quizzes to help students prepare and revise confidently across all grades and subjects.
+              </p>
+              <p className="text-sm text-gray-600 max-w-2xl mx-auto">
+                Comprehensive, curriculum-aligned materials designed for Kenyan students
               </p>
             </div>
 

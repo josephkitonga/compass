@@ -90,7 +90,7 @@ export class QuizApiService {
 
   static async getQuizzes(filters: QuizFilters = {}): Promise<QuizApiResponse> {
     const params = new URLSearchParams()
-    const perPage = filters.per_page || 20;
+    const perPage = filters.per_page || 200; // Changed default to 200
     
     if (filters.page) params.append('page', filters.page.toString())
     params.append('per_page', perPage.toString())
@@ -108,7 +108,7 @@ export class QuizApiService {
     let allQuizzes: QuizApiData[] = [];
     let page = 1;
     let totalPages = 1;
-    const perPage = filters.per_page || 20;
+    const perPage = filters.per_page || 200; // Changed default to 200
     
     do {
       try {
@@ -160,12 +160,21 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
   }
   
   console.log('GroupQuizzesBySystem: Processing', quizzes.length, 'quizzes');
+  console.log('GroupQuizzesBySystem: Sample quiz data:', quizzes.slice(0, 3));
   
   quizzes.forEach((quiz, index) => {
     let system = '844';
-    if (quiz.level && (quiz.level.toLowerCase().includes('primary') || quiz.level.toLowerCase().includes('junior secondary') || quiz.level.toLowerCase().includes('senior secondary'))) {
-      system = 'CBC';
+    
+    // Better system determination logic that prioritizes level over grade
+    if (quiz.level) {
+      // If level is provided, use it to determine system
+      if (quiz.level.toLowerCase().includes('primary') || 
+          quiz.level.toLowerCase().includes('junior secondary') || 
+          quiz.level.toLowerCase().includes('senior secondary')) {
+        system = 'CBC';
+      }
     } else {
+      // Fallback to grade-based logic
       const gradeNum = parseInt(quiz.grade);
       if (!isNaN(gradeNum) && gradeNum >= 4 && gradeNum <= 12) {
         system = 'CBC';
@@ -178,17 +187,16 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
         if (!grouped.CBC['Upper Primary']) grouped.CBC['Upper Primary'] = {};
         if (!grouped.CBC['Upper Primary'][quiz.grade]) grouped.CBC['Upper Primary'][quiz.grade] = [];
         grouped.CBC['Upper Primary'][quiz.grade].push(quiz);
-      } else if (!isNaN(gradeNum) && gradeNum >= 7 && gradeNum <= 9) {
+      } else if (
+        (!isNaN(gradeNum) && gradeNum >= 7 && gradeNum <= 9) ||
+        (quiz.level && quiz.level.toLowerCase().includes('junior secondary'))
+      ) {
         if (!grouped.CBC['Junior Secondary']) grouped.CBC['Junior Secondary'] = {};
         if (!grouped.CBC['Junior Secondary'][quiz.grade]) grouped.CBC['Junior Secondary'][quiz.grade] = [];
         grouped.CBC['Junior Secondary'][quiz.grade].push(quiz);
         console.log(`Quiz ${index}: Added to Junior Secondary Grade ${quiz.grade}`);
-      } else if (quiz.level && quiz.level.toLowerCase() === 'senior secondary') {
-        if (!grouped.CBC['Senior Secondary']) grouped.CBC['Senior Secondary'] = {};
-        const key = quiz.grade && quiz.grade.trim() ? quiz.grade : 'Unknown';
-        if (!grouped.CBC['Senior Secondary'][key]) grouped.CBC['Senior Secondary'][key] = [];
-        grouped.CBC['Senior Secondary'][key].push(quiz);
       } else if (
+        (quiz.level && quiz.level.toLowerCase().includes('senior secondary')) ||
         (!isNaN(gradeNum) && gradeNum >= 10 && gradeNum <= 12) ||
         (quiz.level && /senior|form\s*3|form\s*4|form\s*iii|form\s*iv|10|11|12/i.test(quiz.level)) ||
         (quiz.grade && /senior|form\s*3|form\s*4|form\s*iii|form\s*iv|10|11|12/i.test(quiz.grade))
@@ -226,7 +234,47 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
     console.log(`Quiz ${index}: Subject=${quiz.subject}, Grade=${quiz.grade}, Level=${quiz.level}, System=${system}`);
   });
   
+  // Ensure all CBC levels are always present, even if empty
+  if (!grouped.CBC['Upper Primary']) grouped.CBC['Upper Primary'] = {};
+  if (!grouped.CBC['Junior Secondary']) grouped.CBC['Junior Secondary'] = {};
+  if (!grouped.CBC['Senior Secondary']) grouped.CBC['Senior Secondary'] = {};
+  
+  // Ensure all expected grades are present within each CBC level
+  if (grouped.CBC['Upper Primary']) {
+    ['4', '5', '6'].forEach(grade => {
+      if (!grouped.CBC['Upper Primary'][grade]) grouped.CBC['Upper Primary'][grade] = [];
+    });
+  }
+  if (grouped.CBC['Junior Secondary']) {
+    ['7', '8', '9'].forEach(grade => {
+      if (!grouped.CBC['Junior Secondary'][grade]) grouped.CBC['Junior Secondary'][grade] = [];
+    });
+  }
+  if (grouped.CBC['Senior Secondary']) {
+    ['10', '11', '12'].forEach(grade => {
+      if (!grouped.CBC['Senior Secondary'][grade]) grouped.CBC['Senior Secondary'][grade] = [];
+    });
+  }
+  
+  // Ensure all 844 levels are always present, even if empty
+  if (!grouped['844']['Secondary']) grouped['844']['Secondary'] = {};
+  
+  // Ensure all expected forms are present within 8-4-4 Secondary
+  if (grouped['844']['Secondary']) {
+    ['Form 2', 'Form 3', 'Form 4'].forEach(form => {
+      if (!grouped['844']['Secondary'][form]) grouped['844']['Secondary'][form] = [];
+    });
+  }
+  
   console.log('GroupQuizzesBySystem: Final grouped structure:', grouped);
+  console.log('GroupQuizzesBySystem: CBC structure details:', {
+    'Upper Primary': Object.keys(grouped.CBC['Upper Primary'] || {}),
+    'Junior Secondary': Object.keys(grouped.CBC['Junior Secondary'] || {}),
+    'Senior Secondary': Object.keys(grouped.CBC['Senior Secondary'] || {})
+  });
+  console.log('GroupQuizzesBySystem: 844 structure details:', {
+    'Secondary': Object.keys(grouped['844']['Secondary'] || {})
+  });
   return grouped;
 } 
 

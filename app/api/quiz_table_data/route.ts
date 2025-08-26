@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     // Extract query parameters
     const { searchParams } = new URL(req.url);
     const page = searchParams.get('page') || '1';
-    const perPage = searchParams.get('per_page') || '20';
+    const perPage = searchParams.get('per_page') || '200'; // Changed default to 200 to get all quizzes
     const subject = searchParams.get('subject');
     const grade = searchParams.get('grade');
     const level = searchParams.get('level');
@@ -29,6 +29,9 @@ export async function GET(req: NextRequest) {
     if (quizType) queryParams.append('quiz_type', quizType);
 
     const apiUrl = `${ROODITO_API_BASE}?${queryParams.toString()}`;
+    
+    console.log(`[API] Making request to:`, apiUrl);
+    console.log(`[API] Query params:`, queryParams.toString());
     
     // Setup timeout and abort controller
     const controller = new AbortController();
@@ -70,10 +73,17 @@ export async function GET(req: NextRequest) {
     
     if (contentType?.includes('application/json')) {
       data = await response.json();
+      console.log(`[API] Response received:`, {
+        status: response.status,
+        dataLength: Array.isArray(data.data) ? data.data.length : 'Not an array',
+        pagination: data.pagination,
+        sampleData: Array.isArray(data.data) ? data.data.slice(0, 2) : 'No data array'
+      });
     } else {
       const textData = await response.text();
       try {
         data = JSON.parse(textData);
+        console.log(`[API] Parsed text response:`, data);
       } catch {
         console.warn('[API] Non-JSON response received, returning as text');
         data = { raw: textData };

@@ -91,6 +91,20 @@ export default function DashboardPage() {
     return out
   }
   
+  function ensureCBCJuniorSecondary(grades: { [grade: string]: any }) {
+    const expected = ['7', '8', '9']
+    const out = { ...grades }
+    expected.forEach(g => { if (!out[g]) out[g] = [] })
+    return out
+  }
+  
+  function ensureCBCUpperPrimary(grades: { [grade: string]: any }) {
+    const expected = ['4', '5', '6']
+    const out = { ...grades }
+    expected.forEach(g => { if (!out[g]) out[g] = [] })
+    return out
+  }
+  
   function ensure844Forms(grades: { [grade: string]: any }) {
     const expected = ['Form 2', 'Form 3', 'Form 4']
     const out = { ...grades }
@@ -163,10 +177,21 @@ export default function DashboardPage() {
                   order.forEach(level => {
                     if (level === 'Senior Secondary') {
                       ordered[level] = ensureCBCSeniorSecondary(groupedData.CBC[level] || {})
+                    } else if (level === 'Junior Secondary') {
+                      // Ensure Junior Secondary is always present, even if empty
+                      ordered[level] = ensureCBCJuniorSecondary(groupedData.CBC[level] || {})
+                    } else if (level === 'Upper Primary') {
+                      // Ensure Upper Primary is always present, even if empty
+                      ordered[level] = ensureCBCUpperPrimary(groupedData.CBC[level] || {})
                     } else if (groupedData.CBC[level]) {
                       ordered[level] = groupedData.CBC[level];
                     }
                   });
+                  
+                  // Ensure all required levels are present
+                  if (!ordered['Upper Primary']) ordered['Upper Primary'] = {};
+                  if (!ordered['Junior Secondary']) ordered['Junior Secondary'] = {};
+                  if (!ordered['Senior Secondary']) ordered['Senior Secondary'] = {};
                   
                   console.log('Dashboard: Final ordered CBC data:', ordered);
                   return ordered;
