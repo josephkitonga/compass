@@ -198,6 +198,21 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
   console.log("GroupQuizzesBySystem: Processing", quizzes.length, "quizzes");
   console.log("GroupQuizzesBySystem: Sample quiz data:", quizzes.slice(0, 3));
 
+  // Count quizzes with empty grades
+  const emptyGradeQuizzes = quizzes.filter(
+    (q) => !q.grade || q.grade.trim() === ""
+  );
+  console.log(
+    "GroupQuizzesBySystem: Quizzes with empty grades:",
+    emptyGradeQuizzes.length
+  );
+  if (emptyGradeQuizzes.length > 0) {
+    console.log(
+      "GroupQuizzesBySystem: Sample empty grade quizzes:",
+      emptyGradeQuizzes.slice(0, 3)
+    );
+  }
+
   quizzes.forEach((quiz, index) => {
     let system = "844";
 
@@ -220,23 +235,47 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
     }
 
     if (system === "CBC") {
-      const gradeNum = parseInt(quiz.grade);
+      // Handle empty grade by using level to determine placement
+      let effectiveGrade = quiz.grade;
+      if (!effectiveGrade || effectiveGrade.trim() === "") {
+        // If grade is empty, try to infer from level or use a default
+        if (quiz.level && quiz.level.toLowerCase().includes("upper primary")) {
+          effectiveGrade = "6"; // Default to grade 6 for Upper Primary
+        } else if (
+          quiz.level &&
+          quiz.level.toLowerCase().includes("junior secondary")
+        ) {
+          effectiveGrade = "9"; // Default to grade 9 for Junior Secondary
+        } else if (
+          quiz.level &&
+          quiz.level.toLowerCase().includes("senior secondary")
+        ) {
+          effectiveGrade = "12"; // Default to grade 12 for Senior Secondary
+        } else {
+          effectiveGrade = "General"; // Fallback
+        }
+      }
+
+      const gradeNum = parseInt(effectiveGrade);
       if (!isNaN(gradeNum) && gradeNum >= 4 && gradeNum <= 6) {
         if (!grouped.CBC["Upper Primary"]) grouped.CBC["Upper Primary"] = {};
-        if (!grouped.CBC["Upper Primary"][quiz.grade])
-          grouped.CBC["Upper Primary"][quiz.grade] = [];
-        grouped.CBC["Upper Primary"][quiz.grade].push(quiz);
+        if (!grouped.CBC["Upper Primary"][effectiveGrade])
+          grouped.CBC["Upper Primary"][effectiveGrade] = [];
+        grouped.CBC["Upper Primary"][effectiveGrade].push(quiz);
+        console.log(
+          `Quiz ${index}: Added to Upper Primary Grade ${effectiveGrade} (original: ${quiz.grade})`
+        );
       } else if (
         (!isNaN(gradeNum) && gradeNum >= 7 && gradeNum <= 9) ||
         (quiz.level && quiz.level.toLowerCase().includes("junior secondary"))
       ) {
         if (!grouped.CBC["Junior Secondary"])
           grouped.CBC["Junior Secondary"] = {};
-        if (!grouped.CBC["Junior Secondary"][quiz.grade])
-          grouped.CBC["Junior Secondary"][quiz.grade] = [];
-        grouped.CBC["Junior Secondary"][quiz.grade].push(quiz);
+        if (!grouped.CBC["Junior Secondary"][effectiveGrade])
+          grouped.CBC["Junior Secondary"][effectiveGrade] = [];
+        grouped.CBC["Junior Secondary"][effectiveGrade].push(quiz);
         console.log(
-          `Quiz ${index}: Added to Junior Secondary Grade ${quiz.grade}`
+          `Quiz ${index}: Added to Junior Secondary Grade ${effectiveGrade} (original: ${quiz.grade})`
         );
       } else if (
         (quiz.level && quiz.level.toLowerCase().includes("senior secondary")) ||
@@ -252,27 +291,50 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
       ) {
         if (!grouped.CBC["Senior Secondary"])
           grouped.CBC["Senior Secondary"] = {};
-        if (!grouped.CBC["Senior Secondary"][quiz.grade])
-          grouped.CBC["Senior Secondary"][quiz.grade] = [];
-        grouped.CBC["Senior Secondary"][quiz.grade].push(quiz);
+        if (!grouped.CBC["Senior Secondary"][effectiveGrade])
+          grouped.CBC["Senior Secondary"][effectiveGrade] = [];
+        grouped.CBC["Senior Secondary"][effectiveGrade].push(quiz);
+        console.log(
+          `Quiz ${index}: Added to Senior Secondary Grade ${effectiveGrade} (original: ${quiz.grade})`
+        );
       } else {
         const level = quiz.level || "Other";
         if (!grouped.CBC[level]) grouped.CBC[level] = {};
-        if (!grouped.CBC[level][quiz.grade])
-          grouped.CBC[level][quiz.grade] = [];
-        grouped.CBC[level][quiz.grade].push(quiz);
+        if (!grouped.CBC[level][effectiveGrade])
+          grouped.CBC[level][effectiveGrade] = [];
+        grouped.CBC[level][effectiveGrade].push(quiz);
+        console.log(
+          `Quiz ${index}: Added to ${level} Grade ${effectiveGrade} (original: ${quiz.grade})`
+        );
       }
     } else if (system === "844") {
-      const grade = quiz.grade || "General";
+      // Handle empty grade for 844 system
+      let effectiveGrade = quiz.grade;
+      if (!effectiveGrade || effectiveGrade.trim() === "") {
+        // If grade is empty, try to infer from level or use a default
+        if (quiz.level && /form\s*2/i.test(quiz.level)) {
+          effectiveGrade = "Form 2";
+        } else if (quiz.level && /form\s*3/i.test(quiz.level)) {
+          effectiveGrade = "Form 3";
+        } else if (quiz.level && /form\s*4/i.test(quiz.level)) {
+          effectiveGrade = "Form 4";
+        } else {
+          effectiveGrade = "General"; // Fallback
+        }
+      }
+
       if (quiz.level && /^form\s*([234])$/i.test(quiz.level)) {
         if (!grouped["844"]["Secondary"]) grouped["844"]["Secondary"] = {};
         const key = quiz.level.trim();
         if (!grouped["844"]["Secondary"][key])
           grouped["844"]["Secondary"][key] = [];
         grouped["844"]["Secondary"][key].push(quiz);
+        console.log(
+          `Quiz ${index}: Added to 844 Secondary ${key} (original: ${quiz.grade})`
+        );
       } else if (
         /form\s*2|form\s*3|form\s*4|form\s*ii|form\s*iii|form\s*iv|2|3|4/i.test(
-          grade
+          effectiveGrade
         ) ||
         (quiz.level &&
           /form\s*2|form\s*3|form\s*4|form\s*ii|form\s*iii|form\s*iv|2|3|4/i.test(
@@ -280,14 +342,20 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
           ))
       ) {
         if (!grouped["844"]["Secondary"]) grouped["844"]["Secondary"] = {};
-        if (!grouped["844"]["Secondary"][quiz.grade])
-          grouped["844"]["Secondary"][quiz.grade] = [];
-        grouped["844"]["Secondary"][quiz.grade].push(quiz);
+        if (!grouped["844"]["Secondary"][effectiveGrade])
+          grouped["844"]["Secondary"][effectiveGrade] = [];
+        grouped["844"]["Secondary"][effectiveGrade].push(quiz);
+        console.log(
+          `Quiz ${index}: Added to 844 Secondary Grade ${effectiveGrade} (original: ${quiz.grade})`
+        );
       } else {
         if (!grouped["844"]["Other"]) grouped["844"]["Other"] = {};
-        if (!grouped["844"]["Other"][quiz.grade])
-          grouped["844"]["Other"][quiz.grade] = [];
-        grouped["844"]["Other"][quiz.grade].push(quiz);
+        if (!grouped["844"]["Other"][effectiveGrade])
+          grouped["844"]["Other"][effectiveGrade] = [];
+        grouped["844"]["Other"][effectiveGrade].push(quiz);
+        console.log(
+          `Quiz ${index}: Added to 844 Other Grade ${effectiveGrade} (original: ${quiz.grade})`
+        );
       }
     }
 
@@ -303,19 +371,19 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
 
   // Ensure all expected grades are present within each CBC level
   if (grouped.CBC["Upper Primary"]) {
-    ["4", "5", "6"].forEach((grade) => {
+    ["4", "5", "6", "General"].forEach((grade) => {
       if (!grouped.CBC["Upper Primary"][grade])
         grouped.CBC["Upper Primary"][grade] = [];
     });
   }
   if (grouped.CBC["Junior Secondary"]) {
-    ["7", "8", "9"].forEach((grade) => {
+    ["7", "8", "9", "General"].forEach((grade) => {
       if (!grouped.CBC["Junior Secondary"][grade])
         grouped.CBC["Junior Secondary"][grade] = [];
     });
   }
   if (grouped.CBC["Senior Secondary"]) {
-    ["10", "11", "12"].forEach((grade) => {
+    ["10", "11", "12", "General"].forEach((grade) => {
       if (!grouped.CBC["Senior Secondary"][grade])
         grouped.CBC["Senior Secondary"][grade] = [];
     });
@@ -326,12 +394,36 @@ export const groupQuizzesBySystem = (quizzes: QuizApiData[]) => {
 
   // Ensure all expected forms are present within 8-4-4 Secondary
   if (grouped["844"]["Secondary"]) {
-    ["Form 2", "Form 3", "Form 4"].forEach((form) => {
+    ["Form 2", "Form 3", "Form 4", "General"].forEach((form) => {
       if (!grouped["844"]["Secondary"][form])
         grouped["844"]["Secondary"][form] = [];
     });
   }
 
+  // Count total quizzes in each category
+  let totalCBCQuizzes = 0;
+  let total844Quizzes = 0;
+
+  Object.values(grouped.CBC).forEach((level) => {
+    Object.values(level).forEach((grade) => {
+      totalCBCQuizzes += grade.length;
+    });
+  });
+
+  Object.values(grouped["844"]).forEach((level) => {
+    Object.values(level).forEach((grade) => {
+      total844Quizzes += grade.length;
+    });
+  });
+
+  console.log(
+    "GroupQuizzesBySystem: Final counts - CBC:",
+    totalCBCQuizzes,
+    "844:",
+    total844Quizzes,
+    "Total:",
+    totalCBCQuizzes + total844Quizzes
+  );
   console.log("GroupQuizzesBySystem: Final grouped structure:", grouped);
   console.log("GroupQuizzesBySystem: CBC structure details:", {
     "Upper Primary": Object.keys(grouped.CBC["Upper Primary"] || {}),

@@ -31,15 +31,15 @@ export default function GradeSection({
   const getExpectedGrades = () => {
     if (system === "CBC") {
       if (level === "Upper Primary") {
-        return ["4", "5", "6"];
+        return ["4", "5", "6", "General"];
       } else if (level === "Junior Secondary") {
-        return ["7", "8", "9"];
+        return ["7", "8", "9", "General"];
       } else if (level === "Senior Secondary") {
-        return ["10", "11", "12"];
+        return ["10", "11", "12", "General"];
       }
     } else if (system === "844") {
       if (level === "Secondary") {
-        return ["Form 2", "Form 3", "Form 4"];
+        return ["Form 2", "Form 3", "Form 4", "General"];
       }
     }
     return Object.keys(data || {});
@@ -174,7 +174,11 @@ export default function GradeSection({
             return (
               <div key={gradeKey} className="space-y-4">
                 <h5 className="text-sm font-semibold text-gray-700 ml-2 border-l-4 border-nmg-primary pl-3">
-                  {system === "844" ? gradeKey : `Grade ${gradeKey}`}
+                  {system === "844"
+                    ? gradeKey
+                    : gradeKey === "General"
+                      ? "General"
+                      : `Grade ${gradeKey}`}
                 </h5>
 
                 {/* Available Subjects */}
