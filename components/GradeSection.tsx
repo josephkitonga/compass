@@ -45,70 +45,44 @@ export default function GradeSection({
     return Object.keys(data || {});
   };
 
-  // Get all expected subjects for this level
+  // Get all subjects dynamically from the actual data
   const getExpectedSubjects = () => {
-    if (system === "CBC") {
-      if (level === "Upper Primary") {
-        return [
-          "Mathematics",
-          "English",
-          "Science",
-          "Social Studies",
-          "Kiswahili",
-          "Creative Arts",
-          "Physical Education",
-        ];
-      } else if (level === "Junior Secondary") {
-        return [
-          "Mathematics",
-          "English",
-          "Science",
-          "Social Studies",
-          "Kiswahili",
-          "Creative Arts",
-          "Physical Education",
-          "Business Studies",
-          "Computer Studies",
-        ];
-      } else if (level === "Senior Secondary") {
-        return [
-          "Mathematics",
-          "English",
-          "Biology",
-          "Chemistry",
-          "Physics",
-          "Geography",
-          "History",
-          "Kiswahili",
-          "Business Studies",
-          "Computer Studies",
-          "Agriculture",
-          "Economics",
-        ];
-      }
-    } else if (system === "844") {
-      if (level === "Secondary") {
-        return [
-          "Mathematics",
-          "English",
-          "Biology",
-          "Chemistry",
-          "Physics",
-          "Geography",
-          "History",
-          "Kiswahili",
-          "Business Studies",
-          "Computer Studies",
-          "Agriculture",
-          "Economics",
-        ];
-      }
-    }
-    return ["General"];
+    // Extract all unique subjects from the actual data for this level
+    const allSubjects = new Set<string>();
+
+    // Go through all grades in this level and collect unique subjects
+    Object.values(data || {}).forEach((gradeQuizzes) => {
+      gradeQuizzes.forEach((quiz) => {
+        if (quiz.subject && quiz.subject.trim()) {
+          allSubjects.add(quiz.subject.trim());
+        }
+      });
+    });
+
+    // Convert Set to Array and sort alphabetically
+    const subjectsArray = Array.from(allSubjects).sort();
+
+    console.log(
+      `GradeSection: Found ${subjectsArray.length} unique subjects for ${level}:`,
+      subjectsArray
+    );
+
+    return subjectsArray.length > 0 ? subjectsArray : ["General"];
   };
 
   const expectedGrades = getExpectedGrades();
   const expectedSubjects = getExpectedSubjects();
+
+  // Debug: Log the data structure for this level
+  console.log(`GradeSection: ${title} (${system}) - Data:`, data);
+  console.log(
+    `GradeSection: ${title} (${system}) - Expected grades:`,
+    expectedGrades
+  );
+  console.log(
+    `GradeSection: ${title} (${system}) - Expected subjects:`,
+    expectedSubjects
+  );
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
@@ -164,10 +138,15 @@ export default function GradeSection({
           expectedGrades.map((gradeKey) => {
             const gradeData = data[gradeKey] || [];
 
-            // Get available subjects
+            // Get available subjects with case-insensitive matching
             const availableSubjects = expectedSubjects.filter((subjectName) => {
               const subjectQuizzes =
-                gradeData.filter((quiz) => quiz.subject === subjectName) || [];
+                gradeData.filter(
+                  (quiz) =>
+                    quiz.subject &&
+                    quiz.subject.toLowerCase().trim() ===
+                      subjectName.toLowerCase().trim()
+                ) || [];
               return subjectQuizzes.length > 0;
             });
 
@@ -194,7 +173,10 @@ export default function GradeSection({
                       {availableSubjects.map((subjectName) => {
                         const subjectQuizzes =
                           gradeData.filter(
-                            (quiz) => quiz.subject === subjectName
+                            (quiz) =>
+                              quiz.subject &&
+                              quiz.subject.toLowerCase().trim() ===
+                                subjectName.toLowerCase().trim()
                           ) || [];
                         return (
                           <SubjectBlock

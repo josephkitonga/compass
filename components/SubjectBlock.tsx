@@ -1,36 +1,60 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { ChevronDown, ChevronRight } from "lucide-react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import QuizCard from "./QuizCard"
-import type { QuizApiData } from "@/lib/api-service"
-import { transformQuizApiData } from "@/lib/api-service"
+import { useState, useEffect } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import QuizCard from "./QuizCard";
+import type { QuizApiData } from "@/lib/api-service";
+import { transformQuizApiData } from "@/lib/api-service";
 
 interface SubjectBlockProps {
-  subjectName: string
-  grade: string
-  system: string
-  level: string
-  quizzes: QuizApiData[]
-  loading?: boolean
+  subjectName: string;
+  grade: string;
+  system: string;
+  level: string;
+  quizzes: QuizApiData[];
+  loading?: boolean;
 }
 
-export default function SubjectBlock({ subjectName, grade, system, level, quizzes, loading }: SubjectBlockProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [page, setPage] = useState(1)
+export default function SubjectBlock({
+  subjectName,
+  grade,
+  system,
+  level,
+  quizzes,
+  loading,
+}: SubjectBlockProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [page, setPage] = useState(1);
   const quizzesPerPage = 10;
 
+  // Debug: Log the quizzes received for this subject
+  console.log(
+    `SubjectBlock: ${subjectName} (${grade}) - Received ${quizzes.length} quizzes:`,
+    quizzes
+  );
+
   // Transform and deduplicate quizzes for display
-  const transformedQuizzes = quizzes.map(transformQuizApiData)
+  const transformedQuizzes = quizzes.map(transformQuizApiData);
   const uniqueQuizzes = Array.from(
-    new Map(transformedQuizzes.map(q => [q.id, q])).values()
-  )
-  
+    new Map(transformedQuizzes.map((q) => [q.id, q])).values()
+  );
+
+  console.log(
+    `SubjectBlock: ${subjectName} (${grade}) - After deduplication: ${uniqueQuizzes.length} quizzes`
+  );
+
   // Pagination logic
   const totalQuizzes = uniqueQuizzes.length;
   const totalPages = Math.ceil(totalQuizzes / quizzesPerPage);
-  const currentPageQuizzes = uniqueQuizzes.slice((page - 1) * quizzesPerPage, page * quizzesPerPage);
+  const currentPageQuizzes = uniqueQuizzes.slice(
+    (page - 1) * quizzesPerPage,
+    page * quizzesPerPage
+  );
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen} className="w-full">
@@ -41,8 +65,12 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
               <span className="text-sm font-bold">{subjectName.charAt(0)}</span>
             </div>
             <div className="text-left">
-              <h5 className="text-base font-semibold text-green-800">{subjectName}</h5>
-              <span className="text-sm text-green-600 font-medium">({totalQuizzes} quizzes)</span>
+              <h5 className="text-base font-semibold text-green-800">
+                {subjectName}
+              </h5>
+              <span className="text-sm text-green-600 font-medium">
+                ({totalQuizzes} quizzes)
+              </span>
             </div>
           </div>
           {isOpen ? (
@@ -52,7 +80,7 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
           )}
         </button>
       </CollapsibleTrigger>
-      
+
       <CollapsibleContent className="mt-3">
         {loading ? (
           <div className="text-center py-4">
@@ -61,46 +89,46 @@ export default function SubjectBlock({ subjectName, grade, system, level, quizze
           </div>
         ) : (
           <>
-        <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {currentPageQuizzes.length === 0 ? (
-            <div className="col-span-full text-center text-gray-400 py-4 text-sm">
-              No quizzes available for this grade yet.
+            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {currentPageQuizzes.length === 0 ? (
+                <div className="col-span-full text-center text-gray-400 py-4 text-sm">
+                  No quizzes available for this grade yet.
+                </div>
+              ) : (
+                currentPageQuizzes.map((quiz, idx) => (
+                  <QuizCard
+                    key={quiz.id}
+                    quiz={quiz}
+                    subject={subjectName}
+                    grade={grade}
+                    system={system}
+                  />
+                ))
+              )}
             </div>
-          ) : (
-            currentPageQuizzes.map((quiz, idx) => (
-              <QuizCard
-                key={quiz.id}
-                quiz={quiz}
-                subject={subjectName}
-                grade={grade}
-                system={system}
-              />
-            ))
-          )}
-        </div>
-        {/* Pagination controls */}
-        {totalPages > 1 && (
-          <div className="flex justify-center items-center gap-2 mt-4">
-            <button
-              className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-            >
-              Previous
-            </button>
-            <span className="text-sm text-gray-600">Page {page} of {totalPages}</span>
-            <button
-              className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
-              onClick={() => setPage(page + 1)}
-              disabled={page === totalPages}
-            >
-              Next
-            </button>
-          </div>
+            {/* Pagination controls */}
+            {totalPages > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-4">
+                <button
+                  className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+                  onClick={() => setPage(page - 1)}
+                  disabled={page === 1}>
+                  Previous
+                </button>
+                <span className="text-sm text-gray-600">
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  className="px-3 py-1 rounded bg-gray-200 text-gray-700 disabled:opacity-50"
+                  onClick={() => setPage(page + 1)}
+                  disabled={page === totalPages}>
+                  Next
+                </button>
+              </div>
             )}
           </>
         )}
       </CollapsibleContent>
     </Collapsible>
-  )
-} 
+  );
+}
