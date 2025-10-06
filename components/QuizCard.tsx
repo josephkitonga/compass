@@ -121,6 +121,12 @@ export default function QuizCard({
     Easy: "bg-green-100 text-green-800",
     Medium: "bg-yellow-100 text-yellow-800",
     Hard: "bg-red-100 text-red-800",
+    // Year-based colors (fallback for year values)
+    "2024": "bg-blue-100 text-blue-800",
+    "2023": "bg-purple-100 text-purple-800",
+    "2022": "bg-indigo-100 text-indigo-800",
+    "2021": "bg-pink-100 text-pink-800",
+    "2020": "bg-teal-100 text-teal-800",
   };
 
   const IconComponent = subjectIcons[subject] || BookOpen;

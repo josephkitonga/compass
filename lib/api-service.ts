@@ -156,6 +156,29 @@ export const transformQuizApiData = (apiData: QuizApiData) => {
     subject: apiData.subject,
   });
 
+  // Extract year from date field
+  const getYearFromDate = (dateString: string): string => {
+    if (!dateString) return "2024"; // Default fallback
+
+    try {
+      const date = new Date(dateString);
+      if (!isNaN(date.getTime())) {
+        return date.getFullYear().toString();
+      }
+
+      // Try to extract year from string format (e.g., "2024-01-15" or "15/01/2024")
+      const yearMatch = dateString.match(/\b(20\d{2})\b/);
+      if (yearMatch) {
+        return yearMatch[1];
+      }
+
+      return "2024"; // Default fallback
+    } catch (error) {
+      console.warn("Error parsing date:", dateString, error);
+      return "2024"; // Default fallback
+    }
+  };
+
   return {
     id: apiData.quiz_id,
     title: `${apiData.subject || "Quiz"} - ${apiData.grade}`,
@@ -164,7 +187,7 @@ export const transformQuizApiData = (apiData: QuizApiData) => {
     level: apiData.level || undefined,
     questions: questions,
     type: apiData.quiz_type || "Quiz",
-    difficulty: "Medium",
+    difficulty: getYearFromDate(apiData.date),
     duration: 15,
     quizLink: apiData.quiz_link,
     date: apiData.date,
