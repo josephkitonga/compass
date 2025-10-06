@@ -120,6 +120,10 @@ export default function QuizDetail({
     "2022": "bg-indigo-100 text-indigo-800",
     "2021": "bg-pink-100 text-pink-800",
     "2020": "bg-teal-100 text-teal-800",
+    // Full year text colors
+    "2025 Compass Prediction": "bg-emerald-100 text-emerald-800",
+    "2024 Compass Prediction": "bg-blue-100 text-blue-800",
+    "2023 Compass Prediction": "bg-purple-100 text-purple-800",
   };
 
   const IconComponent = subjectIcons[subject] || BookOpen;

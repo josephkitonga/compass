@@ -95,6 +95,13 @@ export default function AchievementsSection() {
         return "bg-pink-100 text-pink-800";
       case "2020":
         return "bg-teal-100 text-teal-800";
+      // Full year text colors
+      case "2025 Compass Prediction":
+        return "bg-emerald-100 text-emerald-800";
+      case "2024 Compass Prediction":
+        return "bg-blue-100 text-blue-800";
+      case "2023 Compass Prediction":
+        return "bg-purple-100 text-purple-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
